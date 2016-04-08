@@ -1,0 +1,60 @@
+#!/usr/bin/env php
+<?php
+
+use Huxtable\Core\File;
+
+$appName = basename( __FILE__ );
+
+$dirBase     = dirname( __DIR__ );
+$dirLib      = $dirBase . '/lib';
+$dirApp      = $dirLib  . '/' . $appName;
+$dirCommands = $dirLib  . '/commands';
+$dirVendor   = $dirBase . '/vendor';
+
+/*
+ * App configuration
+ */
+$config = require_once( $dirLib . '/config.php' );
+
+/*
+ * Initialize autoloading
+ */
+include_once( $dirVendor . '/huxtable/cli/src/CLI/Autoloader.php' );
+Huxtable\CLI\Autoloader::register();
+
+include_once( $dirVendor . '/huxtable/core/src/Core/Autoloader.php' );
+Huxtable\Core\Autoloader::register();
+
+include_once( $dirApp . '/Autoloader.php' );
+Fig\Autoloader::register();
+
+/*
+ * App configuration
+ */
+$app = new Huxtable\CLI\Application( $appName, $config['version'], $config['php-min'] );
+
+/*
+ * Register commands
+ */
+$fileFilter = new File\Filter();
+$fileFilter
+->setDefaultMethod( $fileFilter::METHOD_INCLUDE )
+->includeFileExtension( 'php' );
+
+$commandsFolder = new File\Directory( $dirCommands );
+$commandFiles = $commandsFolder->children( $fileFilter );
+
+foreach( $commandFiles as $commandFile )
+{
+	$command = include_once( $commandFile );
+	if( $command instanceof Huxtable\CLI\Command )
+	{
+		$app->registerCommand( $command );
+	}
+}
+
+// Attempt to run the requested command
+$app->run();
+
+// Stop application and exit
+$app->stop();
