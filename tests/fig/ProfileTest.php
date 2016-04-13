@@ -158,6 +158,26 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( $postCommand, $commands['post'][1] );
 	}
 
+	public function testWriteToDisk()
+	{
+		$appName = 'app_' . rand( 0, 999 );
+		$profileName = 'profile_' . rand( 500, 999 );
+
+		$dirProfile = $this->dirTemp
+		->childDir( '.fig' )
+		->childDir( $appName )
+		->childDir( $profileName );
+
+		$profileExpected = new Fig\Profile( $dirProfile );
+		$profileExpected->addPreCommand( 'pre_command' );
+		$profileExpected->addPostCommand( 'post_command' );
+		$profileExpected->write();
+
+		$profileActual = new Fig\Profile( $dirProfile );
+
+		$this->assertEquals( $profileExpected, $profileActual );
+	}
+
 	/**
 	 * @return	array
 	 */

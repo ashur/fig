@@ -136,4 +136,31 @@ class Profile
 	{
 		return $this->name;
 	}
+
+	/**
+	 * Write contents of profile to disk
+	 *
+	 * @return	void
+	 */
+	public function write()
+	{
+		$configData = [];
+		$configFile = $this->source->child( self::CONFIG_FILENAME );
+
+		if( !$this->source->exists() )
+		{
+			$this->source->mkdir( 0777, true );
+		}
+
+		// Populate configuration contents
+		$configData['commands'] = $this->commands;
+
+		if( isset( $this->parent ) )
+		{
+			$configData['extends'] = $this->parent;
+		}
+
+		$configContents = json_encode( $configData );
+		$configFile->putContents( $configContents );
+	}
 }
