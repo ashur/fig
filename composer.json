@@ -1,0 +1,14 @@
+{
+    "name": "ashur/fig",
+    "description": "An application profile and configuration manager",
+    "require": {
+        "symfony/yaml": "^3.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ashur Cabrera",
+            "email": "hello@cabreramade.co"
+        }
+    ]
+}
