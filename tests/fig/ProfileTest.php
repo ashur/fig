@@ -68,6 +68,22 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @expectedException	Exception
 	 */
+	public function testDirectoryMissingConfigThrowsException()
+	{
+		$profileName = 'profile_' . rand( 0, 499 );
+		$appName = 'app_' . rand( 0, 999 );
+
+		$dirProfile = $this->dirTemp
+		->childDir( '.fig' )
+		->childDir( $appName )
+		->childDir( $profileName );
+
+		$profile = Fig\Profile::getInstanceFromDirectory( $dirProfile );
+	}
+
+	/**
+	 * @expectedException	Exception
+	 */
 	public function testMalformedConfigThrowsException()
 	{
 		// Set up dummy profile source

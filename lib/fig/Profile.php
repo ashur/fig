@@ -59,6 +59,9 @@ class Profile
 	}
 
 	/**
+	 * Apply this profile's properties to a parent profile
+	 *   then return the resulting profile object
+	 *
 	 * @param	Fig\Profile		$profile
 	 * @return	Fig\Profile
 	 */
@@ -101,7 +104,7 @@ class Profile
 
 		if( !$configFile->exists() )
 		{
-			// ...
+			throw new \Exception( 'Invalid profile: configuration file not found' );
 		}
 
 		$config = json_decode( $configFile->getContents(), true );
