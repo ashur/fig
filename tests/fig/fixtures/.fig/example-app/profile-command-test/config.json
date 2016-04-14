@@ -1,10 +1,10 @@
 {
 	"commands": {
 		"pre": [
-			"echo hello"
+			"@hello"
 		],
 		"post": [
-			"echo goodbye"
+			"@goodbye"
 		]
 	}
 }
