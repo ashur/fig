@@ -22,7 +22,7 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider	profileInstanceProvider
 	 */
-	public function testNameDerivedFromSourceDirectory( $profile, $profileName )
+	public function testCreation( $profile, $profileName )
 	{
 		$this->assertEquals( $profileName, $profile->getName() );
 	}
@@ -51,7 +51,7 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		->childDir( 'example-app' )
 		->childDir( 'profile-command-test' );
 
-		$profile = new Fig\Profile( $dirProfile );
+		$profile = Fig\Profile::getInstanceFromDirectory( $dirProfile );
 
 		// Read commands from config file
 		$profileConfigContents = $dirProfile
@@ -88,7 +88,7 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		$fileConfig = $dirProfile->child( 'config.json' );
 		$fileConfig->putContents( $configJSON );
 
-		$profile = new Fig\Profile( $dirProfile );
+		$profile = Fig\Profile::getInstanceFromDirectory( $dirProfile );
 	}
 
 	public function testExtendsConfigProperty()
@@ -111,7 +111,7 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		$fileConfig = $dirProfile->child( 'config.json' );
 		$fileConfig->putContents( $configJSON );
 
-		$profile = new Fig\Profile( $dirProfile );
+		$profile = Fig\Profile::getInstanceFromDirectory( $dirProfile );
 
 		// Test
 		$this->assertEquals( $parentProfileName, $profile->getParentName() );
@@ -158,22 +158,23 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( $postCommand, $commands['post'][1] );
 	}
 
-	public function testWriteToDisk()
+	/**
+	 * @dataProvider	profileInstanceProvider
+	 */
+	public function testWriteToDisk( $profileExpected, $profileName )
 	{
 		$appName = 'app_' . rand( 0, 999 );
-		$profileName = 'profile_' . rand( 500, 999 );
 
 		$dirProfile = $this->dirTemp
 		->childDir( '.fig' )
 		->childDir( $appName )
 		->childDir( $profileName );
 
-		$profileExpected = new Fig\Profile( $dirProfile );
-		$profileExpected->addPreCommand( 'pre_command' );
-		$profileExpected->addPostCommand( 'post_command' );
-		$profileExpected->write();
+		$profileExpected->addPreCommand( 'pre_command_' . rand( 0, 99 ) );
+		$profileExpected->addPostCommand( 'post_command_' . rand( 99, 199 ) );
+		$profileExpected->write( $dirProfile );
 
-		$profileActual = new Fig\Profile( $dirProfile );
+		$profileActual = Fig\Profile::getInstanceFromDirectory( $dirProfile );
 
 		$this->assertEquals( $profileExpected, $profileActual );
 	}
@@ -183,22 +184,8 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 	 */
 	public function profileInstanceProvider()
 	{
-		$this->setUp();
-
-		$dirFig = new File\Directory( $this->dirTemp );
-
-		$appName = 'app_' . rand( 0, 999 );
-		$this->appDir = $dirFig->childDir( $appName );
-
-		if( !$this->appDir->exists() )
-		{
-			$this->appDir->mkdir( 0777, true );
-		}
-
 		$profileName = 'profile_' . rand( 0, 999 );
-		$profileDir = $this->appDir->childDir( $profileName );
-
-		$profile = new Fig\Profile( $profileDir );
+		$profile = new Fig\Profile( $profileName );
 
 		return [
 			[$profile, $profileName]

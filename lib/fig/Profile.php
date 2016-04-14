@@ -24,51 +24,18 @@ class Profile
 	/**
 	 * @var	string
 	 */
-	protected $parent;
+	protected $parentName;
 
 	/**
-	 * @var	Huxtable\Core\File\Directory
-	 */
-	protected $source;
-
-	/**
-	 * @param	Huxtable\Core\File\Directory	$source
+	 * @param	string	$name
 	 * @return	void
 	 */
-	public function __construct( File\Directory $source )
+	public function __construct( $name )
 	{
-		$this->source = $source;
-		$this->name = $source->getBasename();
+		$this->name = $name;
 
 		$this->commands['pre'] = [];
 		$this->commands['post'] = [];
-
-		// Populate fields from config file
-		$configFile = $this->source->child( self::CONFIG_FILENAME );
-		if( $configFile->exists() )
-		{
-			$config = json_decode( $configFile->getContents(), true );
-			if( json_last_error() != JSON_ERROR_NONE )
-			{
-				throw new \Exception( "Malformed profile configuration: " . json_last_error_msg() );
-			}
-
-			// Profile extends parent profile
-			if( isset( $config['extends'] ) )
-			{
-				$this->parent = $config['extends'];
-			}
-
-			// Commands
-			if( isset( $config['commands']['pre'] ) )
-			{
-				$this->commands['pre'] = $config['commands']['pre'];
-			}
-			if( isset( $config['commands']['post'] ) )
-			{
-				$this->commands['post'] = $config['commands']['post'];
-			}
-		}
 	}
 
 	/**
@@ -122,42 +89,99 @@ class Profile
 	}
 
 	/**
-	 * @return	string
+	 * @param	Huxtable\Core\File\Directory	$dirProfile
+	 * @return	Fig\Profile
 	 */
-	public function getParentName()
+	static public function getInstanceFromDirectory( File\Directory $dirProfile )
 	{
-		return $this->parent;
+		$profile = new self( $dirProfile->getBasename() );
+
+		// Populate fields from config file
+		$configFile = $dirProfile->child( self::CONFIG_FILENAME );
+
+		if( !$configFile->exists() )
+		{
+			// ...
+		}
+
+		$config = json_decode( $configFile->getContents(), true );
+		if( json_last_error() != JSON_ERROR_NONE )
+		{
+			throw new \Exception( "Malformed profile configuration: " . json_last_error_msg() );
+		}
+
+		// Profile extends parent profile
+		if( isset( $config['extends'] ) )
+		{
+			$profile->setParentName( $config['extends'] );
+		}
+
+		// Commands
+		if( isset( $config['commands']['pre'] ) )
+		{
+			foreach( $config['commands']['pre'] as $preCommand )
+			{
+				$profile->addPreCommand( $preCommand );
+			}
+		}
+		if( isset( $config['commands']['post'] ) )
+		{
+			foreach( $config['commands']['post'] as $postCommand )
+			{
+				$profile->addPostCommand( $postCommand );
+			}
+		}
+
+		return $profile;
 	}
 
 	/**
-	 * @return	string
-	 */
+	* @return	string
+	*/
 	public function getName()
 	{
 		return $this->name;
 	}
 
 	/**
-	 * Write contents of profile to disk
-	 *
+	 * @return	string
+	 */
+	public function getParentName()
+	{
+		return $this->parentName;
+	}
+
+	/**
+	 * @param	string	$parentName
 	 * @return	void
 	 */
-	public function write()
+	public function setParentName( $parentName )
+	{
+		$this->parentName = $parentName;
+	}
+
+	/**
+	 * Write contents of profile to disk
+	 *
+	 * @param	Huxtable\Core\File\Directory	$dirProfile
+	 * @return	void
+	 */
+	public function write( $dirProfile )
 	{
 		$configData = [];
-		$configFile = $this->source->child( self::CONFIG_FILENAME );
+		$configFile = $dirProfile->child( self::CONFIG_FILENAME );
 
-		if( !$this->source->exists() )
+		if( !$dirProfile->exists() )
 		{
-			$this->source->mkdir( 0777, true );
+			$dirProfile->mkdir( 0777, true );
 		}
 
 		// Populate configuration contents
 		$configData['commands'] = $this->commands;
 
-		if( isset( $this->parent ) )
+		if( isset( $this->parentName ) )
 		{
-			$configData['extends'] = $this->parent;
+			$configData['extends'] = $this->parentName;
 		}
 
 		$configContents = json_encode( $configData );
