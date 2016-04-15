@@ -14,7 +14,12 @@ class Profile
 	/**
 	 * @var	array
 	 */
-	protected $commands;
+	protected $assets=[];
+
+	/**
+	 * @var	array
+	 */
+	protected $commands=[];
 
 	/**
 	 * @var	string
@@ -36,6 +41,16 @@ class Profile
 
 		$this->commands['pre'] = [];
 		$this->commands['post'] = [];
+	}
+
+	/**
+	 * @param	Fig\Asset	$asset
+	 * @return	self
+	 */
+	public function addAsset( Asset $asset )
+	{
+		$this->assets[] = $asset;
+		return $this;
 	}
 
 	/**
@@ -80,7 +95,22 @@ class Profile
 			$extendedProfile->addPostCommand( $postCommand );
 		}
 
+		// Assets
+		$assets = $profile->getAssets();
+		foreach( $assets as $asset )
+		{
+			$extendedProfile->addAsset( $asset );
+		}
+
 		return $extendedProfile;
+	}
+
+	/**
+	 * @return	array
+	 */
+	public function getAssets()
+	{
+		return $this->assets;
 	}
 
 	/**
@@ -132,6 +162,27 @@ class Profile
 			foreach( $config['commands']['post'] as $postCommand )
 			{
 				$profile->addPostCommand( $postCommand );
+			}
+		}
+
+		// Assets
+		if( isset( $config['files'] ) )
+		{
+			foreach( $config['files'] as $file )
+			{
+				$assetSource = File\File::getTypedInstance( $file['source'] );
+
+				if( $assetSource->isDir() )
+				{
+					$assetTarget = new File\Directory( $file['target'] );
+				}
+				else
+				{
+					$assetTarget = new File\File( $file['target'] );
+				}
+
+				$asset = new Asset( $assetSource, $assetTarget );
+				$profile->addAsset( $asset );
 			}
 		}
 

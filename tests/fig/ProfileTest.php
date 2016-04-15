@@ -65,6 +65,41 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( $profileConfigData['commands']['post'][0], $commands['post'][0] );
 	}
 
+	public function testAssetsPopulatedFromConfiguration()
+	{
+		$profileName = 'profile_' . rand( 0, 499 );
+		$appName = 'app_' . rand( 0, 999 );
+
+		$dirProfile = $this->dirTemp
+		->childDir( '.fig' )
+		->childDir( $appName )
+		->childDir( $profileName );
+		$dirProfile->mkdir( 0777, true );
+
+		// Create asset object
+		$dirAssets = $this->dirTemp
+		->childDir( 'assets' );
+
+		$assetSource = $dirAssets->childDir( 'source' );
+		$assetTarget = $dirAssets->childDir( 'target' );
+
+		$assetSource->mkdir( 0777, true );
+		$assetTarget->mkdir( 0777, true );
+
+		$asset = new Fig\Asset( $assetSource, $assetTarget );
+
+		// Set up config.json
+		$configFile = $dirProfile->child( 'config.json' );
+		$configData['files'][] = $asset;
+		$configContents = json_encode( $configData );
+		$configFile->putContents( $configContents );
+
+		$profile = Fig\Profile::getInstanceFromDirectory( $dirProfile );
+		$assets = $profile->getAssets();
+
+		$this->assertEquals( $asset, $assets[0] );
+	}
+
 	/**
 	 * @expectedException	Exception
 	 */
@@ -147,31 +182,55 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		$dirParentProfile = $dirApp->childDir( $parentProfileName );
 		$dirProfile = $dirApp->childDir( $profileName );
 
-		$parentProfile = new Fig\Profile( $dirParentProfile );
-		$partialProfile = new Fig\Profile( $dirProfile );
+		$parentProfile = new Fig\Profile( $parentProfileName );
+		$partialProfile = new Fig\Profile( $profileName );
 
-		// Configure profiles
+		// Commands
 		$parentPreCommand = 'pre_command_parent';
 		$parentPostCommand = 'post_command_parent';
 		$preCommand = 'pre_command_child';
 		$postCommand = 'post_command_child';
 
+		// Assets
+		$parentAssetSource = $this->dirTemp
+		->childDir( 'source' )
+		->child( 'parent.php' );
+		$parentAssetTarget = $this->dirTemp
+		->childDir( 'target' )
+		->child( 'parent.php' );
+		$parentAsset = new Fig\Asset( $parentAssetSource, $parentAssetTarget );
+
+		$childAssetSource = $this->dirTemp
+		->childDir( 'source' )
+		->child( 'child.php' );
+		$childAssetTarget = $this->dirTemp
+		->childDir( 'target' )
+		->child( 'child.php' );
+		$childAsset = new Fig\Asset( $childAssetSource, $childAssetTarget );
+
+		// Configure profiles
 		$parentProfile
 		->addPreCommand( $parentPreCommand )
-		->addPostCommand( $parentPostCommand );
+		->addPostCommand( $parentPostCommand )
+		->addAsset( $parentAsset );
 
 		$partialProfile
 		->addPreCommand( $preCommand )
-		->addPostCommand( $postCommand );
+		->addPostCommand( $postCommand )
+		->addAsset( $childAsset );
 
 		// Test
 		$profile = $parentProfile->extendWith( $partialProfile );
 		$commands = $profile->getCommands();
+		$assets = $profile->getAssets();
 
 		$this->assertEquals( $parentPreCommand, $commands['pre'][0] );
 		$this->assertEquals( $preCommand, $commands['pre'][1] );
 		$this->assertEquals( $parentPostCommand, $commands['post'][0] );
 		$this->assertEquals( $postCommand, $commands['post'][1] );
+
+		$this->assertEquals( $parentAsset, $assets[0] );
+		$this->assertEquals( $childAsset, $assets[1] );
 	}
 
 	/**
