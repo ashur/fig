@@ -4,3 +4,6 @@
 [submodule "vendor/huxtable/cli"]
 	path = vendor/huxtable/cli
 	url = https://github.com/huxtable/cli.git
+[submodule "vendor/symfony/yaml"]
+	path = vendor/symfony/yaml
+	url = https://github.com/ashur/yaml

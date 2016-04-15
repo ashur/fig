@@ -25,6 +25,9 @@ Huxtable\CLI\Autoloader::register();
 include_once( $dirVendor . '/huxtable/core/src/Core/Autoloader.php' );
 Huxtable\Core\Autoloader::register();
 
+include_once( $dirVendor . '/symfony/yaml/Autoloader.php' );
+Symfony\Component\Yaml\Autoloader::register();
+
 include_once( $dirApp . '/Autoloader.php' );
 Fig\Autoloader::register();
 
