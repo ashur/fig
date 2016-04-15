@@ -42,14 +42,17 @@ $fileFilter
 ->includeFileExtension( 'php' );
 
 $commandsFolder = new File\Directory( $dirCommands );
-$commandFiles = $commandsFolder->children( $fileFilter );
-
-foreach( $commandFiles as $commandFile )
+if( $commandsFolder->exists() )
 {
-	$command = include_once( $commandFile );
-	if( $command instanceof Huxtable\CLI\Command )
+	$commandFiles = $commandsFolder->children( $fileFilter );
+	
+	foreach( $commandFiles as $commandFile )
 	{
-		$app->registerCommand( $command );
+		$command = include_once( $commandFile );
+		if( $command instanceof Huxtable\CLI\Command )
+		{
+			$app->registerCommand( $command );
+		}
 	}
 }
 
