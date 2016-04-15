@@ -32,47 +32,7 @@ class AssetTest extends PHPUnit_Framework_TestCase
 		$jsonEncoded = json_encode( $asset );
 		$jsonDecoded = json_decode( $jsonEncoded, true );
 
-		$this->assertEquals( $pathSource, $jsonDecoded['source']['path'] );
-		$this->assertEquals( $pathTarget, $jsonDecoded['target']['path'] );
-	}
-
-	public function testGetInstanceFromJSON()
-	{
-		$pathSource = '/var/foo/src.php';
-		$pathTarget = '/var/bar/dest';
-
-		$fileSource = new File\File( $pathSource );
-		$fileTarget = new File\Directory( $pathTarget );
-
-		$asset = new Fig\Asset( $fileSource, $fileTarget );
-
-		$jsonEncoded = json_encode( $asset );
-		$assetFromJSON = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
-
-		$this->assertEquals( $fileSource, $assetFromJSON->getSource() );
-		$this->assertEquals( $fileTarget, $assetFromJSON->getTarget() );
-	}
-
-	/**
-	 * @param	array	$data
-	 *
-	 * @dataProvider		malformedDataProvider
-	 * @expectedException	Exception
-	 */
-	public function testMalformedJSONThrowsException( $data )
-	{
-		$json = json_encode( $data );
-		Fig\Asset::getInstanceFromJSON( $json );
-	}
-
-	/**
-	 * @return	array
-	 */
-	public function malformedDataProvider()
-	{
-		return [[
-			'source' => '/var/foo',
-			['source' => '/var/foo'],
-		]];
+		$this->assertEquals( $pathSource, $jsonDecoded['source'] );
+		$this->assertEquals( $pathTarget, $jsonDecoded['target'] );
 	}
 }
