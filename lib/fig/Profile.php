@@ -232,6 +232,7 @@ class Profile
 
 		// Populate configuration contents
 		$configData['commands'] = $this->commands;
+		$configData['files'] = $this->assets;
 
 		if( isset( $this->parentName ) )
 		{

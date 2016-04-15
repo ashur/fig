@@ -245,8 +245,20 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		->childDir( $appName )
 		->childDir( $profileName );
 
+		// Commands
 		$profileExpected->addPreCommand( 'pre_command_' . rand( 0, 99 ) );
 		$profileExpected->addPostCommand( 'post_command_' . rand( 99, 199 ) );
+
+		// Assets
+		$assetSource = $this->dirTemp
+		->childDir( 'source' )
+		->child( 'child.php' );
+		$assetTarget = $this->dirTemp
+		->childDir( 'target' )
+		->child( 'child.php' );
+		$asset = new Fig\Asset( $assetSource, $assetTarget );
+
+		$profileExpected->addAsset( $asset );
 		$profileExpected->write( $dirProfile );
 
 		$profileActual = Fig\Profile::getInstanceFromDirectory( $dirProfile );
