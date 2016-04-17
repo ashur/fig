@@ -220,7 +220,7 @@ class Profile
 	 * @param	Huxtable\Core\File\Directory	$dirProfile
 	 * @return	void
 	 */
-	public function write( $dirProfile )
+	public function write( File\Directory $dirProfile )
 	{
 		$configData = [];
 		$configFile = $dirProfile->child( self::CONFIG_FILENAME );
