@@ -43,7 +43,7 @@ class CommandTest extends PHPUnit_Framework_TestCase
 		$jsonEncoded = json_encode( $command );
 		$jsonDecoded = json_decode( $jsonEncoded, true );
 
-		$this->assertEquals( $commandString, $jsonDecoded['command'] );
-		$this->assertEquals( $commandName, $jsonDecoded['name'] );
+		$this->assertTrue( array_key_exists( $commandName, $jsonDecoded ) );
+		$this->assertEquals( $commandString, $jsonDecoded[$commandName] );
 	}
 }

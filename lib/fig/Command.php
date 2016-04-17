@@ -65,8 +65,7 @@ class Command implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		return [
-			'command' => $this->command,
-			'name' => $this->name
+			$this->name => $this->command
 		];
 	}
 }
