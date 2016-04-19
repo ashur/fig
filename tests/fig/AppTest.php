@@ -64,6 +64,41 @@ class AppTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @dataProvider	appInstanceProvider
+	 */
+	public function testAddExtendedProfile( Fig\App $app, $appName )
+	{
+		// Child profile
+		$childProfileName = 'profile_' . rand( 0, 499 );
+		$childProfile = new Fig\Profile( $childProfileName );
+		$childPreCommandName = "pre_{$childProfileName}";
+		$childPostCommandName = "post_{$childProfileName}";
+		$childProfile->addPreCommand( $childPreCommandName );
+		$childProfile->addPostCommand( $childPostCommandName );
+
+		// Parent profile
+		$parentProfileName = 'profile_' . rand( 0, 499 );
+		$parentProfile = new Fig\Profile( $parentProfileName );
+		$parentPreCommandName = "pre_{$parentProfileName}";
+		$parentPostCommandName = "post_{$parentProfileName}";
+		$parentProfile->addPreCommand( $parentPreCommandName );
+		$parentProfile->addPostCommand( $parentPostCommandName );
+
+		$childProfile->setParentName( $parentProfileName );
+
+		$app->addProfile( $childProfile );
+		$app->addProfile( $parentProfile );
+		$extendedProfile = $app->getProfile( $childProfileName );
+
+		$commands = $extendedProfile->getCommands();
+		$this->assertEquals( $commands['pre'][0], $parentPreCommandName );
+		$this->assertEquals( $commands['post'][0], $parentPostCommandName );
+		$this->assertEquals( $commands['pre'][1], $childPreCommandName );
+		$this->assertEquals( $commands['post'][1], $childPostCommandName );
+	}
+
+
+	/**
 	 * @dataProvider		appInstanceProvider
 	 * @expectedException	OutOfRangeException
 	 */

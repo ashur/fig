@@ -138,7 +138,20 @@ class App
 			throw new \OutOfRangeException( "Profile not found '{$this->name}/{$profileName}'" );
 		}
 
-		return $this->profiles[$profileName];
+		$profile = $this->profiles[$profileName];
+		while( !is_null( $profile->getParentName() ) )
+		{
+			$parentProfileName = $profile->getParentName();
+			if( !isset( $this->profiles[$parentProfileName] ) )
+			{
+				throw new \OutOfRangeException( "Profile not found '{$this->name}/{$parentProfileName}'" );
+			}
+
+			$parentProfile = $this->profiles[$parentProfileName];
+			$profile = $parentProfile->extendWith( $profile );
+		}
+
+		return $profile;
 	}
 
 	/**
