@@ -74,6 +74,14 @@ class App
 	}
 
 	/**
+	 * @return	array
+	 */
+	public function getCommands()
+	{
+		return $this->commands;
+	}
+
+	/**
 	 * @param	Huxtable\Core\File\Directory	$dirApp
 	 * @return	Fig\App
 	 */
