@@ -60,7 +60,7 @@ class AssetTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( 'skip', $jsonDecoded['action'] );
 
 		// Test instantiation from JSON
-		$assetActual = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
+		$assetActual = Fig\Asset::getInstanceFromData( $jsonDecoded );
 
 		$this->assertEquals(
 			$assetExpected->getTarget()->getPathname(),
@@ -86,7 +86,7 @@ class AssetTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( 'create', $jsonDecoded['action'] );
 
 		// Test instantiation from JSON
-		$assetActual = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
+		$assetActual = Fig\Asset::getInstanceFromData( $jsonDecoded );
 
 		$this->assertEquals(
 			$assetExpected->getTarget()->getPathname(),
@@ -116,7 +116,7 @@ class AssetTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( 'replace', $jsonDecoded['action'] );
 
 		// Test instantiation from JSON
-		$assetActual = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
+		$assetActual = Fig\Asset::getInstanceFromData( $jsonDecoded );
 
 		$this->assertEquals(
 			$assetExpected->getTarget()->getPathname(),
@@ -147,7 +147,7 @@ class AssetTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( 'delete', $jsonDecoded['action'] );
 
 		// Test instantiation from JSON
-		$assetActual = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
+		$assetActual = Fig\Asset::getInstanceFromData( $jsonDecoded );
 
 		$this->assertEquals(
 			$assetExpected->getTarget()->getPathname(),
@@ -161,18 +161,15 @@ class AssetTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @dataProvider		invalidJSONProvider
+	 * @dataProvider		invalidDataProvider
 	 * @expectedException	Exception
 	 */
-	public function testGetInstanceFromInvalidJSONThrowsException( $data )
+	public function testGetInstanceFromInvalidDataThrowsException( $data )
 	{
-		$json = json_encode( $data );
-		$asset = Fig\Asset::getInstanceFromJSON( $json );
-
-		print_r( $asset );
+		$asset = Fig\Asset::getInstanceFromData( $data );
 	}
 
-	public function invalidJSONProvider()
+	public function invalidDataProvider()
 	{
 		return [
 			[

@@ -93,13 +93,11 @@ class Asset implements \JsonSerializable
 	}
 
 	/**
-	 * @param	string	$json
+	 * @param	array	$data
 	 * @return	self
 	 */
-	static public function getInstanceFromJSON( $json )
+	static public function getInstanceFromData( array $data )
 	{
-		$data = json_decode( $json, true );
-
 		// Check required fields
 		$requiredFields = ['action','target'];
 		foreach( $requiredFields as $requiredField )

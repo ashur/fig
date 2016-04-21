@@ -170,18 +170,7 @@ class Profile
 		{
 			foreach( $config['files'] as $file )
 			{
-				$assetSource = File\File::getTypedInstance( $file['source'] );
-
-				if( $assetSource->isDir() )
-				{
-					$assetTarget = new File\Directory( $file['target'] );
-				}
-				else
-				{
-					$assetTarget = new File\File( $file['target'] );
-				}
-
-				$asset = new Asset( $assetSource, $assetTarget );
+				$asset = Asset::getInstanceFromData( $file );
 				$profile->addAsset( $asset );
 			}
 		}
