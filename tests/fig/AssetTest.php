@@ -161,6 +161,37 @@ class AssetTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @dataProvider		invalidJSONProvider
+	 * @expectedException	Exception
+	 */
+	public function testGetInstanceFromInvalidJSONThrowsException( $data )
+	{
+		$json = json_encode( $data );
+		$asset = Fig\Asset::getInstanceFromJSON( $json );
+
+		print_r( $asset );
+	}
+
+	public function invalidJSONProvider()
+	{
+		return [
+			[
+				[]
+			],
+			[
+				['action' => 'skip']
+			],
+			[
+				['target' => '/bar/foo']
+			],
+			[
+				// Missing 'source'
+				['action' => 'replace', 'target' => '/bar/foo']
+			],
+		];
+	}
+
+	/**
 	 * @dataProvider	filesProvider
 	 */
 	public function testDeploySkip( File\file $fileTarget )

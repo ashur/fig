@@ -99,10 +99,16 @@ class Asset implements \JsonSerializable
 	static public function getInstanceFromJSON( $json )
 	{
 		$data = json_decode( $json, true );
-		$requiredFields = ['action','target'];
 
 		// Check required fields
-		// ...
+		$requiredFields = ['action','target'];
+		foreach( $requiredFields as $requiredField )
+		{
+			if( !isset( $data[$requiredField] ) )
+			{
+				throw new \Exception( "Invalid profile: missing asset field '{$requiredField}'" );
+			}
+		}
 
 		$target = File\File::getTypedInstance( $data['target'] );
 		$asset = new self( $target );
@@ -118,8 +124,10 @@ class Asset implements \JsonSerializable
 				break;
 
 			case 'replace':
-				// Check required fields
-				// ...
+				if( !isset( $data['source'] ) )
+				{
+					throw new \Exception( "Invalid profile: missing asset field '{$requiredField}'" );
+				}
 
 				$source = File\File::getTypedInstance( $data['source'] );
 				$asset->replaceWith( $source );
