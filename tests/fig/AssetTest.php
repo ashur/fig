@@ -51,26 +51,52 @@ class AssetTest extends PHPUnit_Framework_TestCase
 	{
 		$dirTarget = new File\Directory( '/var/bar' );
 
-		$asset = new Fig\Asset( $dirTarget );
-		$asset->skip();
+		$assetExpected = new Fig\Asset( $dirTarget );
+		$assetExpected->skip();
 
-		$jsonEncoded = json_encode( $asset );
+		$jsonEncoded = json_encode( $assetExpected );
 		$jsonDecoded = json_decode( $jsonEncoded, true );
 
 		$this->assertEquals( 'skip', $jsonDecoded['action'] );
+
+		// Test instantiation from JSON
+		$assetActual = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
+
+		$this->assertEquals(
+			$assetExpected->getTarget()->getPathname(),
+			$assetActual->getTarget()->getPathname()
+		);
+
+		$this->assertEquals(
+			$assetExpected->getAction(),
+			$assetActual->getAction()
+		);
 	}
 
-	public function testEncodeTouch()
+	public function testEncodeCreate()
 	{
 		$dirTarget = new File\Directory( '/var/bar' );
 
-		$asset = new Fig\Asset( $dirTarget );
-		$asset->create();
+		$assetExpected = new Fig\Asset( $dirTarget );
+		$assetExpected->create();
 
-		$jsonEncoded = json_encode( $asset );
+		$jsonEncoded = json_encode( $assetExpected );
 		$jsonDecoded = json_decode( $jsonEncoded, true );
 
 		$this->assertEquals( 'create', $jsonDecoded['action'] );
+
+		// Test instantiation from JSON
+		$assetActual = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
+
+		$this->assertEquals(
+			$assetExpected->getTarget()->getPathname(),
+			$assetActual->getTarget()->getPathname()
+		);
+
+		$this->assertEquals(
+			$assetExpected->getAction(),
+			$assetActual->getAction()
+		);
 	}
 
 	public function testEncodeReplace()
@@ -81,27 +107,57 @@ class AssetTest extends PHPUnit_Framework_TestCase
 		$fileSource = new File\File( $pathSource );
 		$fileTarget = new File\File( $pathTarget );
 
-		$asset = new Fig\Asset( $fileTarget );
-		$asset->replaceWith( $fileSource );
+		$assetExpected = new Fig\Asset( $fileTarget );
+		$assetExpected->replaceWith( $fileSource );
 
-		$jsonEncoded = json_encode( $asset );
+		$jsonEncoded = json_encode( $assetExpected );
 		$jsonDecoded = json_decode( $jsonEncoded, true );
 
 		$this->assertEquals( 'replace', $jsonDecoded['action'] );
-		$this->assertEquals( $pathSource, $jsonDecoded['source'] );
+
+		// Test instantiation from JSON
+		$assetActual = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
+
+		$this->assertEquals(
+			$assetExpected->getTarget()->getPathname(),
+			$assetActual->getTarget()->getPathname()
+		);
+
+		$this->assertEquals(
+			$assetExpected->getSource()->getPathname(),
+			$assetActual->getSource()->getPathname()
+		);
+
+		$this->assertEquals(
+			$assetExpected->getAction(),
+			$assetActual->getAction()
+		);
 	}
 
 	public function testEncodeDelete()
 	{
 		$dirTarget = new File\Directory( '/var/bar' );
 
-		$asset = new Fig\Asset( $dirTarget );
-		$asset->delete();
+		$assetExpected = new Fig\Asset( $dirTarget );
+		$assetExpected->delete();
 
-		$jsonEncoded = json_encode( $asset );
+		$jsonEncoded = json_encode( $assetExpected );
 		$jsonDecoded = json_decode( $jsonEncoded, true );
 
 		$this->assertEquals( 'delete', $jsonDecoded['action'] );
+
+		// Test instantiation from JSON
+		$assetActual = Fig\Asset::getInstanceFromJSON( $jsonEncoded );
+
+		$this->assertEquals(
+			$assetExpected->getTarget()->getPathname(),
+			$assetActual->getTarget()->getPathname()
+		);
+
+		$this->assertEquals(
+			$assetExpected->getAction(),
+			$assetActual->getAction()
+		);
 	}
 
 	/**

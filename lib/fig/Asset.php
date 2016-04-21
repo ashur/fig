@@ -93,6 +93,51 @@ class Asset implements \JsonSerializable
 	}
 
 	/**
+	 * @param	string	$json
+	 * @return	self
+	 */
+	static public function getInstanceFromJSON( $json )
+	{
+		$data = json_decode( $json, true );
+		$requiredFields = ['action','target'];
+
+		// Check required fields
+		// ...
+
+		$target = File\File::getTypedInstance( $data['target'] );
+		$asset = new self( $target );
+
+		switch( $data['action'] )
+		{
+			case 'skip':
+				$asset->skip();
+				break;
+
+			case 'create':
+				$asset->create();
+				break;
+
+			case 'replace':
+				// Check required fields
+				// ...
+
+				$source = File\File::getTypedInstance( $data['source'] );
+				$asset->replaceWith( $source );
+				break;
+
+			case 'delete':
+				$asset->delete();
+				break;
+
+			default:
+				$asset->skip();
+				break;
+		}
+
+		return $asset;
+	}
+
+	/**
 	 * @return	Huxtable\Core\File\File|Directory
 	 */
 	public function getSource()
@@ -135,8 +180,6 @@ class Asset implements \JsonSerializable
 	 */
 	public function jsonSerialize()
 	{
-		$data['target'] = $this->target->getPathname();
-
 		switch( $this->action )
 		{
 			case self::SKIP:
@@ -159,6 +202,8 @@ class Asset implements \JsonSerializable
 				$data['action'] = 'skip';
 				break;
 		}
+
+		$data['target'] = $this->target->getPathname();
 
 		if( !is_null( $this->source ) )
 		{
