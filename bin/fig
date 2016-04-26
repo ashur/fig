@@ -25,9 +25,6 @@ Huxtable\CLI\Autoloader::register();
 include_once( $dirVendor . '/huxtable/core/src/Core/Autoloader.php' );
 Huxtable\Core\Autoloader::register();
 
-include_once( $dirVendor . '/symfony/yaml/Autoloader.php' );
-Symfony\Component\Yaml\Autoloader::register();
-
 include_once( $dirApp . '/Autoloader.php' );
 Fig\Autoloader::register();
 
@@ -48,7 +45,7 @@ $commandsFolder = new File\Directory( $dirCommands );
 if( $commandsFolder->exists() )
 {
 	$commandFiles = $commandsFolder->children( $fileFilter );
-	
+
 	foreach( $commandFiles as $commandFile )
 	{
 		$command = include_once( $commandFile );
