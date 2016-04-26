@@ -99,6 +99,26 @@ class AssetTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
+	/**
+	 * @expectedException	BadFunctionCallException
+	 */
+	public function testEncodeMissingDirAssetsThrowsException()
+	{
+		$pathSource = '/var/foo/src.php';
+		$pathTarget = '/var/bar/dest.php';
+
+		$fileSource = new File\File( $pathSource );
+		$fileTarget = new File\File( $pathTarget );
+
+		$assetExpected = new Fig\Asset( $fileTarget );
+		$assetExpected->replaceWith( $fileSource );
+
+		$jsonEncoded = json_encode( $assetExpected );
+		$jsonDecoded = json_decode( $jsonEncoded, true );
+
+		$assetActual = Fig\Asset::getInstanceFromData( $jsonDecoded );
+	}
+
 	public function testEncodeReplace()
 	{
 		$pathSource = '/var/foo/src.php';
@@ -116,15 +136,22 @@ class AssetTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( 'replace', $jsonDecoded['action'] );
 
 		// Test instantiation from JSON
-		$assetActual = Fig\Asset::getInstanceFromData( $jsonDecoded );
+		$dirAssets = $this->dirTemp
+		->childDir( '.fig' )
+		->childDir( 'app-name' )
+		->childDir( 'profile-name' )
+		->childDir( 'assets' );
+
+		$assetActual = Fig\Asset::getInstanceFromData( $jsonDecoded, $dirAssets );
 
 		$this->assertEquals(
 			$assetExpected->getTarget()->getPathname(),
 			$assetActual->getTarget()->getPathname()
 		);
 
+		// ex., .fig/app-name/profile-name/assets/src.php
 		$this->assertEquals(
-			$assetExpected->getSource()->getPathname(),
+			$dirAssets->child( $fileSource->getBasename() )->getPathname(),
 			$assetActual->getSource()->getPathname()
 		);
 

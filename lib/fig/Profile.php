@@ -9,6 +9,7 @@ use Huxtable\Core\File;
 
 class Profile
 {
+	const ASSETS_DIRNAME = 'assets';
 	const CONFIG_FILENAME = 'config.json';
 
 	/**
@@ -168,9 +169,11 @@ class Profile
 		// Assets
 		if( isset( $config['files'] ) )
 		{
+			$dirAssets = $dirProfile->childDir( self::ASSETS_DIRNAME );
+
 			foreach( $config['files'] as $file )
 			{
-				$asset = Asset::getInstanceFromData( $file );
+				$asset = Asset::getInstanceFromData( $file, $dirAssets );
 				$profile->addAsset( $asset );
 			}
 		}

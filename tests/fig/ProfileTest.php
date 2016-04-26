@@ -67,6 +67,7 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 
 	public function testAssetsPopulatedFromConfiguration()
 	{
+		// Create Profile
 		$profileName = 'profile_' . rand( 0, 499 );
 		$appName = 'app_' . rand( 0, 999 );
 
@@ -76,17 +77,15 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		->childDir( $profileName );
 		$dirProfile->mkdir( 0777, true );
 
-		// Create asset object
-		$dirAssets = $this->dirTemp
-		->childDir( 'assets' );
-
-		$assetSource = $dirAssets->childDir( 'source' );
-		$assetTarget = $dirAssets->childDir( 'target' );
-
-		$assetSource->mkdir( 0777, true );
+		// Create and add Asset
+		$assetTarget = $this->dirTemp->childDir( 'dir-target' );
 		$assetTarget->mkdir( 0777, true );
+		$asset = new Fig\Asset( $assetTarget );
 
-		$asset = new Fig\Asset( $assetSource, $assetTarget );
+		$assetSource = $this->dirTemp
+		->childDir( 'assets' )
+		->childDir( 'dir-source' );
+		$asset->replaceWith( $assetSource );
 
 		// Set up config.json
 		$configFile = $dirProfile->child( 'config.json' );
@@ -97,7 +96,13 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		$profile = Fig\Profile::getInstanceFromDirectory( $dirProfile );
 		$assets = $profile->getAssets();
 
-		$this->assertEquals( $asset, $assets[0] );
+		$dirExpected = $dirProfile
+		->childDir( 'assets' )
+		->child( 'dir-source' );
+
+		$dirActual = $assets[0]->getSource();
+
+		$this->assertEquals( $dirExpected, $dirActual );
 	}
 
 	/**

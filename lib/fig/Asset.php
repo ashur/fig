@@ -93,10 +93,11 @@ class Asset implements \JsonSerializable
 	}
 
 	/**
-	 * @param	array	$data
+	 * @param	array							$data
+	 * @param	Huxtable\Core\File\Directory	$dirAssets
 	 * @return	self
 	 */
-	static public function getInstanceFromData( array $data )
+	static public function getInstanceFromData( array $data, File\Directory $dirAssets=null )
 	{
 		// Check required fields
 		$requiredFields = ['action','target'];
@@ -126,9 +127,13 @@ class Asset implements \JsonSerializable
 				{
 					throw new \Exception( "Invalid profile: missing asset field '{$requiredField}'" );
 				}
+				if( is_null( $dirAssets ) )
+				{
+					throw new \BadFunctionCallException( "Bad function call: missing argument '\$dirAssets'" );
+				}
 
-				$source = File\File::getTypedInstance( $data['source'] );
-				$asset->replaceWith( $source );
+				$fileSource = $dirAssets->child( $data['source'] );
+				$asset->replaceWith( $fileSource );
 				break;
 
 			case 'delete':
@@ -162,13 +167,13 @@ class Asset implements \JsonSerializable
 	/**
 	 * Set the action to replace
 	 *
-	 * @param	Huxtable\Core\File\File		$dirSource
+	 * @param	Huxtable\Core\File\File		$fileSource
 	 * @return	void
 	 */
-	public function replaceWith( File\File $dirSource )
+	public function replaceWith( File\File $fileSource )
 	{
 		$this->action = self::REPLACE;
-		$this->source = $dirSource;
+		$this->source = $fileSource;
 	}
 
 	/**
@@ -211,9 +216,10 @@ class Asset implements \JsonSerializable
 
 		$data['target'] = $this->target->getPathname();
 
+		// Only serialize the filename (path is always relative to the Profile directory)
 		if( !is_null( $this->source ) )
 		{
-			$data['source'] = $this->source->getPathname();
+			$data['source'] = $this->source->getBasename();
 		}
 
 		return $data;
