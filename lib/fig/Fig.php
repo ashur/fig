@@ -12,6 +12,11 @@ class Fig
 	/**
 	 * @var	array
 	 */
+	protected $appDirs=[];
+
+	/**
+	 * @var	array
+	 */
 	protected $apps=[];
 
 	/**
@@ -39,10 +44,12 @@ class Fig
 		});
 
 		$apps = $this->dirFig->children( $fileFilter );
+
 		foreach( $apps as $appDir )
 		{
-			$app = App::getInstanceFromDirectory( $appDir );
-			$this->apps[$app->getName()] = $app;
+			// Add Directory object for later instantiation
+			$appName = $appDir->getBasename();
+			$this->appDirs[$appName] = $appDir;
 		}
 	}
 
@@ -137,7 +144,14 @@ class Fig
 	{
 		if( !isset( $this->apps[$appName] ) )
 		{
-			throw new \OutOfRangeException( "App not found '{$appName}'" );
+			if( !isset( $this->appDirs[$appName] ) )
+			{
+				throw new \OutOfRangeException( "App not found '{$appName}'" );
+			}
+
+			// Lazy load the app
+			$app = App::getInstanceFromDirectory( $this->appDirs[$appName] );
+			$this->addApp( $app );
 		}
 
 		return $this->apps[$appName];
@@ -148,6 +162,16 @@ class Fig
 	 */
 	public function getApps()
 	{
-		return array_values( $this->apps );
+		$apps = $this->apps;
+
+		foreach( $this->appDirs as $appName => $appDir )
+		{
+			if( !isset( $apps[$appName] ) )
+			{
+				$apps[$appName] = App::getInstanceFromDirectory( $appDir );
+			}
+		}
+
+		return array_values( $apps );
 	}
 }
