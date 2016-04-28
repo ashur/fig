@@ -75,6 +75,7 @@ class Asset implements \JsonSerializable
 				break;
 
 			case self::REPLACE:
+				$this->target->delete();
 				$this->source->copyTo( $this->target );
 				break;
 
