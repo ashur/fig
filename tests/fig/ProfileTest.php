@@ -238,6 +238,48 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals( $childAsset, $assets[1] );
 	}
 
+	public function testExtendSelf()
+	{
+		// Set up dummy profiles
+		$profileName = 'profile_' . rand( 500, 999 );
+
+		$appName = 'app_' . rand( 0, 999 );
+		$dirApp = $this->dirTemp
+		->childDir( '.fig' )
+		->childDir( $appName );
+
+		$dirProfile = $dirApp->childDir( $profileName );
+		$profile = new Fig\Profile( $profileName );
+
+		// Commands
+		$preCommand = 'pre_command_child';
+		$postCommand = 'post_command_child';
+
+		// Assets
+		$assetSource = $this->dirTemp
+		->childDir( 'source' )
+		->child( 'child.php' );
+		$assetTarget = $this->dirTemp
+		->childDir( 'target' )
+		->child( 'child.php' );
+		$asset = new Fig\Asset( $assetSource, $assetTarget );
+
+		// Configure profiles
+		$profile
+		->addPreCommand( $preCommand )
+		->addPostCommand( $postCommand )
+		->addAsset( $asset )
+		->setParentName( $profileName );
+
+		// Test
+		$extendedProfile = $profile->extendWith( $profile );
+
+		$expectedProfile = clone $profile;
+		$expectedProfile->setParentName( null );
+
+		$this->assertEquals( $expectedProfile, $extendedProfile );
+	}
+
 	/**
 	 * @dataProvider	profileInstanceProvider
 	 */

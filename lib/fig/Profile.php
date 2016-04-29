@@ -83,7 +83,14 @@ class Profile
 	 */
 	public function extendWith( Profile $profile )
 	{
-		$extendedProfile = $this;
+		$extendedProfile = clone $this;
+
+		// A profile cannot extend itself
+		if( $extendedProfile->getName() == $profile->getName() )
+		{
+			$extendedProfile->setParentName( null );
+			return $extendedProfile;
+		}
 
 		// Commands
 		$commands = $profile->getCommands();
