@@ -214,6 +214,17 @@ class Profile
 	}
 
 	/**
+	 * @return	void
+	 */
+	public function updateAssetsFromTarget()
+	{
+		foreach( $this->assets as $asset )
+		{
+			$asset->replaceSourceWithTarget();
+		}
+	}
+
+	/**
 	 * Write contents of profile to disk
 	 *
 	 * @param	Huxtable\Core\File\Directory	$dirProfile

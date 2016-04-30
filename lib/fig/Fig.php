@@ -174,4 +174,19 @@ class Fig
 
 		return array_values( $apps );
 	}
+
+	/**
+	 * Update a profile's source files using their targets
+	 *
+	 * @param	string	$appName
+	 * @param	string	$profileName
+	 * @return	void
+	 */
+	public function updateProfileAssetsFromTarget( $appName, $profileName )
+	{
+		$app = $this->getApp( $appName );
+		$profile = $app->getProfile( $profileName );
+
+		$profile->updateAssetsFromTarget();
+	}
 }

@@ -166,6 +166,29 @@ class Asset implements \JsonSerializable
 	}
 
 	/**
+	 * @return	boolean
+	 */
+	public function replaceSourceWithTarget()
+	{
+		// Only files using the 'replace' action will have a source to replace
+		if( $this->action != self::REPLACE )
+		{
+			return false;
+		}
+
+		// If the target doesn't exist, there's nothing to update with. Bail.
+		if( !$this->target->exists() )
+		{
+			return false;
+		}
+
+		$this->source->delete();
+		$this->target->copyTo( $this->source );
+
+		return true;
+	}
+
+	/**
 	 * Set the action to replace
 	 *
 	 * @param	Huxtable\Core\File\File		$fileSource
