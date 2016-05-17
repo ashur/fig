@@ -110,7 +110,7 @@ class Fig
 				// Command returned an error...
 				if( $result['exitCode'] != 0 )
 				{
-					throw new \Exception( "Deployment halted: command '{$preCommandName}' returned an error" );
+					throw new \Exception( "Deployment halted: command '{$postCommandName}' returned an error" );
 				}
 			}
 		}
