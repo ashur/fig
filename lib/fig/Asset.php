@@ -133,7 +133,16 @@ class Asset implements \JsonSerializable
 					throw new \BadFunctionCallException( "Bad function call: missing argument '\$dirAssets'" );
 				}
 
-				$fileSource = $dirAssets->child( $data['source'] );
+				$fileTarget = File\File::getTypedInstance( $data['source'] );
+				if( $fileTarget->isDir() )
+				{
+					$fileSource = $dirAssets->childDir( $data['source'] );
+				}
+				else
+				{
+					$fileSource = $dirAssets->child( $data['source'] );
+				}
+
 				$asset->replaceWith( $fileSource );
 				break;
 
