@@ -20,6 +20,11 @@ class Asset implements \JsonSerializable
 	protected $action = self::SKIP;
 
 	/**
+	 * @var	string
+	 */
+	protected $name;
+
+	/**
 	 * @var	Huxtable\Core\File\File
 	 */
 	protected $source;
@@ -33,8 +38,9 @@ class Asset implements \JsonSerializable
 	 * @param	Huxtable\Core\File\File	$target
 	 * @return	void
 	 */
-	public function __construct( File\File $target )
+	public function __construct( $name, File\File $target )
 	{
+		$this->name = $name;
 		$this->target = $target;
 	}
 
@@ -94,6 +100,31 @@ class Asset implements \JsonSerializable
 	}
 
 	/**
+	 * @return	string
+	 */
+	public function getActionName()
+	{
+		switch( $this->action )
+		{
+			case self::SKIP:
+				return 'skip';
+				break;
+
+			case self::CREATE:
+				return 'create';
+				break;
+
+			case self::REPLACE:
+				return 'replace';
+				break;
+
+			case self::DELETE:
+				return 'delete';
+				break;
+		}
+	}
+
+	/**
 	 * @param	array							$data
 	 * @param	Huxtable\Core\File\Directory	$dirAssets
 	 * @return	self
@@ -101,7 +132,7 @@ class Asset implements \JsonSerializable
 	static public function getInstanceFromData( array $data, File\Directory $dirAssets=null )
 	{
 		// Check required fields
-		$requiredFields = ['action','target'];
+		$requiredFields = ['name','action','target'];
 		foreach( $requiredFields as $requiredField )
 		{
 			if( !isset( $data[$requiredField] ) )
@@ -111,7 +142,7 @@ class Asset implements \JsonSerializable
 		}
 
 		$target = File\File::getTypedInstance( $data['target'] );
-		$asset = new self( $target );
+		$asset = new self( $data['name'], $target );
 
 		switch( $data['action'] )
 		{
@@ -156,6 +187,14 @@ class Asset implements \JsonSerializable
 		}
 
 		return $asset;
+	}
+
+	/**
+	 * @return	string
+	 */
+	public function getName()
+	{
+		return $this->name;
 	}
 
 	/**
