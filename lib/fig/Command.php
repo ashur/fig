@@ -40,7 +40,7 @@ class Command
 	 */
 	public function exec()
 	{
-		exec( $this->command, $output, $exitCode );
+		exec( "{$this->command} 2>&1", $output, $exitCode );
 
 		$result['output']   = $output;
 		$result['exitCode'] = $exitCode;
