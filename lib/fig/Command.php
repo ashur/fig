@@ -7,7 +7,7 @@ namespace Fig;
 
 use Huxtable\Core\File;
 
-class Command implements \JsonSerializable
+class Command
 {
 	/**
 	 * @var	string
@@ -57,20 +57,29 @@ class Command implements \JsonSerializable
 	}
 
 	/**
+	 * @param	array	$data
+	 * @return	self
+	 */
+	static public function getInstanceFromData( array $data )
+	{
+		$command = new self( $data['name'], $data['command'] );
+
+		/*
+		 * Properties
+		 */
+		if( isset( $data['ignore_errors'] ) )
+		{
+			$command->ignoreErrors = true;
+		}
+
+		return $command;
+	}
+
+	/**
 	 * @return	string
 	 */
 	public function getName()
 	{
 		return $this->name;
-	}
-
-	/**
-	 * @return	array
-	 */
-	public function jsonSerialize()
-	{
-		return [
-			$this->name => $this->command
-		];
 	}
 }
