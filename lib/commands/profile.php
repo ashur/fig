@@ -43,7 +43,7 @@ $subcommandProfileUpdate = new CLI\Command( 'update', 'Update profile assets fro
 
 		if( is_null( $this->getOptionValue( 'y' ) ) && is_null( $this->getOptionValue( 'yes' ) ) )
 		{
-			$continue = Input::prompt( "Are you sure you want to overwrite the {fg:cyan}{ul}{$query}{/ul}{/fg:cyan} profile assets? (y/n)", true );
+			$continue = Input::prompt( "Are you sure you want to overwrite the {ul}{$query}{/ul} profile assets? (y/n)", true );
 			if( strtolower( $continue ) != 'y' )
 			{
 				exit( 1 );
