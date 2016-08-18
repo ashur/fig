@@ -32,7 +32,7 @@ class Fig
 		$this->dirFig = $dirFig;
 		if( !$this->dirFig->exists() )
 		{
-			$this->dirFig->mkdir( 0777, true );
+			$this->dirFig->create();
 		}
 
 		// Only include directories
