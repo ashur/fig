@@ -5,25 +5,30 @@ use Huxtable\Core\File;
 
 $appName = basename( __FILE__ );
 
-$dirBase     = dirname( __DIR__ );
-$dirLib      = $dirBase . '/lib';
-$pathApp      = $dirLib  . '/' . $appName;
-$dirCommands = $dirLib  . '/commands';
-$pathVendor  = $dirBase . '/vendor';
+/*
+ * Paths
+ */
+$pathApp = dirname( __DIR__ );
+$pathLib = $pathApp . '/lib';
+$pathVendor = $pathApp . '/vendor';
 
 /*
  * App configuration
  */
-$config = require_once( $dirLib . '/config.php' );
+$config = require_once( $pathLib . '/config.php' );
 
 /*
  * Autoloading
  */
-
 /* Huxtable */
 include_once( $pathVendor . '/huxtable/cli/autoload.php' );
 include_once( $pathVendor . '/huxtable/core/autoload.php' );
-include_once( $pathApp . '/Autoloader.php' );
+
+/* Spyc */
+include_once( $pathVendor . '/spyc/Spyc.php' );
+
+/* Fig */
+include_once( $pathLib . '/autoload.php' );
 Fig\Autoloader::register();
 
 /*
@@ -40,18 +45,16 @@ $fileFilter
 ->setDefaultMethod( $fileFilter::METHOD_INCLUDE )
 ->includeFileExtension( 'php' );
 
-$commandsFolder = new File\Directory( $dirCommands );
-if( $commandsFolder->exists() )
-{
-	$commandFiles = $commandsFolder->children( $fileFilter );
+$pathCommands = $pathLib . '/commands';
+$commandsFolder = new File\Directory( $pathCommands );
+$commandFiles = $commandsFolder->children( $fileFilter );
 
-	foreach( $commandFiles as $commandFile )
+foreach( $commandFiles as $commandFile )
+{
+	$command = include_once( $commandFile );
+	if( $command instanceof Huxtable\CLI\Command )
 	{
-		$command = include_once( $commandFile );
-		if( $command instanceof Huxtable\CLI\Command )
-		{
-			$app->registerCommand( $command );
-		}
+		$app->registerCommand( $command );
 	}
 }
 
