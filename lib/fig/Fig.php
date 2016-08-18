@@ -5,6 +5,7 @@
  */
 namespace Fig;
 
+use Huxtable\CLI\Format;
 use Huxtable\Core\File;
 use Spyc;
 
@@ -101,20 +102,42 @@ class Fig
 		$commands = $app->getCommands();
 		$commandNames = $profile->getCommands();
 
+		echo PHP_EOL;
+
 		// Run pre-deployment commands
 		foreach( $commandNames['pre'] as $preCommandName )
 		{
+			$output = ['OK'];
+			$outputColor = 'green';
+
 			if( isset( $commands[$preCommandName] ) )
 			{
 				$preCommand = $commands[$preCommandName];
-				$result = $preCommand->exec();
+				$preCommandResult = $preCommand->exec();
 
-				// Command returned an error...
-				if( $result['exitCode'] != 0 )
+				/* Always */
+				if( count( $preCommandResult['output'] ) > 0 && !$preCommand->ignoreErrors )
 				{
-					throw new \Exception( "Deployment halted: command '{$preCommandName}' returned an error" );
+					$output = $preCommandResult['output'];
+				}
+
+				/* Failure */
+				if( $preCommandResult['exitCode'] != 0 )
+				{
+					if( !$preCommand->ignoreErrors )
+					{
+						$outputColor = 'red';
+					}
 				}
 			}
+			/* Command not found */
+			else
+			{
+				$output = ['skipping: command not found'];
+				$outputColor = 'yellow';
+			}
+
+			self::outputAction( 'POST', $preCommandName, $output, $outputColor );
 		}
 
 		// Deploy assets
@@ -122,22 +145,47 @@ class Fig
 		foreach( $assets as $asset )
 		{
 			$asset->deploy();
+
+			$category = strtoupper( $asset->getActionName() );
+			$actionName = $asset->getName();
+
+			self::outputAction( $category, $actionName, ['OK'], 'green' );
 		}
 
 		// Run post-deployment commands
 		foreach( $commandNames['post'] as $postCommandName )
 		{
+			$output = ['OK'];
+			$outputColor = 'green';
+
 			if( isset( $commands[$postCommandName] ) )
 			{
 				$postCommand = $commands[$postCommandName];
-				$result = $postCommand->exec();
+				$postCommandResult = $postCommand->exec();
 
-				// Command returned an error...
-				if( $result['exitCode'] != 0 )
+				/* Always */
+				if( count( $postCommandResult['output'] ) > 0 && !$postCommand->ignoreErrors )
 				{
-					throw new \Exception( "Deployment halted: command '{$postCommandName}' returned an error" );
+					$output = $postCommandResult['output'];
+				}
+
+				/* Failure */
+				if( $postCommandResult['exitCode'] != 0 )
+				{
+					if( !$postCommand->ignoreErrors )
+					{
+						$outputColor = 'red';
+					}
 				}
 			}
+			/* Command not found */
+			else
+			{
+				$output = ['skipping: command not found'];
+				$outputColor = 'yellow';
+			}
+
+			self::outputAction( 'POST', $postCommandName, $output, $outputColor );
 		}
 	}
 
@@ -162,15 +210,30 @@ class Fig
 	public function executeCommand( $appName, $commandName )
 	{
 		$app = $this->getApp( $appName );
+
 		$command = $app->getCommand( $commandName );
+		$commandResult = $command->exec();
 
-		$result = $command->exec();
+		$output = ['OK'];
+		$outputColor = 'green';
 
-		// Command returned an error...
-		if( $result['exitCode'] != 0 )
+		/* Always */
+		if( count( $commandResult['output'] ) > 0 && !$command->ignoreErrors )
 		{
-			// ...
+			$output = $commandResult['output'];
 		}
+
+		/* Failure */
+		if( $commandResult['exitCode'] != 0 )
+		{
+			if( !$command->ignoreErrors )
+			{
+				$outputColor = 'red';
+			}
+		}
+
+		echo PHP_EOL;
+		self::outputAction( 'RUN', "{$appName}:{$commandName}", $output, $outputColor );
 	}
 
 	/**
@@ -210,6 +273,29 @@ class Fig
 		}
 
 		return array_values( $apps );
+	}
+
+	/**
+	 * @param	string	$category
+	 * @param	string	$actionName
+	 * @param	array	$output
+	 * @param	string	$outputColor
+	 * @return	void
+	 */
+	public function outputAction( $category, $actionName, array $output, $outputColor )
+	{
+		echo sprintf( "%'*-80s", "{$category} [ {$actionName} ] " ) . PHP_EOL;
+
+		$outputString = new Format\String();
+		$outputString->foregroundColor( $outputColor );
+
+		foreach( $output as $line )
+		{
+			$outputString->setString( $line );
+			echo $outputString . PHP_EOL;
+		}
+
+		echo PHP_EOL;
 	}
 
 	/**
