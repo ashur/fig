@@ -6,11 +6,12 @@
 namespace Fig;
 
 use Huxtable\Core\File;
+use Spyc;
 
 class Profile
 {
 	const ASSETS_DIRNAME = 'assets';
-	const CONFIG_FILENAME = 'config.json';
+	const CONFIG_FILENAME = 'config.yml';
 
 	/**
 	 * @var	array
@@ -145,11 +146,7 @@ class Profile
 			throw new \Exception( 'Invalid profile: configuration file not found' );
 		}
 
-		$config = json_decode( $configFile->getContents(), true );
-		if( json_last_error() != JSON_ERROR_NONE )
-		{
-			throw new \Exception( "Malformed profile configuration: " . json_last_error_msg() );
-		}
+		$config = Spyc::YAMLLoad( $configFile );
 
 		// Profile extends parent profile
 		if( isset( $config['extends'] ) )
@@ -246,7 +243,7 @@ class Profile
 
 		if( !$dirProfile->exists() )
 		{
-			$dirProfile->mkdir( 0777, true );
+			$dirProfile->create();
 		}
 
 		// Populate configuration contents
@@ -258,7 +255,7 @@ class Profile
 			$configData['extends'] = $this->parentName;
 		}
 
-		$configContents = json_encode( $configData );
+		$configContents = Spyc::YAMLDump( $configData, 4, 0 );
 		$configFile->putContents( $configContents );
 	}
 }

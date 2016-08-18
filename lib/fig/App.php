@@ -6,10 +6,11 @@
 namespace Fig;
 
 use Huxtable\Core\File;
+use Spyc;
 
 class App
 {
-	const COMMANDS_FILENAME = 'commands.json';
+	const COMMANDS_FILENAME = 'commands.yml';
 
 	/**
 	 * @var	array
@@ -114,12 +115,11 @@ class App
 
 		if( $commandsFile->exists() )
 		{
-			$commandsContents = $commandsFile->getContents();
-			$commandsData = json_decode( $commandsContents, true );
+			$commandsData = Spyc::YAMLLoad( $commandsFile );
 
-			foreach( $commandsData as $commandName => $commandString )
+			foreach( $commandsData as $command )
 			{
-				$command = new Command( $commandName, $commandString );
+				$command = new Command( $command['name'], $command['command'] );
 				$app->addCommand( $command );
 			}
 		}
@@ -178,7 +178,7 @@ class App
 	{
 		if( !$dirApp->exists() )
 		{
-			$dirApp->mkdir( 0777, true );
+			$dirApp->create();
 		}
 
 		// Commands
