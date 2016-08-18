@@ -6,6 +6,7 @@
 namespace Fig;
 
 use Huxtable\Core\File;
+use Spyc;
 
 class Fig
 {
@@ -64,6 +65,30 @@ class Fig
 	}
 
 	/**
+	 * Decode data with a consistent format (currently YAML)
+	 *
+	 * @param	Huxtable\Core\File\File	$file
+	 * @return	array
+	 */
+	static public function decodeFile( File\File $file )
+	{
+		$data = Spyc::YAMLLoad( $file );
+		return $data;
+	}
+
+	/**
+	 * Decode data with a consistent format (currently YAML)
+	 *
+	 * @param	string	$string
+	 * @return	array
+	 */
+	static public function decodeString( $string )
+	{
+		$data = Spyc::YAMLLoadString( $string );
+		return $data;
+	}
+
+	/**
 	 * @param	string	$appName
 	 * @param	string	$profileName
 	 * @return	void
@@ -114,6 +139,18 @@ class Fig
 				}
 			}
 		}
+	}
+
+	/**
+	 * Encode data with a consistent format (currently YAML)
+	 *
+	 * @param	array	$data
+	 * @return	string
+	 */
+	static public function encodeData( array $data )
+	{
+		$encoded = Spyc::YAMLDump( $data, 4, 0 );
+		return $encoded;
 	}
 
 	/**

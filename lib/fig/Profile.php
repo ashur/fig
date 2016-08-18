@@ -6,7 +6,6 @@
 namespace Fig;
 
 use Huxtable\Core\File;
-use Spyc;
 
 class Profile
 {
@@ -146,7 +145,7 @@ class Profile
 			throw new \Exception( 'Invalid profile: configuration file not found' );
 		}
 
-		$config = Spyc::YAMLLoad( $configFile );
+		$config = Fig::decodeFile( $configFile );
 
 		// Profile extends parent profile
 		if( isset( $config['extends'] ) )
@@ -255,7 +254,7 @@ class Profile
 			$configData['extends'] = $this->parentName;
 		}
 
-		$configContents = Spyc::YAMLDump( $configData, 4, 0 );
+		$configContents = Fig::encodeData( $configData );
 		$configFile->putContents( $configContents );
 	}
 }

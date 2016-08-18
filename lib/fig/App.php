@@ -6,7 +6,6 @@
 namespace Fig;
 
 use Huxtable\Core\File;
-use Spyc;
 
 class App
 {
@@ -115,7 +114,7 @@ class App
 
 		if( $commandsFile->exists() )
 		{
-			$commandsData = Spyc::YAMLLoad( $commandsFile );
+			$commandsData = Fig::decodeFile( $commandsFile );
 
 			foreach( $commandsData as $command )
 			{
@@ -189,8 +188,8 @@ class App
 		{
 			$commands[$command->getName()] = $command->getCommand();
 		}
-		$commandsJSON = json_encode( $commands );
-		$commandsFile->putContents( $commandsJSON );
+		$commandsYAML = Fig::encodeData( $commands );
+		$commandsFile->putContents( $commandsYAML );
 
 		// Profiles
 		foreach( $this->profiles as $profileName => $profile )
