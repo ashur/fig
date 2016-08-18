@@ -7,9 +7,9 @@ $appName = basename( __FILE__ );
 
 $dirBase     = dirname( __DIR__ );
 $dirLib      = $dirBase . '/lib';
-$dirApp      = $dirLib  . '/' . $appName;
+$pathApp      = $dirLib  . '/' . $appName;
 $dirCommands = $dirLib  . '/commands';
-$dirVendor   = $dirBase . '/vendor';
+$pathVendor  = $dirBase . '/vendor';
 
 /*
  * App configuration
@@ -17,21 +17,20 @@ $dirVendor   = $dirBase . '/vendor';
 $config = require_once( $dirLib . '/config.php' );
 
 /*
- * Initialize autoloading
+ * Autoloading
  */
-include_once( $dirVendor . '/huxtable/cli/src/CLI/Autoloader.php' );
-Huxtable\CLI\Autoloader::register();
 
-include_once( $dirVendor . '/huxtable/core/src/Core/Autoloader.php' );
-Huxtable\Core\Autoloader::register();
-
-include_once( $dirApp . '/Autoloader.php' );
+/* Huxtable */
+include_once( $pathVendor . '/huxtable/cli/autoload.php' );
+include_once( $pathVendor . '/huxtable/core/autoload.php' );
+include_once( $pathApp . '/Autoloader.php' );
 Fig\Autoloader::register();
 
 /*
  * App configuration
  */
-$app = new Huxtable\CLI\Application( $appName, $config['version'], $config['php-min'] );
+$dirApp = new File\Directory( $pathApp );
+$app = new Huxtable\CLI\Application( $appName, $config['version'], $config['php-min'], $dirApp );
 
 /*
  * Register commands
