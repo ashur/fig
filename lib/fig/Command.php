@@ -15,6 +15,11 @@ class Command implements \JsonSerializable
 	protected $command;
 
 	/**
+	 * @var	boolean
+	 */
+	public $ignoreErrors=false;
+
+	/**
 	 * @var	string
 	 */
 	protected $name;
