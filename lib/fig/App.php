@@ -116,9 +116,9 @@ class App
 		{
 			$commandsData = Fig::decodeFile( $commandsFile );
 
-			foreach( $commandsData as $command )
+			foreach( $commandsData as $commandData )
 			{
-				$command = new Command( $command['name'], $command['command'] );
+				$command = Command::getInstanceFromData( $commandData );
 				$app->addCommand( $command );
 			}
 		}
