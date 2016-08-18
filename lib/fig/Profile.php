@@ -205,6 +205,15 @@ class Profile
 	}
 
 	/**
+	 * @param	string	$name
+	 * @return	void
+	 */
+	public function setName( $name )
+	{
+		$this->name = $name;
+	}
+
+	/**
 	 * @param	string	$parentName
 	 * @return	void
 	 */
