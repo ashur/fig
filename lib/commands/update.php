@@ -44,6 +44,9 @@ $commandProfileUpdate = new CLI\Command( 'update', 'Update profile assets from s
 	}
 });
 
+$commandProfileUpdate->registerOption( 'y' );
+$commandProfileUpdate->registerOption( 'yes' );
+
 $usageProfileUpdate = "update [-y|--yes] <app>/<profile>";
 $commandProfileUpdate->setUsage( $usageProfileUpdate );
 
