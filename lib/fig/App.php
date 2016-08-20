@@ -127,34 +127,4 @@ class App
 	{
 		return $this->profiles;
 	}
-
-	/**
-	 * @param	Huxtable\Core\File\Directory	$dirApp
-	 * @return	void
-	 */
-	public function write( File\Directory $dirApp )
-	{
-		if( !$dirApp->exists() )
-		{
-			$dirApp->create();
-		}
-
-		// Commands
-		$commandsFile = $dirApp->child( self::COMMANDS_FILENAME );
-
-		$commands = [];
-		foreach( $this->commands as $command )
-		{
-			$commands[$command->getName()] = $command->getCommand();
-		}
-		$commandsYAML = Fig::encodeData( $commands );
-		$commandsFile->putContents( $commandsYAML );
-
-		// Profiles
-		foreach( $this->profiles as $profileName => $profile )
-		{
-			$dirProfile = $dirApp->childDir( $profileName );
-			$profile->write( $dirProfile );
-		}
-	}
 }
