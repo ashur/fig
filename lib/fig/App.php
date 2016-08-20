@@ -54,7 +54,8 @@ class App
 	 */
 	static public function getInstanceFromDirectory( File\Directory $dirApp )
 	{
-		$app = new self( $dirApp->getBasename() );
+		$appName = $dirApp->getBasename();
+		$app = new self( $appName );
 
 		// Only include visible folders
 		$fileFilter = new File\Filter();
