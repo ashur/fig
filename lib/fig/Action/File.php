@@ -141,7 +141,7 @@ class File extends Action
 		{
 			$result['output'] = null;
 		}
-		if( $this->ignoreErrors )
+		if( $this->ignoreErrors && $result['error'] == true )
 		{
 			$result['error'] = false;
 		}

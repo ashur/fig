@@ -112,7 +112,7 @@ class Defaults extends Action
 		{
 			$result['output'] = null;
 		}
-		if( $this->ignoreErrors )
+		if( $this->ignoreErrors && $result['error'] == true )
 		{
 			$result['error'] = false;
 			$result['output'] = null;
