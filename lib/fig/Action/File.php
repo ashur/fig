@@ -112,16 +112,9 @@ class File extends Action
 		if( $this->action == self::REPLACE )
 		{
 			$actionName = 'replace';
+			$sourceFile = $this->getSourceFile();	// File or Directory
 
-			$dirFig = new Core\File\Directory( Fig::DIR_FIG );
-			$dirAssets = $dirFig->childDir( $this->appName )
-								   ->childDir( Profile::ASSETS_DIRNAME )
-								   ->childDir( $this->profileName );
-
-			$pathSource = "{$dirAssets}/{$this->source}";
-			$fileSource = Core\File\File::getTypedInstance( $pathSource );
-
-			if( !$fileSource->exists() )
+			if( !$sourceFile->exists() )
 			{
 				throw new \Exception( "Source missing: '{$pathSource}'" );
 			}
@@ -131,7 +124,7 @@ class File extends Action
 				$this->target->delete();
 			}
 
-			$didSucceed = $didSucceed && $fileSource->copyTo( $this->target );
+			$didSucceed = $didSucceed && $sourceFile->copyTo( $this->target );
 		}
 
 		/* Delete */
@@ -157,5 +150,41 @@ class File extends Action
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return	Huxtable\Core\File\Directory
+	 */
+	protected function getSourceFile()
+	{
+		$dirFig = new Core\File\Directory( Fig::DIR_FIG );
+		$dirAssets = $dirFig
+			->childDir( $this->appName )
+			->childDir( Profile::ASSETS_DIRNAME )
+			->childDir( $this->profileName );
+
+		$pathSource = "{$dirAssets}/{$this->source}";
+		$sourceFile = Core\File\File::getTypedInstance( $pathSource );
+
+		return $sourceFile;
+	}
+
+	/**
+	 * @return	void
+	 */
+	public function updateAssetsFromTarget()
+	{
+		if( empty( $this->source ) )
+		{
+			return false;
+		}
+
+		$sourceFile = $this->getSourceFile();
+		if( $sourceFile->exists() )
+		{
+			$sourceFile->delete();
+		}
+
+		$this->target->copyTo( $sourceFile );
 	}
 }

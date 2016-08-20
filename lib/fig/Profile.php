@@ -160,38 +160,12 @@ class Profile
 	 */
 	public function updateAssetsFromTarget()
 	{
-		foreach( $this->assets as $asset )
+		foreach( $this->actions as $action )
 		{
-			$asset->replaceSourceWithTarget();
+			if( get_class( $action ) == 'Fig\Action\File' )
+			{
+				$action->updateAssetsFromTarget();
+			}
 		}
-	}
-
-	/**
-	 * Write contents of profile to disk
-	 *
-	 * @param	Huxtable\Core\File\Directory	$dirProfile
-	 * @return	void
-	 */
-	public function write( File\Directory $dirProfile )
-	{
-		$configData = [];
-		$configFile = $dirProfile->child( self::CONFIG_FILENAME );
-
-		if( !$dirProfile->exists() )
-		{
-			$dirProfile->create();
-		}
-
-		// Populate configuration contents
-		$configData['commands'] = $this->commands;
-		$configData['files'] = $this->assets;
-
-		if( isset( $this->parentName ) )
-		{
-			$configData['extends'] = $this->parentName;
-		}
-
-		$configContents = Fig::encodeData( $configData );
-		$configFile->putContents( $configContents );
 	}
 }
