@@ -67,30 +67,3 @@ $commandDeploy = new CLI\Command( 'deploy', 'Deploy a profile', function( $query
 
 $usageDeploy = "deploy <app>/<profile>";
 $commandDeploy->setUsage( $usageDeploy );
-
-/**
- * @command		run
- * @desc		Run a command (an alias for 'command run')
- * @usage		run <app>:<command>
- */
-$commandRun = new CLI\Command( 'run', 'Run a command', function( $query )
-{
-	$fig = new Fig();
-
-	try
-	{
-		$params = parseQuery( $query, ':', ['app','command'] );
-		$fig->executeCommand( $params['app'], $params['command'] );
-	}
-	catch( CLI\Command\IncorrectUsageException $e )
-	{
-		throw new CLI\Command\IncorrectUsageException( $this->getUsage(), 1 );
-	}
-	catch( \Exception $e )
-	{
-		throw new CLI\Command\CommandInvokedException( $e->getMessage(), 1 );
-	}
-});
-
-$usageRun = "run <app>:<command>";
-$commandRun->setUsage( $usageRun );
