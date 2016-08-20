@@ -5,22 +5,23 @@
  */
 namespace Fig;
 
+use Fig\Action\Action;
 use Huxtable\Core\File;
 
 class Profile
 {
-	const ASSETS_DIRNAME = 'assets';
+	const ASSETS_DIRNAME = 'source';
 	const CONFIG_FILENAME = 'config.yml';
 
 	/**
 	 * @var	array
 	 */
-	protected $assets=[];
+	protected $actions=[];
 
 	/**
-	 * @var	array
+	 * @var	string
 	 */
-	protected $commands=[];
+	protected $appName='';
 
 	/**
 	 * @var	string
@@ -39,38 +40,15 @@ class Profile
 	public function __construct( $name )
 	{
 		$this->name = $name;
-
-		$this->commands['pre'] = [];
-		$this->commands['post'] = [];
 	}
 
 	/**
-	 * @param	Fig\Asset	$asset
+	 * @param	Fig\Action\Action	$action
 	 * @return	self
 	 */
-	public function addAsset( Asset $asset )
+	public function addAction( Action $action )
 	{
-		$this->assets[] = $asset;
-		return $this;
-	}
-
-	/**
-	 * @param	string	$command
-	 * @return	self
-	 */
-	public function addPostCommand( $command )
-	{
-		$this->commands['post'][] = $command;
-		return $this;
-	}
-
-	/**
-	 * @param	string	$command
-	 * @return	self
-	 */
-	public function addPreCommand( $command )
-	{
-		$this->commands['pre'][] = $command;
+		$this->actions[] = $action;
 		return $this;
 	}
 
@@ -92,22 +70,11 @@ class Profile
 			return $extendedProfile;
 		}
 
-		// Commands
-		$commands = $profile->getCommands();
-		foreach( $commands['pre'] as $preCommand )
+		/* Actions */
+		$actions = $profile->getActions();
+		foreach( $actions as $action )
 		{
-			$extendedProfile->addPreCommand( $preCommand );
-		}
-		foreach( $commands['post'] as $postCommand )
-		{
-			$extendedProfile->addPostCommand( $postCommand );
-		}
-
-		// Assets
-		$assets = $profile->getAssets();
-		foreach( $assets as $asset )
-		{
-			$extendedProfile->addAsset( $asset );
+			$extendedProfile->addAction( $action );
 		}
 
 		return $extendedProfile;
@@ -116,26 +83,20 @@ class Profile
 	/**
 	 * @return	array
 	 */
-	public function getAssets()
+	public function getActions()
 	{
-		return $this->assets;
-	}
-
-	/**
-	* @return	array
-	*/
-	public function getCommands()
-	{
-		return $this->commands;
+		return $this->actions;
 	}
 
 	/**
 	 * @param	Huxtable\Core\File\Directory	$dirProfile
+	 * @param	string							$appName
 	 * @return	Fig\Profile
 	 */
-	static public function getInstanceFromDirectory( File\Directory $dirProfile )
+	static public function getInstanceFromDirectory( File\Directory $dirProfile, $appName )
 	{
-		$profile = new self( $dirProfile->getBasename() );
+		$profileName = $dirProfile->getBasename();
+		$profile = new self( $profileName );
 
 		// Populate fields from config file
 		$configFile = $dirProfile->child( self::CONFIG_FILENAME );
@@ -147,41 +108,31 @@ class Profile
 
 		$config = Fig::decodeFile( $configFile );
 
-		// Profile extends parent profile
+		/* Extends */
 		if( isset( $config['extends'] ) )
 		{
 			$profile->setParentName( $config['extends'] );
 		}
 
-		// Commands
-		if( isset( $config['commands']['pre'] ) )
+		/* Actions */
+		if( isset( $config['actions'] ) )
 		{
-			foreach( $config['commands']['pre'] as $preCommand )
+			foreach( $config['actions'] as $actionData )
 			{
-				$profile->addPreCommand( $preCommand );
-			}
-		}
-		if( isset( $config['commands']['post'] ) )
-		{
-			foreach( $config['commands']['post'] as $postCommand )
-			{
-				$profile->addPostCommand( $postCommand );
-			}
-		}
-
-		// Assets
-		if( isset( $config['files'] ) )
-		{
-			$dirAssets = $dirProfile->childDir( self::ASSETS_DIRNAME );
-
-			foreach( $config['files'] as $file )
-			{
-				$asset = Asset::getInstanceFromData( $file, $dirAssets );
-				$profile->addAsset( $asset );
+				$action = Fig::getActionInstanceFromData( $actionData, $appName, $profileName );
+				$profile->addAction( $action );
 			}
 		}
 
 		return $profile;
+	}
+
+	/**
+	 * @return	string
+	 */
+	public function getAppName()
+	{
+		return $this->appName;
 	}
 
 	/**

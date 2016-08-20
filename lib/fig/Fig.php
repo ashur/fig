@@ -101,93 +101,34 @@ class Fig
 		$app = $this->getApp( $appName );
 		$profile = $app->getProfile( $profileName );
 
-		$commands = $app->getCommands();
-		$commandNames = $profile->getCommands();
-
 		echo PHP_EOL;
 
-		// Run pre-deployment commands
-		foreach( $commandNames['pre'] as $preCommandName )
+		/*
+		 * Actions
+		 */
+		$actions = $profile->getActions();
+		foreach( $actions as $action )
 		{
-			$output = ['OK'];
 			$outputColor = 'green';
 
-			if( isset( $commands[$preCommandName] ) )
+			try
 			{
-				$preCommand = $commands[$preCommandName];
-				$preCommandResult = $preCommand->exec();
-
-				/* Always */
-				if( count( $preCommandResult['output'] ) > 0 && !$preCommand->ignoreErrors )
-				{
-					$output = $preCommandResult['output'];
-				}
-
-				/* Failure */
-				if( $preCommandResult['exitCode'] != 0 )
-				{
-					if( !$preCommand->ignoreErrors )
-					{
-						$outputColor = 'red';
-					}
-				}
+				$result = $action->execute();
 			}
-			/* Command not found */
-			else
+			catch( \Exception $e )
 			{
-				$output = ['skipping: command not found'];
-				$outputColor = 'yellow';
+				$result['title'] = $action->name;
+				$result['error'] = true;
+				$result['output'] = $e->getMessage();
+			}
+			$output = empty( $result['output'] ) ? 'OK' : $result['output'];
+
+			if( $result['error']  )
+			{
+				$outputColor = 'red';
 			}
 
-			self::outputAction( 'POST', $preCommandName, $output, $outputColor );
-		}
-
-		// Deploy assets
-		$assets = $profile->getAssets();
-		foreach( $assets as $asset )
-		{
-			$asset->deploy();
-
-			$category = strtoupper( $asset->getActionName() );
-			$actionName = $asset->getName();
-
-			self::outputAction( $category, $actionName, ['OK'], 'green' );
-		}
-
-		// Run post-deployment commands
-		foreach( $commandNames['post'] as $postCommandName )
-		{
-			$output = ['OK'];
-			$outputColor = 'green';
-
-			if( isset( $commands[$postCommandName] ) )
-			{
-				$postCommand = $commands[$postCommandName];
-				$postCommandResult = $postCommand->exec();
-
-				/* Always */
-				if( count( $postCommandResult['output'] ) > 0 && !$postCommand->ignoreErrors )
-				{
-					$output = $postCommandResult['output'];
-				}
-
-				/* Failure */
-				if( $postCommandResult['exitCode'] != 0 )
-				{
-					if( !$postCommand->ignoreErrors )
-					{
-						$outputColor = 'red';
-					}
-				}
-			}
-			/* Command not found */
-			else
-			{
-				$output = ['skipping: command not found'];
-				$outputColor = 'yellow';
-			}
-
-			self::outputAction( 'POST', $postCommandName, $output, $outputColor );
+			self::outputAction( $action->type, $result['title'], $output, $outputColor );
 		}
 	}
 
@@ -235,7 +176,38 @@ class Fig
 		}
 
 		echo PHP_EOL;
-		self::outputAction( 'RUN', "{$appName}:{$commandName}", $output, $outputColor );
+		self::outputAction( 'Run', "{$appName}:{$commandName}", $output, $outputColor );
+	}
+
+	/**
+	 * This needs to live in Fig since Action\Action is abstract
+	 *
+	 * @param	array	$data
+	 * @param	string	$appName
+	 * @param	string	$profileName
+	 * @return	Fig\Action\Action
+	 */
+	static public function getActionInstanceFromData( array $data, $appName, $profileName )
+	{
+		/* Verify required keys are set */
+		self::validateRequiredKeys( $data, ['name'] );
+
+		/* Get instance of Action class */
+		$actionClasses['command']	= 'Command';
+		$actionClasses['defaults']	= 'Defaults';
+		$actionClasses['file']		= 'File';
+
+		foreach( $actionClasses as $dataKey => $actionClass )
+		{
+			if( isset( $data[$dataKey] ) )
+			{
+				$className = "Fig\Action\\{$actionClass}";
+				$action = new $className( $data, $appName, $profileName );
+				return $action;
+			}
+		}
+
+		throw new \Exception( 'Unknown action' );
 	}
 
 	/**
@@ -279,20 +251,35 @@ class Fig
 
 	/**
 	 * @param	string	$category
-	 * @param	string	$actionName
-	 * @param	array	$output
+	 * @param	string	$actionTitle
+	 * @param	mixed	$output
 	 * @param	string	$outputColor
 	 * @return	void
 	 */
-	public function outputAction( $category, $actionName, array $output, $outputColor )
+	public function outputAction( $category, $title, $output, $outputColor )
 	{
-		echo sprintf( "%'*-80s", "{$category} [ {$actionName} ] " ) . PHP_EOL;
+		$category = strtoupper( $category );
+		echo sprintf( "%'*-80s", "{$category}: {$title} " ) . PHP_EOL;
 
 		$outputString = new Format\String();
 		$outputString->foregroundColor( $outputColor );
 
+		if( is_scalar( $output ) )
+		{
+			$output = [$output];
+		}
+
 		foreach( $output as $line )
 		{
+			if( $line === false )
+			{
+				$line = 'false';
+			}
+			if( $line === true )
+			{
+				$line = 'true';
+			}
+
 			$outputString->setString( $line );
 			echo $outputString . PHP_EOL;
 		}
@@ -313,5 +300,21 @@ class Fig
 		$profile = $app->getProfile( $profileName );
 
 		$profile->updateAssetsFromTarget();
+	}
+
+	/**
+	 * @param	array	$array
+	 * @param	arra	$requiredKeys
+	 * @return	void
+	 */
+	static public function validateRequiredKeys( array $array, array $requiredKeys )
+	{
+		foreach( $requiredKeys as $requiredKey )
+		{
+			if( !isset( $array[$requiredKey] ) )
+			{
+				throw new \Exception( "Missing required key '{$requiredKey}'." );
+			}
+		}
 	}
 }
