@@ -5,6 +5,7 @@
  */
 namespace Fig;
 
+use Fig\Action\Action;
 use Huxtable\Core\File;
 
 class App
@@ -36,18 +37,6 @@ class App
 	}
 
 	/**
-	 * @param	Fig\Command		$command
-	 * @return	self
-	 */
-	public function addCommand( Command $command )
-	{
-		$commandName = $command->getName();
-		$this->commands[$commandName] = $command;
-
-		return $this;
-	}
-
-	/**
 	 * @param	Fig\Profile		$profile
 	 * @return	self
 	 */
@@ -57,28 +46,6 @@ class App
 		$this->profiles[$profileName] = $profile;
 
 		return $this;
-	}
-
-	/**
-	 * @param	string		$commandName
-	 * @return	Fig\Command
-	 */
-	public function getCommand( $commandName )
-	{
-		if( !isset( $this->commands[$commandName] ) )
-		{
-			throw new \OutOfRangeException( "Command not found '{$this->name}:{$commandName}'" );
-		}
-
-		return $this->commands[$commandName];
-	}
-
-	/**
-	 * @return	array
-	 */
-	public function getCommands()
-	{
-		return $this->commands;
 	}
 
 	/**
@@ -101,25 +68,17 @@ class App
 			return $include;
 		});
 
-		// Profiles
+		/* Profiles */
 		$appDirChildren = $dirApp->children( $fileFilter );
 		foreach( $appDirChildren as $dirProfile )
 		{
-			$profile = Profile::getInstanceFromDirectory( $dirProfile );
-			$app->addProfile( $profile );
-		}
+			$fileConfig = $dirProfile->child( Profile::CONFIG_FILENAME );
 
-		// Commands
-		$commandsFile = $dirApp->child( self::COMMANDS_FILENAME );
-
-		if( $commandsFile->exists() )
-		{
-			$commandsData = Fig::decodeFile( $commandsFile );
-
-			foreach( $commandsData as $commandData )
+			// Just ignore folders with no config file, don't make a fuss about it
+			if( $fileConfig->exists() )
 			{
-				$command = Command::getInstanceFromData( $commandData );
-				$app->addCommand( $command );
+				$profile = Profile::getInstanceFromDirectory( $dirProfile, $appName );
+				$app->addProfile( $profile );
 			}
 		}
 
