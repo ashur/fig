@@ -11,6 +11,8 @@ use Spyc;
 
 class Fig
 {
+	const DIR_FIG = '~/.fig';
+
 	/**
 	 * @var	array
 	 */
@@ -29,9 +31,9 @@ class Fig
 	/**
 	 * @return	void
 	 */
-	public function __construct( File\Directory $dirFig )
+	public function __construct()
 	{
-		$this->dirFig = $dirFig;
+		$this->dirFig = new File\Directory( self::DIR_FIG );
 		if( !$this->dirFig->exists() )
 		{
 			$this->dirFig->create();

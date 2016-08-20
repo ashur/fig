@@ -8,9 +8,6 @@ namespace Fig;
 use \Huxtable\CLI;
 use \Huxtable\Core\File;
 
-$dirFig = new File\Directory( getenv( 'HOME' ) . '/.fig' );
-$fig = new Fig( $dirFig );
-
 /**
  * @param	string	$query			ex., "<app>/<profile>" or "<app>:<command>"
  * @param	string	$delimeter		ex., "/" or ":"
@@ -51,7 +48,7 @@ function parseQuery( $query, $delimiter, array $labels )
  */
 $commandDeploy = new CLI\Command( 'deploy', 'Deploy a profile', function( $query )
 {
-	GLOBAL $fig;
+	$fig = new Fig();
 
 	try
 	{
@@ -78,7 +75,7 @@ $commandDeploy->setUsage( $usageDeploy );
  */
 $commandRun = new CLI\Command( 'run', 'Run a command', function( $query )
 {
-	GLOBAL $fig;
+	$fig = new Fig();
 
 	try
 	{

@@ -17,7 +17,7 @@ use Huxtable\CLI\Input;
  */
 $commandProfileUpdate = new CLI\Command( 'update', 'Update profile assets from source', function( $query )
 {
-	GLOBAL $fig;
+	$fig = new Fig();
 
 	try
 	{
