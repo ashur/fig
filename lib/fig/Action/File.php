@@ -115,8 +115,8 @@ class File extends Action
 
 			$dirFig = new Core\File\Directory( Fig::DIR_FIG );
 			$dirAssets = $dirFig->childDir( $this->appName )
-								   ->childDir( $this->profileName )
-								   ->childDir( Profile::ASSETS_DIRNAME );
+								   ->childDir( Profile::ASSETS_DIRNAME )
+								   ->childDir( $this->profileName );
 
 			$pathSource = "{$dirAssets}/{$this->source}";
 			$fileSource = Core\File\File::getTypedInstance( $pathSource );
@@ -128,7 +128,7 @@ class File extends Action
 
 			if( $this->target->exists() )
 			{
-				$didSucceed = $didSucceed && $this->target->delete();
+				$this->target->delete();
 			}
 
 			$didSucceed = $didSucceed && $fileSource->copyTo( $this->target );
@@ -138,12 +138,12 @@ class File extends Action
 		if( $this->action == self::DELETE )
 		{
 			$actionName = 'delete';
-			$didSucceed = $didSucceed && $this->target->delete();
+			$this->target->delete();
 		}
 
 		/* Results */
 		$result['title'] = "{$actionName} | {$this->name}";
-		$result['error'] = $didSucceed;
+		$result['error'] = !$didSucceed;
 		$result['output'] = null;
 
 		/* Modify Output */

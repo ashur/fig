@@ -10,8 +10,6 @@ use Huxtable\Core\File;
 
 class App
 {
-	const COMMANDS_FILENAME = 'commands.yml';
-
 	/**
 	 * @var	array
 	 */
@@ -57,30 +55,18 @@ class App
 		$appName = $dirApp->getBasename();
 		$app = new self( $appName );
 
-		// Only include visible folders
+		// Only .yml files
 		$fileFilter = new File\Filter();
 		$fileFilter->setDefaultMethod( File\Filter::METHOD_INCLUDE );
-		$fileFilter->addInclusionRule( function( $file )
-		{
-			$include = true;
-			$include = $file->isDir() && $include;
-			$include =  (substr( $file->getFilename(), 0, 1 ) != '.') && $include;
-
-			return $include;
-		});
+		$fileFilter->includeFileExtension( 'yml' );
 
 		/* Profiles */
-		$appDirChildren = $dirApp->children( $fileFilter );
-		foreach( $appDirChildren as $dirProfile )
-		{
-			$fileConfig = $dirProfile->child( Profile::CONFIG_FILENAME );
+		$profileFiles = $dirApp->children( $fileFilter );
 
-			// Just ignore folders with no config file, don't make a fuss about it
-			if( $fileConfig->exists() )
-			{
-				$profile = Profile::getInstanceFromDirectory( $dirProfile, $appName );
-				$app->addProfile( $profile );
-			}
+		foreach( $profileFiles as $profileFile )
+		{
+			$profile = Profile::getInstanceFromFile( $profileFile, $appName );
+			$app->addProfile( $profile );
 		}
 
 		return $app;

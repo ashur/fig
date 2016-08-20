@@ -10,18 +10,12 @@ use Huxtable\Core\File;
 
 class Profile
 {
-	const ASSETS_DIRNAME = 'source';
-	const CONFIG_FILENAME = 'config.yml';
+	const ASSETS_DIRNAME = 'assets';
 
 	/**
 	 * @var	array
 	 */
 	protected $actions=[];
-
-	/**
-	 * @var	string
-	 */
-	protected $appName='';
 
 	/**
 	 * @var	string
@@ -89,35 +83,27 @@ class Profile
 	}
 
 	/**
-	 * @param	Huxtable\Core\File\Directory	$dirProfile
-	 * @param	string							$appName
+	 * @param	Huxtable\Core\File\File		$profileFile
+	 * @param	string						$appName
 	 * @return	Fig\Profile
 	 */
-	static public function getInstanceFromDirectory( File\Directory $dirProfile, $appName )
+	static public function getInstanceFromFile( File\File $profileFile, $appName )
 	{
-		$profileName = $dirProfile->getBasename();
+		$profileName = $profileFile->getBasename( '.yml' );
 		$profile = new self( $profileName );
 
-		// Populate fields from config file
-		$configFile = $dirProfile->child( self::CONFIG_FILENAME );
-
-		if( !$configFile->exists() )
-		{
-			throw new \Exception( 'Invalid profile: configuration file not found' );
-		}
-
-		$config = Fig::decodeFile( $configFile );
+		$profileData = Fig::decodeFile( $profileFile );
 
 		/* Extends */
-		if( isset( $config['extends'] ) )
+		if( isset( $profileData['extends'] ) )
 		{
-			$profile->setParentName( $config['extends'] );
+			$profile->setParentName( $profileData['extends'] );
 		}
 
 		/* Actions */
-		if( isset( $config['actions'] ) )
+		if( isset( $profileData['actions'] ) )
 		{
-			foreach( $config['actions'] as $actionData )
+			foreach( $profileData['actions'] as $actionData )
 			{
 				$action = Fig::getActionInstanceFromData( $actionData, $appName, $profileName );
 				$profile->addAction( $action );
