@@ -101,8 +101,6 @@ class Fig
 		$app = $this->getApp( $appName );
 		$profile = $app->getProfile( $profileName );
 
-		echo PHP_EOL;
-
 		/*
 		 * Actions
 		 */
@@ -128,7 +126,10 @@ class Fig
 				$outputColor = 'red';
 			}
 
-			self::outputAction( $action->type, $result['title'], $output, $outputColor );
+			if( !isset( $result['silent'] ) || !$result['silent'] )
+			{
+				self::outputAction( $action->type, $result['title'], $output, $outputColor );
+			}
 		}
 	}
 
@@ -256,6 +257,8 @@ class Fig
 	 */
 	public function outputAction( $category, $title, $output, $outputColor )
 	{
+		echo PHP_EOL;
+
 		$category = strtoupper( $category );
 		echo sprintf( "%'*-80s", "{$category}: {$title} " ) . PHP_EOL;
 
@@ -281,8 +284,6 @@ class Fig
 			$outputString->setString( $line );
 			echo $outputString . PHP_EOL;
 		}
-
-		echo PHP_EOL;
 	}
 
 	/**

@@ -5,7 +5,7 @@
  */
 namespace Fig;
 
-use Fig\Action\Action;
+use Fig\Action;
 use Huxtable\Core\File;
 
 class Profile
@@ -46,7 +46,7 @@ class Profile
 	 * @param	Fig\Action\Action	$action
 	 * @return	self
 	 */
-	public function addAction( Action $action )
+	public function addAction( Action\Action $action )
 	{
 		$action->setAppName( $this->appName );
 		$action->setProfileName( $this->name );
@@ -124,7 +124,17 @@ class Profile
 				continue;
 			}
 
-			$action = Fig::getActionInstanceFromData( $profileItem );
+			/* Include */
+			if( isset( $profileItem['include'] ) )
+			{
+				$profileItem['name'] = "import {$profileItem['include']}";
+				$action = new Action\Profile( $profileItem );
+			}
+			else
+			{
+				$action = Fig::getActionInstanceFromData( $profileItem );
+			}
+
 			$profile->addAction( $action );
 		}
 

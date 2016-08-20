@@ -5,8 +5,7 @@
  */
 namespace Fig\Action;
 
-use Fig\Fig;
-use Fig\Profile;
+use Fig;
 use Huxtable\Core;
 
 class File extends Action
@@ -64,7 +63,7 @@ class File extends Action
 		/* Replace */
 		if( isset( $properties['file']['replace'] ) )
 		{
-			Fig::validateRequiredKeys( $properties['file'], ['source'] );
+			Fig\Fig::validateRequiredKeys( $properties['file'], ['source'] );
 
 			$this->action = self::REPLACE;
 			$this->target = Core\File\File::getTypedInstance( $properties['file']['replace'] );
@@ -155,10 +154,10 @@ class File extends Action
 	 */
 	protected function getSourceFile()
 	{
-		$dirFig = new Core\File\Directory( Fig::DIR_FIG );
+		$dirFig = new Core\File\Directory( Fig\Fig::DIR_FIG );
 		$dirAssets = $dirFig
 			->childDir( $this->appName )
-			->childDir( Profile::ASSETS_DIRNAME )
+			->childDir( Fig\Profile::ASSETS_DIRNAME )
 			->childDir( $this->profileName );
 
 		$pathSource = "{$dirAssets}/{$this->source}";
