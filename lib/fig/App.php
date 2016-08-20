@@ -65,7 +65,7 @@ class App
 
 		foreach( $profileFiles as $profileFile )
 		{
-			$profile = Profile::getInstanceFromFile( $profileFile, $appName );
+			$profile = Profile::getInstanceFromFile( $profileFile );
 			$app->addProfile( $profile );
 		}
 

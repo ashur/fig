@@ -40,13 +40,11 @@ class Defaults extends Action
 
 	/**
 	 * @param	array	$properties
-	 * @param	string	$appName
-	 * @param	string	$profileName
 	 * @return	void
 	 */
-	public function __construct( array $properties, $appName, $profileName )
+	public function __construct( array $properties )
 	{
-		parent::__construct( $properties, $appName, $profileName );
+		parent::__construct( $properties );
 
 		Fig::validateRequiredKeys( $properties['defaults'], ['action','domain'] );
 

@@ -183,11 +183,9 @@ class Fig
 	 * This needs to live in Fig since Action\Action is abstract
 	 *
 	 * @param	array	$data
-	 * @param	string	$appName
-	 * @param	string	$profileName
 	 * @return	Fig\Action\Action
 	 */
-	static public function getActionInstanceFromData( array $data, $appName, $profileName )
+	static public function getActionInstanceFromData( array $data )
 	{
 		/* Verify required keys are set */
 		self::validateRequiredKeys( $data, ['name'] );
@@ -202,7 +200,7 @@ class Fig
 			if( isset( $data[$dataKey] ) )
 			{
 				$className = "Fig\Action\\{$actionClass}";
-				$action = new $className( $data, $appName, $profileName );
+				$action = new $className( $data );
 				return $action;
 			}
 		}

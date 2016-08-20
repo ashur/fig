@@ -43,13 +43,11 @@ class File extends Action
 
 	/**
 	 * @param	array	$properties
-	 * @param	string	$appName
-	 * @param	string	$profileName
 	 * @return	void
 	 */
-	public function __construct( array $properties, $appName, $profileName )
+	public function __construct( array $properties )
 	{
-		parent::__construct( $properties, $appName, $profileName );
+		parent::__construct( $properties );
 
 		/* Create */
 		if( isset( $properties['file']['create'] ) )
@@ -116,7 +114,7 @@ class File extends Action
 
 			if( !$sourceFile->exists() )
 			{
-				throw new \Exception( "Source missing: '{$pathSource}'" );
+				throw new \Exception( "Source missing: '{$sourceFile}'" );
 			}
 
 			if( $this->target->exists() )

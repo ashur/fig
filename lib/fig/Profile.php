@@ -20,6 +20,11 @@ class Profile
 	/**
 	 * @var	string
 	 */
+	protected $appName;
+
+	/**
+	 * @var	string
+	 */
 	protected $name;
 
 	/**
@@ -31,9 +36,10 @@ class Profile
 	 * @param	string	$name
 	 * @return	void
 	 */
-	public function __construct( $name )
+	public function __construct( $name, $appName )
 	{
 		$this->name = $name;
+		$this->appName = $appName;
 	}
 
 	/**
@@ -42,6 +48,9 @@ class Profile
 	 */
 	public function addAction( Action $action )
 	{
+		$action->setAppName( $this->appName );
+		$action->setProfileName( $this->name );
+
 		$this->actions[] = $action;
 		return $this;
 	}
@@ -64,11 +73,22 @@ class Profile
 			return $extendedProfile;
 		}
 
-		/* Actions */
+		/* Rename */
+		$extendedProfile->setName( $profile->getName() );
+
+		/*
+		 * Actions
+		 */
+		/* Add extending profile's actions */
 		$actions = $profile->getActions();
 		foreach( $actions as $action )
 		{
 			$extendedProfile->addAction( $action );
+		}
+		/* Set new profile name on existing actions */
+		foreach( $extendedProfile->actions as &$action )
+		{
+			$action->setProfileName( $extendedProfile->getName() );
 		}
 
 		return $extendedProfile;
@@ -84,29 +104,33 @@ class Profile
 
 	/**
 	 * @param	Huxtable\Core\File\File		$profileFile
-	 * @param	string						$appName
 	 * @return	Fig\Profile
 	 */
-	static public function getInstanceFromFile( File\File $profileFile, $appName )
+	static public function getInstanceFromFile( File\File $profileFile )
 	{
+		$appName = $profileFile->parent()->getBasename();
 		$profileName = $profileFile->getBasename( '.yml' );
-		$profile = new self( $profileName );
+
+		$profile = new self( $profileName, $appName );
 
 		$profileData = Fig::decodeFile( $profileFile );
 
-		/* Extends */
-		if( isset( $profileData['extends'] ) )
+		foreach( $profileData as $profileItem )
 		{
-			$profile->setParentName( $profileData['extends'] );
-		}
-
-		/* Actions */
-		if( isset( $profileData['actions'] ) )
-		{
-			foreach( $profileData['actions'] as $actionData )
+			/* Extend */
+			if( isset( $profileItem['extend'] ) )
 			{
-				$action = Fig::getActionInstanceFromData( $actionData, $appName, $profileName );
-				$profile->addAction( $action );
+				$profile->setParentName( $profileItem['extend'] );
+			}
+
+			/* Actions */
+			if( isset( $profileData['actions'] ) )
+			{
+				foreach( $profileData['actions'] as $actionData )
+				{
+					$action = Fig::getActionInstanceFromData( $actionData );
+					$profile->addAction( $action );
+				}
 			}
 		}
 

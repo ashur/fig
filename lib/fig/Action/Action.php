@@ -30,7 +30,7 @@ abstract class Action
 	/**
 	 * @var	string
 	 */
-	protected $profileName = '';
+	protected $profileName;
 
 	/**
 	 * @var	string
@@ -39,15 +39,11 @@ abstract class Action
 
 	/**
 	 * @param	array	$properties
-	 * @param	string	$appName
-	 * @param	string	$profileName
 	 * @return	void
 	 */
-	public function __construct( array $properties, $appName, $profileName )
+	public function __construct( array $properties )
 	{
 		$this->name = $properties['name'];
-		$this->appName = $appName;
-		$this->profileName = $profileName;
 
 		/* Ignore Errors & Output */
 		if( isset( $properties['ignore_errors'] ) )
@@ -66,4 +62,26 @@ abstract class Action
 	 * @return	array
 	 */
 	abstract public function execute();
+
+	/**
+	 * Called when adding action to profile
+	 *
+	 * @param	string	$appName
+	 * @return	void
+	 */
+	public function setAppName( $appName )
+	{
+		$this->appName = $appName;
+	}
+
+	/**
+	 * Called when adding action to profile
+	 *
+	 * @param	string	$profileName
+	 * @return	void
+	 */
+	public function setProfileName( $profileName )
+	{
+		$this->profileName = $profileName;
+	}
 }
