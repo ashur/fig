@@ -121,17 +121,11 @@ class Profile
 			if( isset( $profileItem['extend'] ) )
 			{
 				$profile->setParentName( $profileItem['extend'] );
+				continue;
 			}
 
-			/* Actions */
-			if( isset( $profileData['actions'] ) )
-			{
-				foreach( $profileData['actions'] as $actionData )
-				{
-					$action = Fig::getActionInstanceFromData( $actionData );
-					$profile->addAction( $action );
-				}
-			}
+			$action = Fig::getActionInstanceFromData( $profileItem );
+			$profile->addAction( $action );
 		}
 
 		return $profile;
