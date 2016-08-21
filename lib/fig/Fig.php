@@ -68,6 +68,63 @@ class Fig
 	}
 
 	/**
+	 * Create an template app folder
+	 *
+	 * @param	string	$appName
+	 * @return	Fig\App
+	 */
+	public function createApp( $appName )
+	{
+		$appDir = $this->dirFig->childDir( $appName );
+
+		if( $appDir->exists() )
+		{
+			throw new \Exception( "App '{$appName}' already exists. See 'fig show'." );
+		}
+
+		/* Create the directory on disk */
+		$appDir->create();
+
+		/* Update the internal inventory, just in case */
+		$this->appDirs[$appName] = $appDir;
+		ksort( $this->appDirs );
+
+		$app = $this->getApp( $appName );
+		return $app;
+	}
+
+	/**
+	 * @param	string	$appName
+	 * @param	string	$profileName
+	 * @return	void
+	 */
+	public function createProfile( $appName, $profileName )
+	{
+		if( !isset( $this->appDirs[$appName] ) )
+		{
+			throw new \OutOfRangeException( "App not found '{$appName}'" );
+		}
+
+		$appDir = $this->appDirs[$appName];
+		$profileFile = $appDir->child( "{$profileName}.yml" );
+
+		if( $profileFile->exists() )
+		{
+			throw new \Exception( "Profile '{$appName}/{$profileName}' already exists. See 'fig show'." );
+		}
+
+		$profileContents = <<<PROFILE
+# {$profileName}
+---
+
+- name: Hello, world.
+  command: echo 'Hello, world'.
+PROFILE;
+
+		$profileFile->putContents( $profileContents );
+	}
+
+	/**
 	 * Decode data with a consistent format (currently YAML)
 	 *
 	 * @param	Huxtable\Core\File\File	$file
