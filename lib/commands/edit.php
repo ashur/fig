@@ -40,6 +40,9 @@ $commandEdit = new Command( 'edit', 'Edit a profile', function( $query )
 		throw new Command\CommandInvokedException( "Profile not found '{$params['app']}/{$params['profile']}'." );
 	}
 
+	/*
+	 * nano-friendly solution from http://stackoverflow.com/questions/3614715/open-vim-from-php-cli/15832158#15832158
+	 */
 	$descriptors = array
 	(
 		array( 'file', '/dev/tty', 'r' ),
