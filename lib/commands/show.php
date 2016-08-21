@@ -70,10 +70,10 @@ function listApps( array $apps )
 
 /**
  * @command		app
- * @desc		List, create or delete apps
+ * @desc		List apps and their profiles
  * @usage		app
  */
-$commandShow = new CLI\Command( 'show', 'List existing apps', function()
+$commandShow = new CLI\Command( 'show', 'List apps and their profiles', function()
 {
 	$fig = new Fig();
 
