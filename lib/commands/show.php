@@ -15,6 +15,12 @@ use Huxtable\CLI\Command;
 function listApps( array $apps )
 {
 	$output = new CLI\Output;
+
+	if( count( $apps ) == 0 )
+	{
+		$output->line( "fig: No apps found. See 'fig create'." );
+	}
+
 	$formattedString = new CLI\Format\String;
 
 	if( !empty( $apps ) )
@@ -38,20 +44,18 @@ function listApps( array $apps )
 
 			foreach( $profiles as $profile )
 			{
-				$stringProfile = new CLI\Format\String;
-				$stringProfile->setString( $profile->getName() );
-
-				$profileSummary = "  {$stringProfile}";
+				$profileName = $profile->getName();
+				$profileSummary = "  {$profileName}";
 
 				/* Extending profiles */
 				$extendsProfile = $profile->getParentName();
 				if( !is_null( $extendsProfile ) )
 				{
-					$stringBase = new CLI\Format\String;
-					$stringBase->foregroundColor( 'purple' );
-					$stringBase->setString( "» {$extendsProfile}" );
+					$stringProfile = new CLI\Format\String;
+					$stringProfile->foregroundColor( 'purple' );
+					$stringProfile->setString( $profileName );
 
-					$profileSummary = "  {$stringProfile} {$stringBase}";
+					$profileSummary = "  {$stringProfile} -> {$extendsProfile}";
 				}
 
 				$output->line( $profileSummary );
