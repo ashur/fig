@@ -40,17 +40,29 @@ $commandAdd = new Command( 'add', 'Create apps and profiles', function( $query )
 		$stringAppName = new Format\String( $params['app'] );
 		$stringAppName->foregroundColor( 'green' );
 
-		$newProfile = Input::prompt( "Create a new profile for {$stringAppName}? (y/n)" );
+		$shouldAddProfile = strtolower( Input::prompt( "Create a new profile for {$stringAppName}? (y/n)" ) ) == 'y';
+		if( $shouldAddProfile )
+		{
+			$profileName = Input::prompt( 'Profile name:' );
+		}
+	}
+	else
+	{
+		$shouldAddProfile = true;
+		$profileName = $params['profile'];
 	}
 
-	try
+	if( $shouldAddProfile )
 	{
-		/* Create a profile */
-		$fig->createProfile( $params['app'], $params['profile'] );
-	}
-	catch( \Exception $e )
-	{
-		throw new Command\CommandInvokedException( $e->getMessage(), 1 );
+		try
+		{
+			/* Create a profile */
+			$fig->createProfile( $params['app'], $profileName );
+		}
+		catch( \Exception $e )
+		{
+			throw new Command\CommandInvokedException( $e->getMessage(), 1 );
+		}
 	}
 
 	/* Show the new listing */

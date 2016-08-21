@@ -130,7 +130,15 @@ class Fig
 
 PROFILE;
 
+		/* Update the internal inventory */
 		$profileFile->putContents( $profileContents );
+
+		/* Create a stub object */
+		if( isset( $this->apps[$appName] ) )
+		{
+			$profile = new Profile( $profileName, $appName );
+			$this->apps[$appName]->addProfile( $profile );
+		}
 	}
 
 	/**
