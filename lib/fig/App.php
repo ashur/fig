@@ -83,7 +83,7 @@ class App
 	{
 		if( !isset( $this->profiles[$profileName] ) )
 		{
-			throw new \OutOfRangeException( "Profile not found '{$this->name}/{$profileName}'" );
+			throw new \OutOfRangeException( "Profile '{$this->name}/{$profileName}' not found." );
 		}
 
 		$profile = $this->profiles[$profileName];
@@ -92,7 +92,7 @@ class App
 			$parentProfileName = $profile->getParentName();
 			if( !isset( $this->profiles[$parentProfileName] ) )
 			{
-				throw new \OutOfRangeException( "Profile not found '{$this->name}/{$parentProfileName}'" );
+				throw new \OutOfRangeException( "Profile '{$this->name}/{$parentProfileName}' not found." );
 			}
 
 			$parentProfile = $this->profiles[$parentProfileName];
@@ -108,5 +108,17 @@ class App
 	public function getProfiles()
 	{
 		return $this->profiles;
+	}
+
+	/**
+	 * @param	string	$profileName
+	 * @return	void
+	 */
+	public function removeProfile( $profileName )
+	{
+		if( isset( $this->profiles[$profileName] ) )
+		{
+			unset( $this->profiles[$profileName] );
+		}
 	}
 }

@@ -159,6 +159,44 @@ PROFILE;
 
 	/**
 	 * @param	string	$appName
+	 * @return	void
+	 */
+	public function deleteApp( $appName )
+	{
+		/* Delete the source directory */
+		$appDir = $this->appDirs[$appName];
+		$appDir->delete();
+
+		/* Update the internal inventory */
+		unset( $this->appDirs[$appName] );
+
+		if( isset( $this->apps[$appName] ) )
+		{
+			unset( $this->apps[$appName] );
+		}
+	}
+
+	/**
+	 * @param	string	$appName
+	 * @param	string	$profileName
+	 * @return	void
+	 */
+	public function deleteProfile( $appName, $profileName )
+	{
+		/* Delete the source file */
+		$appDir = $this->appDirs[$appName];
+		$profileFile = $appDir->child( "{$profileName}.yml" );
+		$profileFile->delete();
+
+		/* Update the internal inventory */
+		if( isset( $this->apps[$appName] ) )
+		{
+			$this->apps[$appName]->removeProfile( $profileName );
+		}
+	}
+
+	/**
+	 * @param	string	$appName
 	 * @param	string	$profileName
 	 * @return	void
 	 */
@@ -285,7 +323,7 @@ PROFILE;
 		{
 			if( !isset( $this->appDirs[$appName] ) )
 			{
-				throw new \OutOfRangeException( "App not found '{$appName}'" );
+				throw new \OutOfRangeException( "App '{$appName}' not found." );
 			}
 
 			// Lazy load the app
