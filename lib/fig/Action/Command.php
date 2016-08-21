@@ -15,6 +15,11 @@ class Command extends Action
 	public $command;
 
 	/**
+	 * @var	string
+	 */
+	public $type = 'Command';
+
+	/**
 	 * @param	array	$properties
 	 * @return	void
 	 */
