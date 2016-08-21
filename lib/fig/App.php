@@ -11,11 +11,6 @@ use Huxtable\Core\File;
 class App
 {
 	/**
-	 * @var	array
-	 */
-	protected $commands=[];
-
-	/**
 	 * @var	string
 	 */
 	protected $name;
