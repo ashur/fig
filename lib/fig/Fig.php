@@ -119,14 +119,14 @@ class Fig
 
 # A command example
 - name: echo
-	command: echo 'Hello, world'.
+    command: echo 'Hello, world'.
 
 # A file example
 - name: hello-world.txt
-	file:
-		skip: ~/Desktop/hello-world.txt
-		# create: ~/Desktop/hello-world.txt
-		# delete: ~/Desktop/hello-world.txt
+    file:
+        skip: ~/Desktop/hello-world.txt
+        # create: ~/Desktop/hello-world.txt
+        # delete: ~/Desktop/hello-world.txt
 
 PROFILE;
 
