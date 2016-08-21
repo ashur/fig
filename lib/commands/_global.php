@@ -19,25 +19,15 @@ function parseQuery( $query, $delimiter, array $labels )
 	$params = [];
 	$queryPieces = explode( $delimiter, $query );
 
-	$expectedPiecesCount = count( $labels );
-	if( count( $queryPieces ) == $expectedPiecesCount )
+	for( $i = 0; $i < count( $labels ); $i++ )
 	{
-		for( $i = 0; $i < $expectedPiecesCount; $i++ )
+		if( empty( $queryPieces[$i] ) )
 		{
-			if( empty( $queryPieces[$i] ) )
-			{
-				throw new CLI\Command\IncorrectUsageException();
-			}
-
-			$params[$labels[$i]] = $queryPieces[$i];
+			break;
 		}
 
-		return $params;
+		$params[$labels[$i]] = $queryPieces[$i];
 	}
 
-	throw new CLI\Command\IncorrectUsageException();
+	return $params;
 }
-
-/*
- * Commands
- */
