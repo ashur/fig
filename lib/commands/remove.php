@@ -20,8 +20,7 @@ $commandRemove = new Command( 'remove', 'Delete apps or profiles', function( $qu
 
 	$params = parseQuery( $query, '/', ['app','profile'] );
 
-	$stringName = new Format\String( implode( '/', $params ) );
-	$stringName->underline();
+	$stringName = implode( '/', $params );
 
 	/* Make sure the requested resource exists before proceeding */
 	try
@@ -48,10 +47,9 @@ $commandRemove = new Command( 'remove', 'Delete apps or profiles', function( $qu
 	else
 	{
 		$type = 'app';
-		$stringName->foregroundColor( 'green' );
 	}
 
-	$confirmationMessage = "Are you sure you want to delete the {$type} {$stringName}? This cannot be undone (y/n)";
+	$confirmationMessage = "Are you sure you want to delete the {$type} '{$stringName}'? This cannot be undone (y/n)";
 	$shouldDelete = strtolower( Input::prompt( $confirmationMessage ) ) == 'y';
 	if( !$shouldDelete )
 	{
