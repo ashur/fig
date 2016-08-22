@@ -64,12 +64,6 @@ $commandAdd = new Command( 'add', 'Create apps and profiles', function( $query )
 			throw new Command\CommandInvokedException( $e->getMessage(), 1 );
 		}
 	}
-
-	/* Show the new listing */
-	$apps = $fig->getApps();
-
-	$output = listApps( $apps );
-	return $output->flush();
 });
 
 $commandAdd->setUsage( 'add <app>[/<profile>]' );

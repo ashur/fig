@@ -67,12 +67,6 @@ $commandRemove = new Command( 'remove', 'Delete apps or profiles', function( $qu
 	{
 		$fig->deleteApp( $params['app'] );
 	}
-
-	/* Show the new listing */
-	$apps = $fig->getApps();
-
-	$output = listApps( $apps );
-	return $output->flush();
 });
 
 $commandRemove->addAlias( 'rm' );
