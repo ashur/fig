@@ -82,8 +82,11 @@ class Fig
 			throw new \Exception( "App '{$appName}' already exists. See 'fig show'." );
 		}
 
-		/* Create the directory on disk */
+		/* Create directories on disk */
 		$appDir->create();
+
+		$assetsDir = $appDir->childDir( Profile::ASSETS_DIRNAME );
+		$assetsDir->create();
 
 		/* Update the internal inventory, just in case */
 		$this->appDirs[$appName] = $appDir;
@@ -106,8 +109,14 @@ class Fig
 		}
 
 		$appDir = $this->appDirs[$appName];
-		$profileFile = $appDir->child( "{$profileName}.yml" );
 
+		/* Create the assets directory */
+		$assetsDir = $appDir
+			->childDir( Profile::ASSETS_DIRNAME )
+			->childDir( $profileName );
+		$assetsDir->create();
+
+		$profileFile = $appDir->child( "{$profileName}.yml" );
 		if( $profileFile->exists() )
 		{
 			throw new \Exception( "Profile '{$appName}/{$profileName}' already exists. See 'fig show'." );
@@ -191,8 +200,15 @@ PROFILE;
 	 */
 	public function deleteProfile( $appName, $profileName )
 	{
-		/* Delete the source file */
 		$appDir = $this->appDirs[$appName];
+
+		/* Delete the assets directory */
+		$assetsDir = $appDir
+			->childDir( Profile::ASSETS_DIRNAME )
+			->childDir( $profileName );
+		$assetsDir->delete();
+
+		/* Delete the source file */
 		$profileFile = $appDir->child( "{$profileName}.yml" );
 		$profileFile->delete();
 
