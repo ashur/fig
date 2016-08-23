@@ -66,6 +66,7 @@ $commandAdd = new Command( 'add', 'Create apps and profiles', function( $query )
 	}
 });
 
+$commandAdd->addAlias( 'create' );
 $commandAdd->setUsage( 'add <app>[/<profile>]' );
 
 return $commandAdd;
