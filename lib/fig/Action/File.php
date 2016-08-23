@@ -182,6 +182,9 @@ class File extends Action
 			$sourceFile->delete();
 		}
 
-		$this->target->copyTo( $sourceFile );
+		if( $this->target->exists() )
+		{
+			$this->target->copyTo( $sourceFile );
+		}
 	}
 }
