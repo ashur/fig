@@ -8,19 +8,9 @@ namespace Fig\Action;
 abstract class Action
 {
 	/**
-	 * @var	boolean
-	 */
-	protected $allowPrivilegeEscalation = false;
-
-	/**
 	 * @var	string
 	 */
 	protected $appName;
-
-	/**
-	 * @var	boolean
-	 */
-	protected $escalatePrivileges = false;
 
 	/**
 	 * @var	boolean
@@ -38,9 +28,24 @@ abstract class Action
 	public $name;
 
 	/**
+	 * @var	boolean
+	 */
+	public $privilegesEscalated = false;
+
+	/**
 	 * @var	string
 	 */
 	protected $profileName;
+
+	/**
+	 * @var	string
+	 */
+	protected $sudoPassword;
+
+	/**
+	 * @var	boolean
+	 */
+	protected $supportsPrivilegeEscalation = false;
 
 	/**
 	 * @var	string
@@ -69,11 +74,11 @@ abstract class Action
 		}
 
 		/* Privilege Escalation */
-		if( isset( $properties['sudo'] ) && $this->allowPrivilegeEscalation )
+		if( isset( $properties['sudo'] ) && $this->supportsPrivilegeEscalation )
 		{
 			if( in_array( strtolower( $properties['sudo'] ), $affirmativeValues ) )
 			{
-				$this->escalatePrivileges = true;
+				$this->privilegesEscalated = true;
 			}
 		}
 	}
@@ -81,11 +86,9 @@ abstract class Action
 	/**
 	 * Perform the action and return output for display
 	 *
-	 * @param	string	$username
-	 * @param	string	$password
 	 * @return	array
 	 */
-	abstract public function execute( $username=null, $password=null );
+	abstract public function execute();
 
 	/**
 	 * @return	string
@@ -112,5 +115,13 @@ abstract class Action
 	public function setProfileName( $profileName )
 	{
 		$this->profileName = $profileName;
+	}
+
+	/**
+	 * @param	string	$sudoPassword
+	 */
+	public function setSudoPassword( $sudoPassword )
+	{
+		$this->sudoPassword = $sudoPassword;
 	}
 }

@@ -116,7 +116,7 @@ class Defaults extends Action
 	 * @param	string	$password
 	 * @return	array
 	 */
-	public function execute( $username=null, $password=null )
+	public function execute()
 	{
 		/* Results */
 		exec( "{$this->command} 2>&1", $output, $exitCode );

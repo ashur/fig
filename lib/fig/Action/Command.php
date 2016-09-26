@@ -10,14 +10,14 @@ use Fig\Fig;
 class Command extends Action
 {
 	/**
-	 * @var	boolean
-	 */
-	protected $allowPrivilegeEscalation = true;
-
-	/**
 	 * @var	int
 	 */
 	public $command;
+
+	/**
+	 * @var	boolean
+	 */
+	protected $supportsPrivilegeEscalation = true;
 
 	/**
 	 * @var	string
@@ -40,17 +40,15 @@ class Command extends Action
 	/**
 	 * Perform the action and return output for display
 	 *
-	 * @param	string	$username
-	 * @param	string	$password
 	 * @return	array
 	 */
-	public function execute( $username=null, $password=null )
+	public function execute()
 	{
-		if( $this->escalatePrivileges )
+		if( $this->privilegesEscalated )
 		{
-			if( !is_null( $password ) )
+			if( !is_null( $this->sudoPassword ) )
 			{
-				$command = "echo '{$password}' | sudo -S {$this->command}";
+				$command = "echo '{$this->sudoPassword}' | sudo -S {$this->command}";
 			}
 			else
 			{
@@ -87,12 +85,6 @@ class Command extends Action
 	 */
 	public function getTitle()
 	{
-		$title = $this->name;
-		if( $this->escalatePrivileges )
-		{
-			$title = "{$title} 🔑 ";
-		}
-
-		return $title;
+		return $this->name;
 	}
 }

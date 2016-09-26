@@ -104,7 +104,7 @@ class File extends Action
 	 *
 	 * @return	array
 	 */
-	public function execute( $username=null, $password=null )
+	public function execute()
 	{
 		$didSucceed = true;
 

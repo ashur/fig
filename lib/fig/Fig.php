@@ -29,6 +29,11 @@ class Fig
 	protected $dirFig;
 
 	/**
+	 * @var	string
+	 */
+	protected $sudoPassword;
+
+	/**
 	 * @return	void
 	 */
 	public function __construct()
@@ -231,8 +236,16 @@ PROFILE;
 		foreach( $actions as $action )
 		{
 			$outputColor = 'green';
+			$actionTitle = $action->getTitle();
 
-			self::outputActionTitle( $action->type, $action->getTitle() );
+			/* Privilege escalation */
+			if( $action->privilegesEscalated )
+			{
+				$action->setSudoPassword( $this->sudoPassword );
+				$actionTitle = "{$actionTitle} 🔑 ";
+			}
+
+			self::outputActionTitle( $action->type, $actionTitle );
 
 			try
 			{
@@ -418,6 +431,14 @@ PROFILE;
 
 		$category = strtoupper( $category );
 		echo sprintf( "%'*-80s", "{$category}: {$title} " ) . PHP_EOL;
+	}
+
+	/**
+	 * @param	string	$sudoPassword
+	 */
+	public function setSudoPassword( $sudoPassword )
+	{
+		$this->sudoPassword = $sudoPassword;
 	}
 
 	/**
