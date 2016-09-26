@@ -8,9 +8,19 @@ namespace Fig\Action;
 abstract class Action
 {
 	/**
+	 * @var	boolean
+	 */
+	protected $allowPrivilegeEscalation = false;
+
+	/**
 	 * @var	string
 	 */
 	protected $appName;
+
+	/**
+	 * @var	boolean
+	 */
+	protected $escalatePrivileges = false;
 
 	/**
 	 * @var	boolean
@@ -45,6 +55,9 @@ abstract class Action
 	{
 		$this->name = $properties['name'];
 
+		/* A collection of values users might use to mean `true` */
+		$affirmativeValues = [true, 'true', 'yes'];
+
 		/* Ignore Errors & Output */
 		if( isset( $properties['ignore_errors'] ) )
 		{
@@ -54,14 +67,30 @@ abstract class Action
 		{
 			$this->ignoreOutput = true;
 		}
+
+		/* Privilege Escalation */
+		if( isset( $properties['sudo'] ) && $this->allowPrivilegeEscalation )
+		{
+			if( in_array( strtolower( $properties['sudo'] ), $affirmativeValues ) )
+			{
+				$this->escalatePrivileges = true;
+			}
+		}
 	}
 
 	/**
 	 * Perform the action and return output for display
 	 *
+	 * @param	string	$username
+	 * @param	string	$password
 	 * @return	array
 	 */
-	abstract public function execute();
+	abstract public function execute( $username=null, $password=null );
+
+	/**
+	 * @return	string
+	 */
+	abstract public function getTitle();
 
 	/**
 	 * Called when adding action to profile

@@ -30,9 +30,11 @@ class Profile extends Action
 	/**
 	 * Perform the action and return output for display
 	 *
+	 * @param	string	$username
+	 * @param	string	$password
 	 * @return	array
 	 */
-	public function execute()
+	public function execute( $username=null, $password=null )
 	{
 		$fig = new Fig();
 		$fig->deployProfile( $this->appName, $this->includedProfileName );
@@ -44,4 +46,10 @@ class Profile extends Action
 
 		return $result;
 	}
+
+	/**
+	 * A stub, since we don't need to print out profile inclusion actions
+	 * @return	string
+	 */
+	public function getTitle(){}
 }

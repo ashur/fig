@@ -215,9 +215,11 @@ PROFILE;
 	/**
 	 * @param	string	$appName
 	 * @param	string	$profileName
+	 * @param	string	$username
+	 * @param	string	$password
 	 * @return	void
 	 */
-	public function deployProfile( $appName, $profileName )
+	public function deployProfile( $appName, $profileName, $username=null, $password=null )
 	{
 		$app = $this->getApp( $appName );
 		$profile = $app->getProfile( $profileName );
@@ -230,13 +232,14 @@ PROFILE;
 		{
 			$outputColor = 'green';
 
+			self::outputActionTitle( $action->type, $action->getTitle() );
+
 			try
 			{
-				$result = $action->execute();
+				$result = $action->execute( $username, $password );
 			}
 			catch( \Exception $e )
 			{
-				$result['title'] = $action->name;
 				$result['error'] = true;
 				$result['output'] = $e->getMessage();
 			}
@@ -249,7 +252,7 @@ PROFILE;
 
 			if( !isset( $result['silent'] ) || !$result['silent'] )
 			{
-				self::outputAction( $action->type, $result['title'], $output, $outputColor );
+				self::outputAction( $output, $outputColor );
 			}
 		}
 	}
@@ -370,19 +373,12 @@ PROFILE;
 	}
 
 	/**
-	 * @param	string	$category
-	 * @param	string	$actionTitle
 	 * @param	mixed	$output
 	 * @param	string	$outputColor
 	 * @return	void
 	 */
-	public function outputAction( $category, $title, $output, $outputColor )
+	public function outputAction( $output, $outputColor )
 	{
-		echo PHP_EOL;
-
-		$category = strtoupper( $category );
-		echo sprintf( "%'*-80s", "{$category}: {$title} " ) . PHP_EOL;
-
 		$outputString = new Format\String();
 		$outputString->foregroundColor( $outputColor );
 
@@ -405,6 +401,23 @@ PROFILE;
 			$outputString->setString( $line );
 			echo $outputString . PHP_EOL;
 		}
+	}
+
+	/**
+	 * @param	string	$category
+	 * @param	string	$actionTitle
+	 */
+	public function outputActionTitle( $category, $title )
+	{
+		if( is_null( $title ) )
+		{
+			return;
+		}
+
+		echo PHP_EOL;
+
+		$category = strtoupper( $category );
+		echo sprintf( "%'*-80s", "{$category}: {$title} " ) . PHP_EOL;
 	}
 
 	/**

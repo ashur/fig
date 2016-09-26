@@ -76,6 +76,27 @@ class File extends Action
 			$this->action = self::DELETE;
 			$this->target = Core\File\File::getTypedInstance( $properties['file']['delete'] );
 		}
+
+		/* Human-readable action label */
+		switch( $this->action )
+		{
+			case self::CREATE:
+				$this->actionName = 'create';
+				break;
+
+			case self::REPLACE:
+				$this->actionName = 'replace';
+				break;
+
+			case self::DELETE:
+				$this->actionName = 'delete';
+				break;
+
+			case self::SKIP:
+			default:
+				$this->actionName = 'skip';
+				break;
+		}
 	}
 
 	/**
@@ -83,20 +104,13 @@ class File extends Action
 	 *
 	 * @return	array
 	 */
-	public function execute()
+	public function execute( $username=null, $password=null )
 	{
 		$didSucceed = true;
-
-		/* Skip */
-		if( $this->action == self::SKIP )
-		{
-			$actionName = 'skip';
-		}
 
 		/* Create */
 		if( $this->action == self::CREATE )
 		{
-			$actionName = 'create';
 			$didSucceed = $didSucceed && $this->target->create();
 
 			if( !empty( $this->contents ) )
@@ -108,7 +122,6 @@ class File extends Action
 		/* Replace */
 		if( $this->action == self::REPLACE )
 		{
-			$actionName = 'replace';
 			$sourceFile = $this->getSourceFile();	// File or Directory
 
 			if( !$sourceFile->exists() )
@@ -127,12 +140,11 @@ class File extends Action
 		/* Delete */
 		if( $this->action == self::DELETE )
 		{
-			$actionName = 'delete';
 			$this->target->delete();
 		}
 
 		/* Results */
-		$result['title'] = "{$actionName} | {$this->name}";
+		$result['title'] = "{$this->actionName} | {$this->name}";
 		$result['error'] = !$didSucceed;
 		$result['output'] = null;
 
@@ -164,6 +176,14 @@ class File extends Action
 		$sourceFile = Core\File\File::getTypedInstance( $pathSource );
 
 		return $sourceFile;
+	}
+
+	/**
+	 * @return	string
+	 */
+	public function getTitle()
+	{
+		return "{$this->actionName} | {$this->name}";
 	}
 
 	/**

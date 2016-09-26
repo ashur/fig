@@ -19,6 +19,20 @@ class Defaults extends Action
 	public $action = self::READ;
 
 	/**
+	 * The `defaults` command to be run
+	 *
+	 * @var	string
+	 */
+	protected $command;
+
+	/**
+	 * A human-readable summary of the `defaults` command
+	 *
+	 * @var	string
+	 */
+	protected $commandSummary;
+
+	/**
 	 * @var	string
 	 */
 	public $domain;
@@ -60,50 +74,54 @@ class Defaults extends Action
 		{
 			$this->value = $properties['defaults']['value'];
 		}
-	}
 
-	/**
-	 * Perform the action and return output for display
-	 *
-	 * @return	array
-	 */
-	public function execute()
-	{
+		/* Human-readable action label */
 		switch( $this->action )
 		{
 			case self::READ:
-				$action = 'read';
+				$this->actionName = 'read';
 				break;
 
 			case self::WRITE:
-				$action = 'write';
+				$this->actionName = 'write';
 				break;
 
 			case self::DELETE:
-				$action = 'delete';
+				$this->actionName = 'delete';
 				break;
 		}
 
-		$command = "defaults {$action} {$this->domain}";
-		$commandSummary = "{$this->domain}";
+		/* Build command */
+		$this->command = "defaults {$this->actionName} {$this->domain}";
+		$this->commandSummary = "{$this->domain}";
 
 		/* Key */
 		if( !is_null( $this->key ) )
 		{
-			$command .= " {$this->key}";
-			$commandSummary .= " {$this->key}";
+			$this->command .= " {$this->key}";
+			$this->commandSummary .= " {$this->key}";
 		}
 
 		/* Value (write only) */
 		if( $this->action == self::WRITE && !is_null( $this->value ) )
 		{
-			$command .= " {$this->value}";
+			$this->command .= " {$this->value}";
 		}
+	}
 
+	/**
+	 * Perform the action and return output for display
+	 *
+	 * @param	string	$username
+	 * @param	string	$password
+	 * @return	array
+	 */
+	public function execute( $username=null, $password=null )
+	{
 		/* Results */
-		exec( "{$command} 2>&1", $output, $exitCode );
+		exec( "{$this->command} 2>&1", $output, $exitCode );
 
-		$result['title'] = "{$action} | {$commandSummary}";
+		$result['title'] = "{$this->actionName} | {$this->commandSummary}";
 		$result['error'] = $exitCode != 0;
 		$result['output'] = $output;
 
@@ -123,6 +141,14 @@ class Defaults extends Action
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return	string
+	 */
+	public function getTitle()
+	{
+		return "{$this->actionName} | {$this->commandSummary}";
 	}
 
 	/**
