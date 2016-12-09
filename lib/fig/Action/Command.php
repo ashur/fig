@@ -29,7 +29,19 @@ class Command extends Action
 
 		Fig::validateRequiredKeys( $properties, ['command'] );
 
-		$this->command = $properties['command'];
+		/*
+		 * Sanitize command string
+		 */
+		$sanitizedCommand = $properties['command'];
+		$sanitizedCommand = trim( $sanitizedCommand );
+
+		/* Strip trailing semicolon, which subverts output/error handling */
+		if( substr( $sanitizedCommand, -1 ) == ';' )
+		{
+			$sanitizedCommand = substr( $sanitizedCommand, 0, strlen( $sanitizedCommand ) - 1 );
+		}
+
+		$this->command = $sanitizedCommand;
 	}
 
 	/**
