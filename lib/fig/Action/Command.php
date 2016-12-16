@@ -5,7 +5,7 @@
  */
 namespace Fig\Action;
 
-use Fig\Fig;
+use Fig;
 
 class Command extends Action
 {
@@ -32,7 +32,7 @@ class Command extends Action
 	{
 		parent::__construct( $properties );
 
-		Fig::validateRequiredKeys( $properties, ['command'] );
+		Fig\Fig::validateRequiredKeys( $properties, ['command'] );
 
 		/*
 		 * Sanitize command string
@@ -57,7 +57,7 @@ class Command extends Action
 	public function execute()
 	{
 		/* Replace variables */
-		$this->command = Fig::replaceVariables( $this->command, $this->variables );
+		$this->command = Fig\Fig::replaceVariables( $this->command, $this->variables );
 
 		if( $this->privilegesEscalated )
 		{
@@ -100,7 +100,7 @@ class Command extends Action
 	 */
 	public function getTitle()
 	{
-		$title = Fig::replaceVariables( $this->name, $this->variables );
+		$title = Fig\Fig::replaceVariables( $this->name, $this->variables );
 		return $title;
 	}
 }

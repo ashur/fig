@@ -5,7 +5,7 @@
  */
 namespace Fig\Action;
 
-use Fig\Fig;
+use Fig;
 use Huxtable\Core;
 
 class File extends Action
@@ -110,7 +110,7 @@ class File extends Action
 
 		/* Replace variables */
 		$targetPathname = $this->target->getPathname();
-		$targetPathname = Fig::replaceVariables( $targetPathname, $this->variables );
+		$targetPathname = Fig\Fig::replaceVariables( $targetPathname, $this->variables );
 		$target = Core\File\File::getTypedInstance( $targetPathname );
 
 		/* Create */
@@ -120,7 +120,7 @@ class File extends Action
 
 			if( !empty( $this->contents ) )
 			{
-				$contents = Fig::replaceVariables( $this->contents, $this->variables );
+				$contents = Fig\Fig::replaceVariables( $this->contents, $this->variables );
 				$didSucceed = $didSucceed && $target->putContents( $contents );
 			}
 		}
@@ -190,7 +190,7 @@ class File extends Action
 	public function getTitle()
 	{
 		$title = "{$this->actionName} | {$this->name}";
-		$title = Fig::replaceVariables( $title, $this->variables );
+		$title = Fig\Fig::replaceVariables( $title, $this->variables );
 
 		return $title;
 	}

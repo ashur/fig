@@ -5,7 +5,7 @@
  */
 namespace Fig\Action;
 
-use Fig\Fig;
+use Fig;
 
 class Defaults extends Action
 {
@@ -60,7 +60,7 @@ class Defaults extends Action
 	{
 		parent::__construct( $properties );
 
-		Fig::validateRequiredKeys( $properties['defaults'], ['action','domain'] );
+		Fig\Fig::validateRequiredKeys( $properties['defaults'], ['action','domain'] );
 
 		$this->domain = $properties['defaults']['domain'];
 		$this->setAction( $properties['defaults']['action'] );
@@ -119,7 +119,7 @@ class Defaults extends Action
 	public function execute()
 	{
 		/* Replace variables */
-		$this->command = Fig::replaceVariables( $this->command, $this->variables );
+		$this->command = Fig\Fig::replaceVariables( $this->command, $this->variables );
 
 		/* Results */
 		exec( "{$this->command} 2>&1", $output, $exitCode );
@@ -152,7 +152,7 @@ class Defaults extends Action
 	public function getTitle()
 	{
 		$title = "{$this->actionName} | {$this->commandSummary}";
-		$title = Fig::replaceVariables( $title, $this->variables );
+		$title = Fig\Fig::replaceVariables( $title, $this->variables );
 
 		return $title;
 	}

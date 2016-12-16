@@ -5,7 +5,7 @@
  */
 namespace Fig\Action;
 
-use Fig\Fig;
+use Fig;
 
 class Profile extends Action
 {
@@ -27,7 +27,7 @@ class Profile extends Action
 	{
 		parent::__construct( $properties );
 
-		Fig::validateRequiredKeys( $properties, ['include'] );
+		Fig\Fig::validateRequiredKeys( $properties, ['include'] );
 
 		$this->includedProfileName = $properties['include'];
 	}
@@ -39,7 +39,7 @@ class Profile extends Action
 	 */
 	public function execute()
 	{
-		$fig = new Fig();
+		$fig = new Fig\Fig();
 		$fig->deployProfile( $this->appName, $this->includedProfileName, $this->variables );
 
 		$result['title'] = "include {$this->includedProfileName}";
