@@ -220,11 +220,10 @@ PROFILE;
 	/**
 	 * @param	string	$appName
 	 * @param	string	$profileName
-	 * @param	string	$username
-	 * @param	string	$password
+	 * @param	array	$variables
 	 * @return	void
 	 */
-	public function deployProfile( $appName, $profileName, $username=null, $password=null )
+	public function deployProfile( $appName, $profileName, array $variables=null )
 	{
 		$app = $this->getApp( $appName );
 		$profile = $app->getProfile( $profileName );
@@ -235,6 +234,12 @@ PROFILE;
 		$actions = $profile->getActions();
 		foreach( $actions as $action )
 		{
+			/* Variables */
+			if( !is_null( $variables ) )
+			{
+				$action->setVariables( $variables );
+			}
+
 			$outputColor = 'green';
 			$actionTitle = $action->getTitle();
 
@@ -249,7 +254,7 @@ PROFILE;
 
 			try
 			{
-				$result = $action->execute( $username, $password );
+				$result = $action->execute();
 			}
 			catch( \Exception $e )
 			{
@@ -383,6 +388,22 @@ PROFILE;
 		}
 
 		return array_values( $apps );
+	}
+
+	/**
+	 * @param	string	$string
+	 * @param	array	$variables
+	 * @return	void
+	 */
+	static public function replaceVariables( $string, array $variables )
+	{
+		foreach( $variables as $key => $value )
+		{
+			$string = str_replace( "{{{$key}}}", $value, $string );
+			$string = str_replace( "{{ {$key} }}", $value, $string );
+		}
+
+		return $string;
 	}
 
 	/**

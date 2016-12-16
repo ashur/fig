@@ -5,7 +5,7 @@
  */
 namespace Fig\Action;
 
-use Fig;
+use Fig\Fig;
 use Huxtable\Core;
 
 class File extends Action
@@ -108,14 +108,20 @@ class File extends Action
 	{
 		$didSucceed = true;
 
+		/* Replace variables */
+		$targetPathname = $this->target->getPathname();
+		$targetPathname = Fig::replaceVariables( $targetPathname, $this->variables );
+		$target = Core\File\File::getTypedInstance( $targetPathname );
+
 		/* Create */
 		if( $this->action == self::CREATE )
 		{
-			$didSucceed = $didSucceed && $this->target->create();
+			$didSucceed = $didSucceed && $target->create();
 
 			if( !empty( $this->contents ) )
 			{
-				$didSucceed = $didSucceed && $this->target->putContents( $this->contents );
+				$contents = Fig::replaceVariables( $this->contents, $this->variables );
+				$didSucceed = $didSucceed && $target->putContents( $contents );
 			}
 		}
 
@@ -129,22 +135,22 @@ class File extends Action
 				throw new \Exception( "Source missing: '{$sourceFile}'" );
 			}
 
-			if( $this->target->exists() )
+			if( $target->exists() )
 			{
-				$this->target->delete();
+				$target->delete();
 			}
 
-			$didSucceed = $didSucceed && $sourceFile->copyTo( $this->target );
+			$didSucceed = $didSucceed && $sourceFile->copyTo( $target );
 		}
 
 		/* Delete */
 		if( $this->action == self::DELETE )
 		{
-			$this->target->delete();
+			$target->delete();
 		}
 
 		/* Results */
-		$result['title'] = "{$this->actionName} | {$this->name}";
+		$result['title'] = $this->getTitle();
 		$result['error'] = !$didSucceed;
 		$result['output'] = null;
 
@@ -183,7 +189,10 @@ class File extends Action
 	 */
 	public function getTitle()
 	{
-		return "{$this->actionName} | {$this->name}";
+		$title = "{$this->actionName} | {$this->name}";
+		$title = Fig::replaceVariables( $title, $this->variables );
+
+		return $title;
 	}
 
 	/**

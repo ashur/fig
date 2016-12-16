@@ -15,6 +15,11 @@ class Profile extends Action
 	protected $includedProfileName;
 
 	/**
+	 * @var	string
+	 */
+	public $type = 'Include';
+
+	/**
 	 * @param	array	$properties
 	 * @return	void
 	 */
@@ -35,7 +40,7 @@ class Profile extends Action
 	public function execute()
 	{
 		$fig = new Fig();
-		$fig->deployProfile( $this->appName, $this->includedProfileName );
+		$fig->deployProfile( $this->appName, $this->includedProfileName, $this->variables );
 
 		$result['title'] = "include {$this->includedProfileName}";
 		$result['error'] = false;

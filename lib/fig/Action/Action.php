@@ -53,6 +53,11 @@ abstract class Action
 	public $type = 'Action';
 
 	/**
+	 * @var	array
+	 */
+	protected $variables=[];
+
+	/**
 	 * @param	array	$properties
 	 * @return	void
 	 */
@@ -123,5 +128,14 @@ abstract class Action
 	public function setSudoPassword( $sudoPassword )
 	{
 		$this->sudoPassword = $sudoPassword;
+	}
+
+	/**
+	 * @param	array	$variables
+	 * @return	void
+	 */
+	public function setVariables( array $variables )
+	{
+		$this->variables = $variables;
 	}
 }

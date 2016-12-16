@@ -33,6 +33,11 @@ class Profile
 	protected $parentName;
 
 	/**
+	 * @var	array
+	 */
+	protected $variables=[];
+
+	/**
 	 * @param	string	$name
 	 * @return	void
 	 */
@@ -83,6 +88,7 @@ class Profile
 		$actions = $profile->getActions();
 		foreach( $actions as $action )
 		{
+			$action->setVariables( $this->variables );
 			$extendedProfile->addAction( $action );
 		}
 		/* Set new profile name on existing actions */
@@ -90,6 +96,10 @@ class Profile
 		{
 			$action->setProfileName( $extendedProfile->getName() );
 		}
+
+		/* Variables */
+		$profileVariables = $profile->getVariables();
+		$extendedProfile->setVariables( $profileVariables );
 
 		return $extendedProfile;
 	}
@@ -99,6 +109,11 @@ class Profile
 	 */
 	public function getActions()
 	{
+		foreach( $this->actions as &$action )
+		{
+			$action->setVariables( $this->variables );
+		}
+
 		return $this->actions;
 	}
 
@@ -117,6 +132,13 @@ class Profile
 
 		foreach( $profileData as $profileItem )
 		{
+			/* Variables */
+			if( isset( $profileItem['vars'] ) )
+			{
+				$profile->setVariables( $profileItem['vars'] );
+				continue;
+			}
+
 			/* Extend */
 			if( isset( $profileItem['extend'] ) )
 			{
@@ -166,6 +188,14 @@ class Profile
 	}
 
 	/**
+	 * @return	array
+	 */
+	public function getVariables()
+	{
+		return $this->variables;
+	}
+
+	/**
 	 * @param	string	$name
 	 * @return	void
 	 */
@@ -181,6 +211,21 @@ class Profile
 	public function setParentName( $parentName )
 	{
 		$this->parentName = $parentName;
+	}
+
+	/**
+	 * @param	array	$variables
+	 * @return	void
+	 */
+	public function setVariables( array $variables )
+	{
+		foreach( $variables as $key => $value )
+		{
+			if( is_scalar( $value ) )
+			{
+				$this->variables[$key] = $value;
+			}
+		}
 	}
 
 	/**

@@ -56,6 +56,9 @@ class Command extends Action
 	 */
 	public function execute()
 	{
+		/* Replace variables */
+		$this->command = Fig::replaceVariables( $this->command, $this->variables );
+
 		if( $this->privilegesEscalated )
 		{
 			if( !is_null( $this->sudoPassword ) )
@@ -97,6 +100,7 @@ class Command extends Action
 	 */
 	public function getTitle()
 	{
-		return $this->name;
+		$title = Fig::replaceVariables( $this->name, $this->variables );
+		return $title;
 	}
 }

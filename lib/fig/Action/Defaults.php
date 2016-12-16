@@ -118,10 +118,13 @@ class Defaults extends Action
 	 */
 	public function execute()
 	{
+		/* Replace variables */
+		$this->command = Fig::replaceVariables( $this->command, $this->variables );
+
 		/* Results */
 		exec( "{$this->command} 2>&1", $output, $exitCode );
 
-		$result['title'] = "{$this->actionName} | {$this->commandSummary}";
+		$result['title'] = $this->getTitle();
 		$result['error'] = $exitCode != 0;
 		$result['output'] = $output;
 
@@ -148,7 +151,10 @@ class Defaults extends Action
 	 */
 	public function getTitle()
 	{
-		return "{$this->actionName} | {$this->commandSummary}";
+		$title = "{$this->actionName} | {$this->commandSummary}";
+		$title = Fig::replaceVariables( $title, $this->variables );
+
+		return $title;
 	}
 
 	/**
