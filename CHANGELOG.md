@@ -2,7 +2,7 @@
 
 All notable changes to Pug will be documented in this file (beginning with v0.1.1 😅).
 
-## [Unreleased]
+## [0.2.0] - 2016-12-17
 ### Added
 - Support for profile variables
 
