@@ -2,7 +2,7 @@
 
 All notable changes to Pug will be documented in this file (beginning with v0.1.1 😅).
 
-## [Unreleased]
+## [0.2.1] - 2016-12-21
 ### Added
 - Support for creating Fig apps by cloning Git repositories
 
