@@ -6,6 +6,7 @@
 namespace Fig;
 
 use Huxtable\CLI\Format;
+use Huxtable\CLI\Shell;
 use Huxtable\Core\File;
 use Spyc;
 
@@ -103,6 +104,30 @@ class Fig
 
 	/**
 	 * @param	string	$appName
+	 * @param	string	$repoURL
+	 * @return	void
+	 */
+	public function createAppFromRepository( $appName, $repoURL )
+	{
+		$appDir = $this->dirFig->childDir( $appName );
+		$commandClone = sprintf( 'git clone %s %s', $repoURL, $appDir );
+
+		echo 'Cloning... ';
+		$result = Shell::exec( $commandClone, true, '   > ' );
+
+		if( $result['exitCode'] == 0 )
+		{
+			echo 'done.' . PHP_EOL;
+			return true;
+		}
+
+		echo 'failed:' . PHP_EOL . PHP_EOL;
+		echo $result['output']['formatted'] . PHP_EOL;
+		return false;
+	}
+
+	/**
+	 * @param	string	$appName
 	 * @param	string	$profileName
 	 * @return	void
 	 */
@@ -178,9 +203,22 @@ PROFILE;
 	 */
 	public function deleteApp( $appName )
 	{
-		/* Delete the source directory */
 		$appDir = $this->appDirs[$appName];
-		$appDir->delete();
+
+		/*
+		 * Delete the source directory
+		 *
+		 * Note: This uses a shell command instead of the Directory::delete method
+		 *       because `-f` is not available via PHP filesystem functions.
+		 *       Since apps are likely under version control, `-f` is required
+		 *       to remove the app directory without user intervention.
+		 */
+		$command = "rm -rf '{$appDir}'";
+		$result = Shell::exec( $command );
+		if( $result['exitCode'] !== 0 )
+		{
+			throw new \Exception( $result['output']['raw'], $result['exitCode'] );
+		}
 
 		/* Update the internal inventory */
 		unset( $this->appDirs[$appName] );
