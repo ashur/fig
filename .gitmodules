@@ -7,3 +7,6 @@
 [submodule "vendor/spyc"]
 	path = vendor/spyc
 	url = https://github.com/mustangostang/spyc.git
+[submodule "vendor/cranberry/cli"]
+	path = vendor/cranberry/cli
+	url = https://github.com/cranberry/cli.git
