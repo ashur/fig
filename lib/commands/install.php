@@ -41,6 +41,23 @@ function validateDirectory( File\Directory $directory )
  */
 $command = new Command\Command( 'install', 'Symlink \'fig\' to a convenient path', function()
 {
+	/*
+	 * man page
+	 */
+	$sourceManPage = $this->app->applicationDirectory
+		->childDir( 'docs' )
+		->child( 'fig.1' );
+
+	$targetManPage = new File\Directory( '/usr/local/share/man/man1/fig.1' );
+
+	if( !$targetManPage->exists() )
+	{
+		symlink( $sourceManPage, $targetManPage );
+	}
+
+	/*
+	 * Executable
+	 */
 	$sourceFile = $this->app->applicationDirectory
 		->childDir( 'bin' )
 		->child( 'fig' );

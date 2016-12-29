@@ -1,0 +1,69 @@
+fig(1)
+======
+
+NAME
+----
+fig - Manage and deploy configuration profiles.
+
+
+SYNOPSIS
+--------
+[verse]
+'fig add' <app> [--url=<url>]
+'fig add' <app>/<profile>
+'fig deploy' <app>/<profile>
+'fig edit' <app>/<profile>
+'fig install' [--dir=<dir>]
+'fig remove' <app>[/<profile>]
+'fig show'
+'fig update' <app>/<profile>
+
+
+DESCRIPTION
+-----------
+
+Fig helps you create, manage, and deploy profiles to quickly bring application
+configuration files and any other assets to a known state.
+
+
+OPTIONS
+-------
+
+--version::
+	Prints the current 'fig' version.
+
+
+COMMANDS
+--------
+
+'add'::
+Creates new top-level app <app> or adds a configuration profile <profile> to an
+existing app.
++
+When an app is created with `--url=<url>`, Fig attempts to clone the Git
+repository at <url>.
++
+Note: Creating Fig profiles from Git repositories is not supported.
+
+'deploy'::
+Loads <app>/<profile>'s YAML definition and executes each action sequentially.
++
+If <app>/<profile> 'extends' another Fig profile, any 'file' actions will use
+the extending profile's assets.
+
+'edit'::
+Opens <app>/<profile>'s YAML file in $EDITOR.
+
+'install'::
+Symlink the Fig executable to a convenient location. The default location
+`/usr/local/bin` can be overridden with `--dir=<dir>`.
+
+'remove'::
+Deletes top-level apps and all their profiles, or just individual profiles.
+
+'show'::
+Lists all local Fig apps and their profiles.
+
+'update'::
+Update profile assets from their source. If <app>/<profile> contains 'file:replace' actions, Fig will essentially perform
+a reverse deployment copying from 'target' to 'source'.

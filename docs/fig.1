@@ -1,0 +1,109 @@
+'\" t
+.\"     Title: fig
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 12/28/2016
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "FIG" "1" "12/28/2016" "\ \&" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+fig \- Manage and deploy configuration profiles\&.
+.SH "SYNOPSIS"
+.sp
+.nf
+\fIfig add\fR <app> [\-\-url=<url>]
+\fIfig add\fR <app>/<profile>
+\fIfig deploy\fR <app>/<profile>
+\fIfig edit\fR <app>/<profile>
+\fIfig install\fR [\-\-dir=<dir>]
+\fIfig remove\fR <app>[/<profile>]
+\fIfig show\fR
+\fIfig update\fR <app>/<profile>
+.fi
+.SH "DESCRIPTION"
+.sp
+Fig helps you create, manage, and deploy profiles to quickly bring application configuration files and any other assets to a known state\&.
+.SH "OPTIONS"
+.PP
+\-\-version
+.RS 4
+Prints the current
+\fIfig\fR
+version\&.
+.RE
+.SH "COMMANDS"
+.PP
+\fIadd\fR
+.RS 4
+Creates new top\-level app <app> or adds a configuration profile <profile> to an existing app\&.
+.sp
+When an app is created with
+\-\-url=<url>, Fig attempts to clone the Git repository at <url>\&.
+.sp
+Note: Creating Fig profiles from Git repositories is not supported\&.
+.RE
+.PP
+\fIdeploy\fR
+.RS 4
+Loads <app>/<profile>\*(Aqs YAML definition and executes each action sequentially\&.
+.sp
+If <app>/<profile>
+\fIextends\fR
+another Fig profile, any
+\fIfile\fR
+actions will use the extending profile\(cqs assets\&.
+.RE
+.PP
+\fIedit\fR
+.RS 4
+Opens <app>/<profile>\*(Aqs YAML file in $EDITOR\&.
+.RE
+.PP
+\fIinstall\fR
+.RS 4
+Symlink the Fig executable to a convenient location\&. The default location
+/usr/local/bin
+can be overridden with
+\-\-dir=<dir>\&.
+.RE
+.PP
+\fIremove\fR
+.RS 4
+Deletes top\-level apps and all their profiles, or just individual profiles\&.
+.RE
+.PP
+\fIshow\fR
+.RS 4
+Lists all local Fig apps and their profiles\&.
+.RE
+.PP
+\fIupdate\fR
+.RS 4
+Update profile assets from their source\&. If <app>/<profile> contains
+\fIfile:replace\fR
+actions, Fig will essentially perform a reverse deployment copying from
+\fItarget\fR
+to
+\fIsource\fR\&.
+.RE
