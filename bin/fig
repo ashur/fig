@@ -1,65 +1,80 @@
 #!/usr/bin/env php
 <?php
 
-use Huxtable\Core\File;
-
-$appName = basename( __FILE__ );
-
 /*
  * Paths
  */
-$pathApp = dirname( __DIR__ );
-$pathLib = $pathApp . '/lib';
-$pathVendor = $pathApp . '/vendor';
+$pathBase = dirname( __DIR__ );
 
 /*
- * App configuration
+ * Autoload: Vendor
  */
-$config = require_once( $pathLib . '/config.php' );
+include_once( $pathBase . '/lib/helpers/autoload.php' );
 
 /*
- * Autoloading
+ * Directories
  */
-/* Huxtable */
-include_once( $pathVendor . '/huxtable/cli/autoload.php' );
-include_once( $pathVendor . '/huxtable/core/autoload.php' );
+$dirApp = new Cranberry\Core\File\Directory( $pathBase );
+$dirLib = $dirApp->childDir( 'lib' );
 
-/* Spyc */
-include_once( $pathVendor . '/spyc/Spyc.php' );
-
-/* Fig */
-include_once( $pathLib . '/autoload.php' );
-Fig\Autoloader::register();
+$dirCommands = $dirLib->childDir( 'commands' );
+$dirHelpers = $dirLib->childDir( 'helpers' );
+$dirOptions = $dirLib->childDir( 'options' );
 
 /*
- * App configuration
+ * App Configuration
  */
-$dirApp = new File\Directory( $pathApp );
-$app = new Huxtable\CLI\Application( $appName, $config['version'], $config['php-min'], $dirApp );
+$configFile = $dirLib->child( 'config.json' );
+$configJSON = $configFile->getContents();
+$config = Cranberry\Core\JSON::decode( $configJSON, true );
+
+$appName = basename( __FILE__ );
+$app = new Cranberry\CLI\Application\Application( $appName, $config['version'], $config['php-min'], $dirApp );
 
 /*
- * Register commands
+ * Autoload: Project
  */
-$fileFilter = new File\Filter();
-$fileFilter
-->setDefaultMethod( $fileFilter::METHOD_INCLUDE )
-->includeFileExtension( 'php' );
+registerNamespaceAutoloader( $config['namespace'] );
 
-$pathCommands = $pathLib . '/commands';
-$commandsFolder = new File\Directory( $pathCommands );
-$commandFiles = $commandsFolder->children( $fileFilter );
-
-foreach( $commandFiles as $commandFile )
+/*
+ * Helpers
+ */
+$helperFiles = $dirHelpers->children();
+foreach( $helperFiles as $helperFile )
 {
-	$command = include_once( $commandFile );
-	if( $command instanceof Huxtable\CLI\Command )
-	{
-		$app->registerCommand( $command );
-	}
+	include_once( $helperFile );
 }
 
-// Attempt to run the requested command
-$app->run();
+/* Clean up after previous versions */
+foreach( $cleanupActions as $version => $action )
+{
+	$app->registerCleanupAction( $version, $action );
+}
+$app->cleanUpSelf();
 
-// Stop application and exit
+/*
+ * Commands & Executable Options
+ */
+$fileFilter = new Cranberry\Core\File\Filter();
+$fileFilter->includeFileExtension( 'php' );
+
+$commandFiles = $dirCommands->children( $fileFilter );
+$app->registerCommandFiles( $commandFiles );
+
+$optionFiles = $dirOptions->children( $fileFilter );
+$app->registerExecutableOptionFiles( $optionFiles );
+
+/*
+ * Run
+ */
+try
+{
+	$app->run();
+}
+catch( Exception $e )
+{
+	$output = Cranberry\CLI\Output\Output::exceptionLog( $e, $argv, $config['url'] );
+	echo $output;
+}
+
 $app->stop();

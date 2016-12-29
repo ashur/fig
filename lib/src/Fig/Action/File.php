@@ -5,8 +5,8 @@
  */
 namespace Fig\Action;
 
+use Cranberry\Core\File as CoreFile;
 use Fig;
-use Huxtable\Core;
 
 class File extends Action
 {
@@ -52,7 +52,7 @@ class File extends Action
 		if( isset( $properties['file']['create'] ) )
 		{
 			$this->action = self::CREATE;
-			$this->target = Core\File\File::getTypedInstance( $properties['file']['create'] );
+			$this->target = CoreFile\File::getTypedInstance( $properties['file']['create'] );
 
 			if( isset( $properties['file']['contents'] ) )
 			{
@@ -66,7 +66,7 @@ class File extends Action
 			Fig\Fig::validateRequiredKeys( $properties['file'], ['source'] );
 
 			$this->action = self::REPLACE;
-			$this->target = Core\File\File::getTypedInstance( $properties['file']['replace'] );
+			$this->target = CoreFile\File::getTypedInstance( $properties['file']['replace'] );
 			$this->source = $properties['file']['source'];
 		}
 
@@ -74,7 +74,7 @@ class File extends Action
 		if( isset( $properties['file']['delete'] ) )
 		{
 			$this->action = self::DELETE;
-			$this->target = Core\File\File::getTypedInstance( $properties['file']['delete'] );
+			$this->target = CoreFile\File::getTypedInstance( $properties['file']['delete'] );
 		}
 
 		/* Human-readable action label */
@@ -111,7 +111,7 @@ class File extends Action
 		/* Replace variables */
 		$targetPathname = $this->target->getPathname();
 		$targetPathname = Fig\Fig::replaceVariables( $targetPathname, $this->variables );
-		$target = Core\File\File::getTypedInstance( $targetPathname );
+		$target = CoreFile\File::getTypedInstance( $targetPathname );
 
 		/* Create */
 		if( $this->action == self::CREATE )
@@ -172,14 +172,14 @@ class File extends Action
 	 */
 	protected function getSourceFile()
 	{
-		$dirFig = new Core\File\Directory( Fig\Fig::DIR_FIG );
+		$dirFig = new CoreFile\Directory( Fig\Fig::DIR_FIG );
 		$dirAssets = $dirFig
 			->childDir( $this->appName )
 			->childDir( Fig\Profile::ASSETS_DIRNAME )
 			->childDir( $this->profileName );
 
 		$pathSource = "{$dirAssets}/{$this->source}";
-		$sourceFile = Core\File\File::getTypedInstance( $pathSource );
+		$sourceFile = CoreFile\File::getTypedInstance( $pathSource );
 
 		return $sourceFile;
 	}

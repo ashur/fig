@@ -23,6 +23,11 @@ abstract class Action
 	protected $ignoreOutput = false;
 
 	/**
+	 * @var	boolean
+	 */
+	public $includesProfile = false;
+
+	/**
 	 * @var	string
 	 */
 	public $name;

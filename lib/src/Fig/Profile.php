@@ -5,8 +5,8 @@
  */
 namespace Fig;
 
+use Cranberry\Core\File;
 use Fig\Action;
-use Huxtable\Core\File;
 
 class Profile
 {
@@ -124,12 +124,11 @@ class Profile
 	static public function getInstanceFromFile( File\File $profileFile )
 	{
 		$appName = $profileFile->parent()->getBasename();
-		$profileName = $profileFile->getBasename( '.yml' );
 
+		$profileName = $profileFile->getBasename( '.yml' );
 		$profile = new self( $profileName, $appName );
 
 		$profileData = Fig::decodeFile( $profileFile );
-
 		foreach( $profileData as $profileItem )
 		{
 			/* Variables */
@@ -152,6 +151,7 @@ class Profile
 				$profileItem['name'] = "import {$profileItem['include']}";
 				$action = new Action\Profile( $profileItem );
 			}
+			/* Actions */
 			else
 			{
 				$action = Fig::getActionInstanceFromData( $profileItem );

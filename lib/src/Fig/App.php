@@ -5,8 +5,8 @@
  */
 namespace Fig;
 
+use Cranberry\Core\File;
 use Fig\Action\Action;
-use Huxtable\Core\File;
 
 class App
 {

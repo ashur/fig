@@ -5,15 +5,13 @@
  */
 namespace Fig;
 
-use Huxtable\CLI\Format;
-use Huxtable\CLI\Shell;
-use Huxtable\Core\File;
+use Cranberry\CLI\Format;
+use Cranberry\CLI\Shell;
+use Cranberry\Core\File;
 use Spyc;
 
 class Fig
 {
-	const DIR_FIG = '~/.fig';
-
 	/**
 	 * @var	array
 	 */
@@ -27,7 +25,7 @@ class Fig
 	/**
 	 * @var	Huxtable\Core\File\Directory
 	 */
-	protected $dirFig;
+	protected $figDirectory;
 
 	/**
 	 * @var	string
@@ -37,12 +35,13 @@ class Fig
 	/**
 	 * @return	void
 	 */
-	public function __construct()
+	public function __construct( File\Directory $figDirectory )
 	{
-		$this->dirFig = new File\Directory( self::DIR_FIG );
-		if( !$this->dirFig->exists() )
+		$this->figDirectory = $figDirectory;
+
+		if( !$this->figDirectory->exists() )
 		{
-			$this->dirFig->create();
+			$this->figDirectory->create();
 		}
 
 		// Only include directories
@@ -53,7 +52,7 @@ class Fig
 			return $file->isDir();
 		});
 
-		$apps = $this->dirFig->children( $fileFilter );
+		$apps = $this->figDirectory->children( $fileFilter );
 
 		foreach( $apps as $appDir )
 		{
@@ -81,7 +80,7 @@ class Fig
 	 */
 	public function createApp( $appName )
 	{
-		$appDir = $this->dirFig->childDir( $appName );
+		$appDir = $this->figDirectory->childDir( $appName );
 
 		if( $appDir->exists() )
 		{
@@ -109,7 +108,7 @@ class Fig
 	 */
 	public function createAppFromRepository( $appName, $repoURL )
 	{
-		$appDir = $this->dirFig->childDir( $appName );
+		$appDir = $this->figDirectory->childDir( $appName );
 		$commandClone = sprintf( 'git clone %s %s', $repoURL, $appDir );
 
 		echo 'Cloning... ';
@@ -288,6 +287,22 @@ PROFILE;
 				$actionTitle = "{$actionTitle} 🔑 ";
 			}
 
+			/*
+			 * Deploy included Profile
+			 *
+			 * NOTE: 'include' actions will not produce output on their own, so
+			 *   we skip that portion of the show
+			 */
+			if( $action->includesProfile )
+			{
+				$includedProfileName = $action->getIncludedProfileName();
+				$profileVariables = $profile->getVariables();
+
+				$this->deployProfile( $appName, $includedProfileName, $profileVariables );
+
+				continue;
+			}
+
 			self::outputActionTitle( $action->type, $actionTitle );
 
 			try
@@ -426,6 +441,14 @@ PROFILE;
 		}
 
 		return array_values( $apps );
+	}
+
+	/**
+	 * @return	Cranberry\Core\File\Directory
+	 */
+	public function getFigDirectory()
+	{
+		return $this->figDirectory;
 	}
 
 	/**
