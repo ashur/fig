@@ -5,12 +5,12 @@
  */
 namespace Fig;
 
-use Huxtable\CLI;
-use Huxtable\CLI\Command;
-use Huxtable\Core\File;
+use Cranberry\CLI\Command;
+use Cranberry\CLI\Input;
+use Cranberry\Core\File;
 
 /**
- * @param
+ * @param	Cranberry\Core\File\Directory	$directory
  * @return	void
  */
 function validateDirectory( File\Directory $directory )
@@ -30,6 +30,8 @@ function validateDirectory( File\Directory $directory )
 	{
 		throw new \Exception( "'{$directory}' is not writeable." );
 	}
+
+	return true;
 }
 
 /**
@@ -37,11 +39,11 @@ function validateDirectory( File\Directory $directory )
  * @description		Symlink 'fig' to a convenient path
  * @usage			install
  */
-$command = new Command( 'install', 'Symlink \'fig\' to a convenient path', function()
+$command = new Command\Command( 'install', 'Symlink \'fig\' to a convenient path', function()
 {
-	GLOBAL $dirApp;
-
-	$sourceFile = $dirApp->childDir( 'bin' )->child( 'fig' );
+	$sourceFile = $this->app->applicationDirectory
+		->childDir( 'bin' )
+		->child( 'fig' );
 
 	$defaultPath = '/usr/local/bin';
 	$userPath = $this->getOptionValue( 'dir' );
@@ -74,14 +76,13 @@ $command = new Command( 'install', 'Symlink \'fig\' to a convenient path', funct
 	{
 		try
 		{
-			validateDirectory( $destinationDirectory );
-			$didValidate = true;
+			$didValidate = validateDirectory( $destinationDirectory );
 
 			/* Is destination directory on $PATH? */
 			$envPathDirs = explode( ':', getenv( 'PATH' ) );
 			if( !in_array( $destinationDirectory, $envPathDirs ) )
 			{
-				$shouldContinue = CLI\Input::prompt( "Target directory '{$destinationDirectory}' is not on \$PATH. Continue? (y/n)", true );
+				$shouldContinue = Input::prompt( "Target directory '{$destinationDirectory}' is not on \$PATH. Continue? (y/n)", true );
 				$shouldContinue = strtolower( $shouldContinue );
 
 				/* User chose not to continue */
@@ -100,7 +101,7 @@ $command = new Command( 'install', 'Symlink \'fig\' to a convenient path', funct
 					echo 'Error: ' . $e->getMessage() . PHP_EOL;
 				}
 
-				$userPath = CLI\Input::prompt( "Symlink 'fig' to directory:", true );
+				$userPath = Input::prompt( "Symlink 'fig' to directory:", true );
 
 				try
 				{
@@ -136,6 +137,8 @@ $command = new Command( 'install', 'Symlink \'fig\' to a convenient path', funct
 	}
 
 	symlink( $sourceFile, $targetFile );
+
+	echo 'Installed.' . PHP_EOL;
 });
 
 $command->registerOption( 'dir' );
