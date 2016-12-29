@@ -5,8 +5,8 @@
  */
 namespace Fig;
 
-use \Huxtable\CLI;
-use \Huxtable\Core\File;
+use Cranberry\CLI\Format;
+use Cranberry\CLI\Output;
 
 /**
  * @param	array	$apps
@@ -14,14 +14,14 @@ use \Huxtable\Core\File;
  */
 function listApps( array $apps )
 {
-	$output = new CLI\Output;
+	$output = new Output\Output;
 
 	if( count( $apps ) == 0 )
 	{
 		$output->line( "fig: No apps found. See 'fig add'." );
 	}
 
-	$formattedString = new CLI\Format\String;
+	$formattedString = new Format\String;
 
 	if( !empty( $apps ) )
 	{
@@ -51,7 +51,7 @@ function listApps( array $apps )
 				$extendsProfile = $profile->getParentName();
 				if( !is_null( $extendsProfile ) )
 				{
-					$stringProfile = new CLI\Format\String;
+					$stringProfile = new Format\String;
 					$stringProfile->foregroundColor( 'purple' );
 					$stringProfile->setString( $profileName );
 
@@ -66,28 +66,4 @@ function listApps( array $apps )
 	}
 
 	return $output;
-}
-
-/**
- * @param	string	$query			ex., "<app>/<profile>" or "<app>:<command>"
- * @param	string	$delimeter		ex., "/" or ":"
- * @param	array	$labels			ex., ['app','profile']
- * @return	array
- */
-function parseQuery( $query, $delimiter, array $labels )
-{
-	$params = [];
-	$queryPieces = explode( $delimiter, $query );
-
-	for( $i = 0; $i < count( $labels ); $i++ )
-	{
-		if( empty( $queryPieces[$i] ) )
-		{
-			break;
-		}
-
-		$params[$labels[$i]] = $queryPieces[$i];
-	}
-
-	return $params;
 }

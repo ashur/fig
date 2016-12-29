@@ -15,6 +15,11 @@ class Profile extends Action
 	protected $includedProfileName;
 
 	/**
+	 * @var	type
+	 */
+	public $includesProfile = true;
+
+	/**
 	 * @var	string
 	 */
 	public $type = 'Include';
@@ -33,21 +38,18 @@ class Profile extends Action
 	}
 
 	/**
-	 * Perform the action and return output for display
+	 * A stub, since profile deployment is handled by Fig\Fig
 	 *
 	 * @return	array
 	 */
-	public function execute()
+	public function execute(){}
+
+	/**
+	 * @return	string
+	 */
+	public function getIncludedProfileName()
 	{
-		$fig = new Fig\Fig();
-		$fig->deployProfile( $this->appName, $this->includedProfileName, $this->variables );
-
-		$result['title'] = "include {$this->includedProfileName}";
-		$result['error'] = false;
-		$result['output'] = null;
-		$result['silent'] = true;
-
-		return $result;
+		return $this->includedProfileName;
 	}
 
 	/**

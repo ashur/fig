@@ -1,0 +1,6 @@
+{
+	"namespace": "Fig",
+	"url": "https://github.com/ashur/fig",
+	"version": "0.2.1",
+	"php-min": "5.4"
+}

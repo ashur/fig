@@ -5,20 +5,17 @@
  */
 namespace Fig;
 
-use Huxtable\CLI;
-use Huxtable\CLI\Command;
-use Huxtable\CLI\Input;
+use Cranberry\CLI\Command;
+use Cranberry\CLI\Input;
 
 /**
- * @command		update
- * @desc		Update profile assets from source
+ * @command		Update profile assets from source
+ * @desc		update
  * @usage		update [-y|--yes] <app>/<profile>
  * @options		-y, --yes
  */
-$commandProfileUpdate = new CLI\Command( 'update', 'Update profile assets from source', function( $query )
+$command = new Command\Command( 'update', 'Update profile assets from source', function( $query )
 {
-	$fig = new Fig();
-
 	try
 	{
 		$params = parseQuery( $query, '/', ['app','profile'] );
@@ -32,22 +29,22 @@ $commandProfileUpdate = new CLI\Command( 'update', 'Update profile assets from s
 			}
 		}
 
-		$fig->updateProfileAssetsFromTarget( $params['app'], $params['profile'] );
+		$this->fig->updateProfileAssetsFromTarget( $params['app'], $params['profile'] );
 	}
-	catch( CLI\Command\IncorrectUsageException $e )
+	catch( Command\Command\IncorrectUsageException $e )
 	{
-		throw new CLI\Command\IncorrectUsageException( $this->getUsage(), 1 );
+		throw new Command\Command\IncorrectUsageException( $this->getUsage(), 1 );
 	}
 	catch( \Exception $e )
 	{
-		throw new CLI\Command\CommandInvokedException( $e->getMessage(), 1 );
+		throw new Command\Command\CommandInvokedException( $e->getMessage(), 1 );
 	}
 });
 
-$commandProfileUpdate->registerOption( 'y' );
-$commandProfileUpdate->registerOption( 'yes' );
+$command->registerOption( 'y' );
+$command->registerOption( 'yes' );
 
-$usageProfileUpdate = "update [-y|--yes] <app>/<profile>";
-$commandProfileUpdate->setUsage( $usageProfileUpdate );
+$usage = "update [-y|--yes] <app>/<profile>";
+$command->setUsage( $usage );
 
-return $commandProfileUpdate;
+return $command;

@@ -1,9 +1,6 @@
-[submodule "vendor/huxtable/core"]
-	path = vendor/huxtable/core
-	url = https://github.com/huxtable/core.git
-[submodule "vendor/huxtable/cli"]
-	path = vendor/huxtable/cli
-	url = https://github.com/huxtable/cli.git
 [submodule "vendor/spyc"]
 	path = vendor/spyc
 	url = https://github.com/mustangostang/spyc.git
+[submodule "vendor/cranberry/cli"]
+	path = vendor/cranberry/cli
+	url = https://github.com/cranberry/cli.git

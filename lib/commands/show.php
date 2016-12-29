@@ -5,21 +5,18 @@
  */
 namespace Fig;
 
-use Huxtable\CLI;
-use Huxtable\CLI\Command;
+use Cranberry\CLI\Command;
 
 /**
- * @command		app
+ * @command		show
  * @desc		List apps and their profiles
- * @usage		app
+ * @usage		show
  */
-$commandShow = new CLI\Command( 'show', 'List apps and their profiles', function()
+$command = new Command\Command( 'show', 'List apps and their profiles', function()
 {
-	$fig = new Fig();
-
 	try
 	{
-		$apps = $fig->getApps();
+		$apps = $this->fig->getApps();
 	}
 	catch( \Exception $e )
 	{
@@ -30,6 +27,6 @@ $commandShow = new CLI\Command( 'show', 'List apps and their profiles', function
 	return $output->flush();
 });
 
-$commandShow->registerAlias( 'ls' );
+$command->registerAlias( 'ls' );
 
-return $commandShow;
+return $command;

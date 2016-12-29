@@ -5,9 +5,9 @@
  */
 namespace Fig;
 
-use Huxtable\CLI\Command;
-use Huxtable\CLI\Format;
-use Huxtable\CLI\Input;
+use Cranberry\CLI\Command;
+use Cranberry\CLI\Format;
+use Cranberry\CLI\Input;
 
 /**
  * @command		add
@@ -15,16 +15,15 @@ use Huxtable\CLI\Input;
  * @usage		add <app>[/<profile>]
  * 				add <app> --url=<url>
  */
-$commandAdd = new Command( 'add', 'Create apps and profiles', function( $query )
+$command = new Command\Command( 'add', 'Create apps and profiles', function( $query )
 {
-	$fig = new Fig();
 	$params = parseQuery( $query, '/', ['app','profile'] );
 
 	$shouldAddProfile = isset( $params['profile'] );
 
 	try
 	{
-		$app = $fig->getApp( $params['app'] );
+		$app = $this->fig->getApp( $params['app'] );
 
 		/*
 		 * App exists
@@ -57,7 +56,7 @@ $commandAdd = new Command( 'add', 'Create apps and profiles', function( $query )
 			}
 
 			$shouldAddProfile = false;
-			$didCloneRepository = $fig->createAppFromRepository( $params['app'], $url );
+			$didCloneRepository = $this->fig->createAppFromRepository( $params['app'], $url );
 
 			if( !$didCloneRepository )
 			{
@@ -68,7 +67,7 @@ $commandAdd = new Command( 'add', 'Create apps and profiles', function( $query )
 		/* Create from scratch */
 		else
 		{
-			$app = $fig->createApp( $params['app'] );
+			$app = $this->fig->createApp( $params['app'] );
 
 			$stringAppName = new Format\String( $params['app'] );
 			$stringAppName->foregroundColor( 'green' );
@@ -99,7 +98,7 @@ $commandAdd = new Command( 'add', 'Create apps and profiles', function( $query )
 			}
 
 			/* Create a profile */
-			$fig->createProfile( $params['app'], $profileName );
+			$this->fig->createProfile( $params['app'], $profileName );
 		}
 		catch( \Exception $e )
 		{
@@ -108,9 +107,9 @@ $commandAdd = new Command( 'add', 'Create apps and profiles', function( $query )
 	}
 });
 
-$commandAdd->registerAlias( 'create' );
-$commandAdd->registerOption( 'url' );
+$command->registerAlias( 'create' );
+$command->registerOption( 'url' );
 
-$commandAdd->setUsage( "add <app>[/<profile>]\n       fig add <app> --url=<url>" );
+$command->setUsage( "add <app>[/<profile>]\n       fig add <app> --url=<url>" );
 
-return $commandAdd;
+return $command;

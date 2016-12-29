@@ -5,7 +5,7 @@
  */
 namespace Fig;
 
-use Huxtable\Core\File;
+use Cranberry\Core\File;
 
 class Asset implements \JsonSerializable
 {

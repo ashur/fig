@@ -5,20 +5,16 @@
  */
 namespace Fig;
 
-use Huxtable\CLI\Command;
-use Huxtable\CLI\Format;
-use Huxtable\CLI\Input;
-use Huxtable\Core\File;
+use Cranberry\CLI\Command;
+use Cranberry\Core\File;
 
 /**
  * @command		edit
  * @desc		Edit a profile
  * @usage		edit <app>/<profile>
  */
-$commandEdit = new Command( 'edit', 'Edit a profile', function( $query )
+$command = new Command\Command( 'edit', 'Edit a profile', function( $query )
 {
-	$fig = new Fig();
-
 	$params = parseQuery( $query, '/', ['app','profile'] );
 
 	if( !isset( $params['profile'] ) )
@@ -32,7 +28,7 @@ $commandEdit = new Command( 'edit', 'Edit a profile', function( $query )
 	}
 
 	/* Ensure the file exists */
-	$pathProfile = sprintf( '%s/%s/%s.yml', Fig::DIR_FIG, $params['app'], $params['profile'] );
+	$pathProfile = sprintf( '%s/%s/%s.yml', $this->fig->getFigDirectory(), $params['app'], $params['profile'] );
 	$fileProfile = new File\File( $pathProfile );
 
 	if( !$fileProfile->exists() )
@@ -54,6 +50,6 @@ $commandEdit = new Command( 'edit', 'Edit a profile', function( $query )
 	proc_close( $process );
 });
 
-$commandEdit->setUsage( 'edit <app>/<profile>' );
+$command->setUsage( 'edit <app>/<profile>' );
 
-return $commandEdit;
+return $command;
