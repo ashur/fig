@@ -6,6 +6,7 @@ All notable changes to Pug will be documented in this file (beginning with v0.1.
 ### Added
 - `install` command
 - man page, fig.1
+- `upgrade` command
 
 ### Changed
 - Switched to Cranberry\CLI framework
