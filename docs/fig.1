@@ -2,12 +2,12 @@
 .\"     Title: fig
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 12/28/2016
+.\"      Date: 12/29/2016
 .\"    Manual: \ \&
 .\"    Source: \ \&
 .\"  Language: English
 .\"
-.TH "FIG" "1" "12/28/2016" "\ \&" "\ \&"
+.TH "FIG" "1" "12/29/2016" "\ \&" "\ \&"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -40,6 +40,7 @@ fig \- Manage and deploy configuration profiles\&.
 \fIfig remove\fR <app>[/<profile>]
 \fIfig show\fR
 \fIfig update\fR <app>/<profile>
+\fIfig upgrade\fR
 .fi
 .SH "DESCRIPTION"
 .sp
@@ -61,7 +62,7 @@ Creates new top\-level app <app> or adds a configuration profile <profile> to an
 When an app is created with
 \-\-url=<url>, Fig attempts to clone the Git repository at <url>\&.
 .sp
-Note: Creating Fig profiles from Git repositories is not supported\&.
+NOTE \(em Creating Fig profiles from Git repositories is not supported\&.
 .RE
 .PP
 \fIdeploy\fR
@@ -106,4 +107,11 @@ actions, Fig will essentially perform a reverse deployment copying from
 \fItarget\fR
 to
 \fIsource\fR\&.
+.RE
+.PP
+\fIupgrade\fR
+.RS 4
+Fetch and install the latest version of Fig\&.
+.sp
+NOTE \(em If the local version of PHP is older than the minimum version required by the new version of Fig, the upgrade will not be performed\&.
 .RE

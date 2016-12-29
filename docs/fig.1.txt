@@ -17,6 +17,7 @@ SYNOPSIS
 'fig remove' <app>[/<profile>]
 'fig show'
 'fig update' <app>/<profile>
+'fig upgrade'
 
 
 DESCRIPTION
@@ -43,7 +44,7 @@ existing app.
 When an app is created with `--url=<url>`, Fig attempts to clone the Git
 repository at <url>.
 +
-Note: Creating Fig profiles from Git repositories is not supported.
+NOTE — Creating Fig profiles from Git repositories is not supported.
 
 'deploy'::
 Loads <app>/<profile>'s YAML definition and executes each action sequentially.
@@ -67,3 +68,9 @@ Lists all local Fig apps and their profiles.
 'update'::
 Update profile assets from their source. If <app>/<profile> contains 'file:replace' actions, Fig will essentially perform
 a reverse deployment copying from 'target' to 'source'.
+
+'upgrade'::
+Fetch and install the latest version of Fig.
++
+NOTE — If the local version of PHP is older than the minimum version required by
+the new version of Fig, the upgrade will not be performed.
