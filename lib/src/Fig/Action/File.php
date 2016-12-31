@@ -31,6 +31,11 @@ class File extends Action
 	protected $contents;
 
 	/**
+	 * @var	Cranberry\Core\File\Directory
+	 */
+	protected $figDirectory;
+
+	/**
 	 * @var	Huxtable\Core\File\File
 	 */
 	protected $target;
@@ -39,6 +44,11 @@ class File extends Action
 	 * @var	string
 	 */
 	public $type = 'File';
+
+	/**
+	 * @var	boolean
+	 */
+	public $usesFigDirectory = true;
 
 	/**
 	 * @param	array	$properties
@@ -172,8 +182,7 @@ class File extends Action
 	 */
 	protected function getSourceFile()
 	{
-		$dirFig = new CoreFile\Directory( Fig\Fig::DIR_FIG );
-		$dirAssets = $dirFig
+		$dirAssets = $this->figDirectory
 			->childDir( $this->appName )
 			->childDir( Fig\Profile::ASSETS_DIRNAME )
 			->childDir( $this->profileName );
@@ -193,6 +202,14 @@ class File extends Action
 		$title = Fig\Fig::replaceVariables( $title, $this->variables );
 
 		return $title;
+	}
+
+	/**
+	 * @param	Cranberry\Core\File\Directory	$figDirectory
+	 */
+	public function setFigDirectory( CoreFile\Directory $figDirectory )
+	{
+		$this->figDirectory = $figDirectory;
 	}
 
 	/**

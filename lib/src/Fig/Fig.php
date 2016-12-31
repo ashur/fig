@@ -287,6 +287,12 @@ PROFILE;
 				$actionTitle = "{$actionTitle} 🔑 ";
 			}
 
+			/* Set Fig directory for 'file' actions */
+			if( $action->usesFigDirectory )
+			{
+				$action->setFigDirectory( $this->figDirectory );
+			}
+
 			/*
 			 * Deploy included Profile
 			 *

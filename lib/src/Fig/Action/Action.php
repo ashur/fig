@@ -58,6 +58,11 @@ abstract class Action
 	public $type = 'Action';
 
 	/**
+	 * @var	boolean
+	 */
+	public $usesFigDirectory = false;
+
+	/**
 	 * @var	array
 	 */
 	protected $variables=[];
