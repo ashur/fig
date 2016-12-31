@@ -10,58 +10,120 @@ use Cranberry\CLI\Output;
 
 /**
  * @param	array	$apps
- * @return	Huxtable\CLI\Output
+ * @param	boolean		$listHiddenItems
+ * @param	boolean		$longListing
+ * @return	Cranberry\CLI\Output
  */
-function listApps( array $apps )
+function listApps( array $apps, $listHiddenItems = false, $longListing = false )
 {
-	$output = new Output\Output;
+	if( !$longListing )
+	{
+		$output = new Output\Listing;
+	}
+	else
+	{
+		$output = new Output\Output;
+		$output->line( 'total ' . count( $apps ) );
+	}
 
 	if( count( $apps ) == 0 )
 	{
 		$output->line( "fig: No apps found. See 'fig add'." );
 	}
-
-	$formattedString = new Format\String;
-
-	if( !empty( $apps ) )
+	else
 	{
-		$padTop = false;
 		foreach( $apps as $app )
 		{
-			if( $padTop)
+			$stringApp = new Format\String;
+
+			$appName = $app->getName();
+
+			/* Hidden item */
+			$firstChar = substr( $appName, 0, 1 );
+			if( $firstChar == '.' )
 			{
-				$output->line();
-			}
-
-			/* App Name */
-			$formattedString->foregroundColor( 'green' );
-			$formattedString->setString( $app->getName() . '/' );
-			$output->line( $formattedString );
-
-			/* Profiles */
-			$formattedString->foregroundColor( 'cyan' );
-			$profiles = $app->getProfiles();
-
-			foreach( $profiles as $profile )
-			{
-				$profileName = $profile->getName();
-				$profileSummary = "  {$profileName}";
-
-				/* Extending profiles */
-				$extendsProfile = $profile->getParentName();
-				if( !is_null( $extendsProfile ) )
+				if( !$listHiddenItems )
 				{
-					$stringProfile = new Format\String;
-					$stringProfile->foregroundColor( 'purple' );
-					$stringProfile->setString( $profileName );
-
-					$profileSummary = "  {$stringProfile} -> {$extendsProfile}";
+					continue;
 				}
-
-				$output->line( $profileSummary );
 			}
 
-			$padTop = true;
+			$stringApp->foregroundColor( 'cyan' );
+			$stringApp->setString( $appName );
+
+			if( !$longListing )
+			{
+				$output->item( $stringApp );
+			}
+			else
+			{
+				$output->line( $stringApp );
+			}
+		}
+	}
+
+	return $output;
+}
+
+/**
+ * @param	Fig\App		$app
+ * @param	boolean		$listHiddenItems
+ * @param	boolean		$longListing
+ * @return	Cranberry\CLI\Output
+ */
+function listProfiles( App $app, $listHiddenItems = false, $longListing = false )
+{
+	/* Profiles */
+	$profiles = $app->getProfiles();
+
+	if( !$longListing )
+	{
+		$output = new Output\Listing;
+	}
+	else
+	{
+		$output = new Output\Output;
+		$output->line( 'total ' . count( $profiles ) );
+	}
+
+	foreach( $profiles as $profile )
+	{
+		$stringProfile = new Format\String;
+
+		$profileName = $profile->getName();
+		$extendsProfile = $profile->getParentName();
+
+		/* Hidden item */
+		$firstChar = substr( $profileName, 0, 1 );
+		if( $firstChar == '.' )
+		{
+			if( !$listHiddenItems )
+			{
+				continue;
+			}
+		}
+
+		/* Color */
+		$color = is_null( $extendsProfile ) ? 'gray' : 'purple';
+
+		$stringProfile->foregroundColor( $color );
+		$stringProfile->setString( $profileName );
+
+		if( !$longListing )
+		{
+			$output->item( $stringProfile );
+		}
+		else
+		{
+			$profileSummary = $stringProfile;
+
+			/* Extending profiles */
+			if( !is_null( $extendsProfile ) )
+			{
+				$profileSummary = "{$stringProfile} -> {$extendsProfile}";
+			}
+
+			$output->line( $profileSummary );
 		}
 	}
 

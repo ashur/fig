@@ -2,12 +2,12 @@
 .\"     Title: fig
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 12/29/2016
+.\"      Date: 12/31/2016
 .\"    Manual: \ \&
 .\"    Source: \ \&
 .\"  Language: English
 .\"
-.TH "FIG" "1" "12/29/2016" "\ \&" "\ \&"
+.TH "FIG" "1" "12/31/2016" "\ \&" "\ \&"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,7 +38,7 @@ fig \- Manage and deploy configuration profiles\&.
 \fIfig edit\fR <app>/<profile>
 \fIfig install\fR [\-\-dir=<dir>]
 \fIfig remove\fR <app>[/<profile>]
-\fIfig show\fR
+\fIfig show\fR [\-a] [\-l] [<app>]
 \fIfig update\fR <app>/<profile>
 \fIfig upgrade\fR
 .fi
@@ -96,7 +96,13 @@ Deletes top\-level apps and all their profiles, or just individual profiles\&.
 .PP
 \fIshow\fR
 .RS 4
-Lists all local Fig apps and their profiles\&.
+Lists all local Fig apps, or a single app\(cqs profiles\&.
+.sp
+Use option
+\-a
+to list hidden apps or profiles (named with a leading "\&.")\&. Use option
+\-l
+to list in long format\&.
 .RE
 .PP
 \fIupdate\fR

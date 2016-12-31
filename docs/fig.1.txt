@@ -15,7 +15,7 @@ SYNOPSIS
 'fig edit' <app>/<profile>
 'fig install' [--dir=<dir>]
 'fig remove' <app>[/<profile>]
-'fig show'
+'fig show' [-a] [-l] [<app>]
 'fig update' <app>/<profile>
 'fig upgrade'
 
@@ -63,7 +63,10 @@ Symlink the Fig executable to a convenient location. The default location
 Deletes top-level apps and all their profiles, or just individual profiles.
 
 'show'::
-Lists all local Fig apps and their profiles.
+Lists all local Fig apps, or a single app's profiles.
++
+Use option `-a` to list hidden apps or profiles (named with a leading "."). Use
+option `-l` to list in long format.
 
 'update'::
 Update profile assets from their source. If <app>/<profile> contains 'file:replace' actions, Fig will essentially perform

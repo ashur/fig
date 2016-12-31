@@ -7,6 +7,7 @@ All notable changes to Fig will be documented in this file.
 - `install` command
 - man page, fig.1
 - `upgrade` command
+- Expanded `show` options
 
 ### Changed
 - Switched to Cranberry\CLI framework
