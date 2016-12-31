@@ -48,7 +48,7 @@ $command = new Command\Command( 'install', 'Symlink \'fig\' to a convenient path
 		->childDir( 'docs' )
 		->child( 'fig.1' );
 
-	$targetManPage = new File\Directory( '/usr/local/share/man/man1/fig.1' );
+	$targetManPage = new File\File( '/usr/local/share/man/man1/fig.1' );
 
 	if( !$targetManPage->exists() )
 	{
