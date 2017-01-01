@@ -52,7 +52,7 @@ $command = new Command\Command( 'add', 'Create apps and profiles', function( $qu
 		{
 			if( isset( $params['profile'] ) )
 			{
-				throw new Command\CommandInvokedException( 'Profiles cannot be created from repositories. See \'fig help add\'.', 1 );
+				throw new Command\CommandInvokedException( 'Profiles cannot be created from repositories. See \'fig --help add\'.', 1 );
 			}
 
 			$shouldAddProfile = false;
@@ -94,7 +94,7 @@ $command = new Command\Command( 'add', 'Create apps and profiles', function( $qu
 			/* Incorrectly trying to create from repository */
 			if( !is_null( $url ) )
 			{
-				throw new Command\CommandInvokedException( 'Profile creation from remote repository not supported. See \'fig help add\'.', 1 );
+				throw new Command\CommandInvokedException( 'Profile creation from remote repository not supported. See \'fig --help add\'.', 1 );
 			}
 
 			/* Create a profile */
