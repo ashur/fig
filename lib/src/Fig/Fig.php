@@ -241,11 +241,19 @@ PROFILE;
 		$assetsDir = $appDir
 			->childDir( Profile::ASSETS_DIRNAME )
 			->childDir( $profileName );
-		$assetsDir->delete();
+
+		if( $assetsDir->exists() )
+		{
+			$assetsDir->delete();
+		}
 
 		/* Delete the source file */
 		$profileFile = $appDir->child( "{$profileName}.yml" );
-		$profileFile->delete();
+
+		if( $profileFile->exists() )
+		{
+			$profileFile->delete();
+		}
 
 		/* Update the internal inventory */
 		if( isset( $this->apps[$appName] ) )

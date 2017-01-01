@@ -9,6 +9,9 @@ All notable changes to Fig will be documented in this file.
 - `upgrade` command
 - Expanded `show` options
 
+### Fixed
+- Skip asset deletion for profiles with no assets
+
 ### Changed
 - Switched to Cranberry\CLI framework
 
