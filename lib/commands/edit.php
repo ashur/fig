@@ -33,7 +33,7 @@ $command = new Command\Command( 'edit', 'Edit a profile', function( $query )
 
 	if( !$fileProfile->exists() )
 	{
-		throw new Command\CommandInvokedException( "Profile not found '{$params['app']}/{$params['profile']}'." );
+		throw new Command\CommandInvokedException( "Profile '{$params['app']}/{$params['profile']}' not found." );
 	}
 
 	/*
