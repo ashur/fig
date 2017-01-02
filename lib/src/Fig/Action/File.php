@@ -229,12 +229,12 @@ class File extends Action
 	 */
 	protected function getSourceFile()
 	{
-		$dirAssets = $this->figDirectory
+		$assetsDirectory = $this->figDirectory
 			->childDir( $this->appName )
 			->childDir( Fig\Profile::ASSETS_DIRNAME )
 			->childDir( $this->profileName );
 
-		$pathSource = "{$dirAssets}/{$this->source}";
+		$pathSource = "{$assetsDirectory}/{$this->source}";
 		$sourceFile = CoreFile\File::getTypedInstance( $pathSource );
 
 		return $sourceFile;
@@ -260,7 +260,9 @@ class File extends Action
 	}
 
 	/**
-	 * @return	void
+	 * Perform a reverse deployment
+	 *
+	 * @return	boolean
 	 */
 	public function updateAssetsFromTarget()
 	{
@@ -269,7 +271,16 @@ class File extends Action
 			return false;
 		}
 
+		/* The Fig asset located in assets/<profile> */
 		$sourceFile = $this->getSourceFile();
+
+		/* Ensure that assets/source folders exist prior to attempting update */
+		if( !$sourceFile->parent()->exists() )
+		{
+			$sourceFile->parent()->create();
+		}
+
+		/* Perform the update */
 		if( $sourceFile->exists() )
 		{
 			$sourceFile->delete();
@@ -279,5 +290,7 @@ class File extends Action
 		{
 			$this->target->copyTo( $sourceFile );
 		}
+
+		return true;
 	}
 }
