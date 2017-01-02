@@ -3,6 +3,8 @@
 All notable changes to Fig will be documented in this file.
 
 ## [Unreleased]
+
+## [0.3.0] - 2017-01-02
 ### Added
 - `install` command
 - man page, fig.1
