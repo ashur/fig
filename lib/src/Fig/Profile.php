@@ -229,15 +229,16 @@ class Profile
 	}
 
 	/**
-	 * @return	void
+	 * @param	Cranberry\Core\File\Directory	$figDirectory
 	 */
-	public function updateAssetsFromTarget()
+	public function updateAssetsFromTarget( File\Directory $figDirectory )
 	{
 		foreach( $this->actions as $action )
 		{
 			if( get_class( $action ) == 'Fig\Action\File' )
 			{
-				$action->updateAssetsFromTarget();
+				$action->setFigDirectory( $figDirectory );
+				$action->updateAssetsFromTarget( $figDirectory );
 			}
 		}
 	}

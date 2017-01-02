@@ -557,7 +557,7 @@ PROFILE;
 		$app = $this->getApp( $appName );
 		$profile = $app->getProfile( $profileName );
 
-		$profile->updateAssetsFromTarget();
+		$profile->updateAssetsFromTarget( $this->figDirectory );
 	}
 
 	/**
