@@ -60,6 +60,11 @@ abstract class Action
 	/**
 	 * @var	boolean
 	 */
+	public $usesDeprecatedSyntax = false;
+
+	/**
+	 * @var	boolean
+	 */
 	public $usesFigDirectory = false;
 
 	/**

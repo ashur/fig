@@ -52,60 +52,107 @@ class File extends Action
 
 	/**
 	 * @param	array	$properties
-	 * @return	void
 	 */
 	public function __construct( array $properties )
 	{
 		parent::__construct( $properties );
 
-		/* Create */
-		if( isset( $properties['file']['create'] ) )
+		if( isset( $properties['file']['action'] ) )
 		{
-			$this->action = self::CREATE;
-			$this->target = CoreFile\File::getTypedInstance( $properties['file']['create'] );
+			Fig\Fig::validateRequiredKeys( $properties['file'], ['action','path'] );
 
-			if( isset( $properties['file']['contents'] ) )
+			/* Action */
+			$this->actionName = strtolower( $properties['file']['action'] );
+
+			switch( $this->actionName )
 			{
-				$this->contents = $properties['file']['contents'];
+				case 'create':
+					$this->action = self::CREATE;
+
+					if( isset( $properties['file']['contents'] ) )
+					{
+						$this->contents = $properties['file']['contents'];
+					}
+
+					break;
+
+				case 'delete':
+					$this->action = self::DELETE;
+
+					break;
+
+				case 'replace':
+					Fig\Fig::validateRequiredKeys( $properties['file'], ['source'] );
+
+					$this->action = self::REPLACE;
+					$this->source = $properties['file']['source'];
+
+					break;
+
+				default:
+					throw new \Exception( "Unsupported file action '{$this->actionName}'." );
+					break;
 			}
+
+			$this->target = CoreFile\File::getTypedInstance( $properties['file']['path'] );
 		}
 
-		/* Replace */
-		if( isset( $properties['file']['replace'] ) )
+		/*
+		 * Deprecated
+		 */
+		else
 		{
-			Fig\Fig::validateRequiredKeys( $properties['file'], ['source'] );
+			$this->usesDeprecatedSyntax = true;
 
-			$this->action = self::REPLACE;
-			$this->target = CoreFile\File::getTypedInstance( $properties['file']['replace'] );
-			$this->source = $properties['file']['source'];
-		}
+			/* Create */
+			if( isset( $properties['file']['create'] ) )
+			{
+				$this->action = self::CREATE;
+				$this->target = CoreFile\File::getTypedInstance( $properties['file']['create'] );
 
-		/* Delete */
-		if( isset( $properties['file']['delete'] ) )
-		{
-			$this->action = self::DELETE;
-			$this->target = CoreFile\File::getTypedInstance( $properties['file']['delete'] );
-		}
+				if( isset( $properties['file']['contents'] ) )
+				{
+					$this->contents = $properties['file']['contents'];
+				}
+			}
 
-		/* Human-readable action label */
-		switch( $this->action )
-		{
-			case self::CREATE:
-				$this->actionName = 'create';
-				break;
+			/* Replace */
+			if( isset( $properties['file']['replace'] ) )
+			{
+				Fig\Fig::validateRequiredKeys( $properties['file'], ['source'] );
 
-			case self::REPLACE:
-				$this->actionName = 'replace';
-				break;
+				$this->action = self::REPLACE;
+				$this->target = CoreFile\File::getTypedInstance( $properties['file']['replace'] );
+				$this->source = $properties['file']['source'];
+			}
 
-			case self::DELETE:
-				$this->actionName = 'delete';
-				break;
+			/* Delete */
+			if( isset( $properties['file']['delete'] ) )
+			{
+				$this->action = self::DELETE;
+				$this->target = CoreFile\File::getTypedInstance( $properties['file']['delete'] );
+			}
 
-			case self::SKIP:
-			default:
-				$this->actionName = 'skip';
-				break;
+			/* Human-readable action label */
+			switch( $this->action )
+			{
+				case self::CREATE:
+					$this->actionName = 'create';
+					break;
+
+				case self::REPLACE:
+					$this->actionName = 'replace';
+					break;
+
+				case self::DELETE:
+					$this->actionName = 'delete';
+					break;
+
+				case self::SKIP:
+				default:
+					$this->actionName = 'skip';
+					break;
+			}
 		}
 	}
 

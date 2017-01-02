@@ -339,6 +339,14 @@ PROFILE;
 			{
 				self::outputAction( $output, $outputColor );
 			}
+
+			if( $action->usesDeprecatedSyntax )
+			{
+				$deprecationWarning = new Format\String( 'WARNING: This action uses a deprecated syntax. See https://github.com/ashur/fig/wiki/Actions' );
+				$deprecationWarning->foregroundColor( 'yellow' );
+
+				echo $deprecationWarning . PHP_EOL;
+			}
 		}
 	}
 

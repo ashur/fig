@@ -8,6 +8,10 @@ All notable changes to Fig will be documented in this file.
 - man page, fig.1
 - `upgrade` command
 - Expanded `show` options
+- `action` and `path` properties to File action syntax
+
+### Deprecated
+- `action` and `path`-less File action syntax
 
 ### Fixed
 - Skip asset deletion for profiles with no assets
