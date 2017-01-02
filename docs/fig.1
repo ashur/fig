@@ -2,12 +2,12 @@
 .\"     Title: fig
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 12/31/2016
+.\"      Date: 01/02/2017
 .\"    Manual: \ \&
 .\"    Source: \ \&
 .\"  Language: English
 .\"
-.TH "FIG" "1" "12/31/2016" "\ \&" "\ \&"
+.TH "FIG" "1" "01/02/2017" "\ \&" "\ \&"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -39,7 +39,7 @@ fig \- Manage and deploy configuration profiles\&.
 \fIfig install\fR [\-\-dir=<dir>]
 \fIfig remove\fR <app>[/<profile>]
 \fIfig show\fR [\-a] [\-l] [<app>]
-\fIfig update\fR <app>/<profile>
+\fIfig snapshot\fR <app>/<profile>
 \fIfig upgrade\fR
 .fi
 .SH "DESCRIPTION"
@@ -83,7 +83,7 @@ Opens <app>/<profile>\*(Aqs YAML file in $EDITOR\&.
 .PP
 \fIinstall\fR
 .RS 4
-Symlink the Fig executable to a convenient location\&. The default location
+Symlinks the Fig executable to a convenient location\&. The default location
 /usr/local/bin
 can be overridden with
 \-\-dir=<dir>\&.
@@ -105,19 +105,19 @@ to list hidden apps or profiles (named with a leading "\&.")\&. Use option
 to list in long format\&.
 .RE
 .PP
-\fIupdate\fR
+\fIsnapshot\fR
 .RS 4
-Update profile assets from their source\&. If <app>/<profile> contains
+If <app>/<profile> contains
 \fIfile:replace\fR
-actions, Fig will essentially perform a reverse deployment copying from
-\fItarget\fR
+actions, Fig will update profile assets using their live counterparts, copying from
+\fIpath\fR
 to
 \fIsource\fR\&.
 .RE
 .PP
 \fIupgrade\fR
 .RS 4
-Fetch and install the latest version of Fig\&.
+Fetches and installs the latest version of Fig\&.
 .sp
 NOTE \(em If the local version of PHP is older than the minimum version required by the new version of Fig, the upgrade will not be performed\&.
 .RE

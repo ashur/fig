@@ -16,7 +16,7 @@ SYNOPSIS
 'fig install' [--dir=<dir>]
 'fig remove' <app>[/<profile>]
 'fig show' [-a] [-l] [<app>]
-'fig update' <app>/<profile>
+'fig snapshot' <app>/<profile>
 'fig upgrade'
 
 
@@ -56,7 +56,7 @@ the extending profile's assets.
 Opens <app>/<profile>'s YAML file in $EDITOR.
 
 'install'::
-Symlink the Fig executable to a convenient location. The default location
+Symlinks the Fig executable to a convenient location. The default location
 `/usr/local/bin` can be overridden with `--dir=<dir>`.
 
 'remove'::
@@ -68,12 +68,12 @@ Lists all local Fig apps, or a single app's profiles.
 Use option `-a` to list hidden apps or profiles (named with a leading "."). Use
 option `-l` to list in long format.
 
-'update'::
-Update profile assets from their source. If <app>/<profile> contains 'file:replace' actions, Fig will essentially perform
-a reverse deployment copying from 'target' to 'source'.
+'snapshot'::
+If <app>/<profile> contains 'file:replace' actions, Fig will update profile
+assets using their live counterparts, copying from 'path' to 'source'.
 
 'upgrade'::
-Fetch and install the latest version of Fig.
+Fetches and installs the latest version of Fig.
 +
 NOTE — If the local version of PHP is older than the minimum version required by
 the new version of Fig, the upgrade will not be performed.

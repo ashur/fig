@@ -10,6 +10,9 @@ All notable changes to Fig will be documented in this file.
 - Expanded `show` options
 - `action` and `path` properties to File action syntax
 
+### Changed
+- Renamed `update` to `snapshot`
+
 ### Deprecated
 - `action` and `path`-less File action syntax
 
