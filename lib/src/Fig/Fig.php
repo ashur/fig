@@ -548,15 +548,10 @@ PROFILE;
 	/**
 	 * Update a profile's source files using their targets
 	 *
-	 * @param	string	$appName
-	 * @param	string	$profileName
-	 * @return	void
+	 * @param	Fig\Profile	$profile
 	 */
-	public function updateProfileAssetsFromTarget( $appName, $profileName )
+	public function updateProfileAssetsFromTarget( Profile $profile )
 	{
-		$app = $this->getApp( $appName );
-		$profile = $app->getProfile( $profileName );
-
 		$profile->updateAssetsFromTarget( $this->figDirectory );
 	}
 

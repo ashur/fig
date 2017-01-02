@@ -16,9 +16,18 @@ use Cranberry\CLI\Input;
  */
 $command = new Command\Command( 'snapshot', 'Update profile assets to mirror live files', function( $query )
 {
+	$params = parseQuery( $query, '/', ['app','profile'] );
+
 	try
 	{
-		$params = parseQuery( $query, '/', ['app','profile'] );
+		$app = $this->fig->getApp( $params['app'] );
+
+		if( !isset( $params['profile'] ) )
+		{
+			throw new Command\IncorrectUsageException( $this->getUsage(), 1 );
+		}
+
+		$profile = $app->getProfile( $params['profile'] );
 
 		if( is_null( $this->getOptionValue( 'y' ) ) && is_null( $this->getOptionValue( 'yes' ) ) )
 		{
@@ -29,15 +38,11 @@ $command = new Command\Command( 'snapshot', 'Update profile assets to mirror liv
 			}
 		}
 
-		$this->fig->updateProfileAssetsFromTarget( $params['app'], $params['profile'] );
-	}
-	catch( Command\Command\IncorrectUsageException $e )
-	{
-		throw new Command\Command\IncorrectUsageException( $this->getUsage(), 1 );
+		$this->fig->updateProfileAssetsFromTarget( $profile );
 	}
 	catch( \Exception $e )
 	{
-		throw new Command\Command\CommandInvokedException( $e->getMessage(), 1 );
+		throw new Command\CommandInvokedException( $e->getMessage(), 1 );
 	}
 });
 
