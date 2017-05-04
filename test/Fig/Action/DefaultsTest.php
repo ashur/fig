@@ -33,7 +33,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 		$properties['defaults']['key'] = 'foo';
 
-		$action = new Fig\Action\Defaults( $properties );
+		$defaults = new Fig\Action\Defaults( $properties );
 	}
 
 	/**
@@ -48,7 +48,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['domain'] = $domain;
 		$properties['defaults']['key'] = 'foo';
 
-		$action = new Fig\Action\Defaults( $properties );
+		$defaults = new Fig\Action\Defaults( $properties );
 	}
 
 	/**
@@ -63,7 +63,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 		$properties['defaults']['key'] = $key;
 
-		$action = new Fig\Action\Defaults( $properties );
+		$defaults = new Fig\Action\Defaults( $properties );
 	}
 
 	/**
@@ -79,6 +79,6 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['key'] = 'foo';
 		$properties['defaults']['value'] = $value;
 
-		$action = new Fig\Action\Defaults( $properties );
+		$defaults = new Fig\Action\Defaults( $properties );
 	}
 }
