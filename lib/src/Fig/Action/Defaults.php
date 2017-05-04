@@ -62,8 +62,17 @@ class Defaults extends Action
 
 		Fig\Fig::validateRequiredKeys( $properties['defaults'], ['action','domain'] );
 
-		$this->domain = $properties['defaults']['domain'];
 		$this->setAction( $properties['defaults']['action'] );
+
+		/* Validate 'domain' value */
+		if( !is_string( $properties['defaults']['domain'] ) )
+		{
+			$stringDomain = var_export( $properties['defaults']['domain'], true );
+			$stringDomain = str_replace( PHP_EOL, ' ', $stringDomain );
+
+			throw new \InvalidArgumentException( "Invalid domain name: '{$stringDomain}'" );
+		}
+		$this->domain = $properties['defaults']['domain'];
 
 		/* Validate 'key' value */
 		if( isset( $properties['defaults']['key'] ) )
