@@ -59,7 +59,7 @@ class DefaultsTest extends TestCase
 	{
 		$properties['name'] = time();
 
-		$properties['defaults']['action'] = Fig\Action\Defaults::READ;
+		$properties['defaults']['action'] = 'read';
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 		$properties['defaults']['key'] = $key;
 
