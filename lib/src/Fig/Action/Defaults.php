@@ -78,7 +78,7 @@ class Defaults extends Action
 			$stringDomain = var_export( $properties['defaults']['domain'], true );
 			$stringDomain = str_replace( PHP_EOL, ' ', $stringDomain );
 
-			throw new \InvalidArgumentException( "Invalid domain name: '{$stringDomain}'" );
+			throw new \InvalidArgumentException( "Invalid domain: '{$stringDomain}'" );
 		}
 		$this->domain = $properties['defaults']['domain'];
 
