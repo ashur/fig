@@ -65,8 +65,17 @@ class Defaults extends Action
 		$this->domain = $properties['defaults']['domain'];
 		$this->setAction( $properties['defaults']['action'] );
 
+		/* Validate 'key' value */
 		if( isset( $properties['defaults']['key'] ) )
 		{
+			if( !is_string( $properties['defaults']['key'] ) )
+			{
+				$stringKey = var_export( $properties['defaults']['key'], true );
+				$stringKey = str_replace( PHP_EOL, ' ', $stringKey );
+
+				throw new \InvalidArgumentException( "Invalid key name: '{$stringKey}'" );
+			}
+
 			$this->key = $properties['defaults']['key'];
 		}
 
