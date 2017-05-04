@@ -25,6 +25,21 @@ class DefaultsTest extends TestCase
 	 * @dataProvider		invalidStringProvider
 	 * @expectedException	InvalidArgumentException
 	 */
+	public function testInvalidAction( $action )
+	{
+		$properties['name'] = time();
+
+		$properties['defaults']['action'] = $action;
+		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
+		$properties['defaults']['key'] = 'foo';
+
+		$action = new Fig\Action\Defaults( $properties );
+	}
+
+	/**
+	 * @dataProvider		invalidStringProvider
+	 * @expectedException	InvalidArgumentException
+	 */
 	public function testInvalidDomain( $domain )
 	{
 		$properties['name'] = time();

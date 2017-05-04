@@ -62,6 +62,14 @@ class Defaults extends Action
 
 		Fig\Fig::validateRequiredKeys( $properties['defaults'], ['action','domain'] );
 
+		/* Validate 'action' value */
+		if( !is_string( $properties['defaults']['action'] ) )
+		{
+			$stringAction = var_export( $properties['defaults']['action'], true );
+			$stringAction = str_replace( PHP_EOL, ' ', $stringAction );
+
+			throw new \InvalidArgumentException( "Invalid action name: '{$stringAction}'" );
+		}
 		$this->setAction( $properties['defaults']['action'] );
 
 		/* Validate 'domain' value */
