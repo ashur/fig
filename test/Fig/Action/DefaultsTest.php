@@ -65,4 +65,20 @@ class DefaultsTest extends TestCase
 
 		$action = new Fig\Action\Defaults( $properties );
 	}
+
+	/**
+	 * @dataProvider		invalidStringProvider
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testInvalidValue( $value )
+	{
+		$properties['name'] = time();
+
+		$properties['defaults']['action'] = 'write';
+		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
+		$properties['defaults']['key'] = 'foo';
+		$properties['defaults']['value'] = $value;
+
+		$action = new Fig\Action\Defaults( $properties );
+	}
 }

@@ -96,8 +96,17 @@ class Defaults extends Action
 			$this->key = $properties['defaults']['key'];
 		}
 
+		/* Validate 'value' value */
 		if( isset( $properties['defaults']['value'] ) )
 		{
+			if( !is_string( $properties['defaults']['value'] ) )
+			{
+				$stringValue = var_export( $properties['defaults']['value'], true );
+				$stringValue = str_replace( PHP_EOL, ' ', $stringValue );
+
+				throw new \InvalidArgumentException( "Invalid value: '{$stringValue}'" );
+			}
+
 			$this->value = $properties['defaults']['value'];
 		}
 
