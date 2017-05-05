@@ -566,7 +566,7 @@ PROFILE;
 		{
 			if( !isset( $array[$requiredKey] ) )
 			{
-				throw new \Exception( "Missing required key '{$requiredKey}'." );
+				throw new \InvalidArgumentException( "Missing required key '{$requiredKey}'." );
 			}
 		}
 	}
