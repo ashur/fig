@@ -57,12 +57,29 @@ class File extends Action
 	{
 		parent::__construct( $properties );
 
+		Fig\Fig::validateRequiredKeys( $properties, ['file'] );
+
 		if( isset( $properties['file']['action'] ) )
 		{
 			Fig\Fig::validateRequiredKeys( $properties['file'], ['action','path'] );
 
 			/* Action */
+			if( !is_string( $properties['file']['action'] ) )
+			{
+				$stringAction = var_export( $properties['file']['action'], true );
+				$stringAction = str_replace( [PHP_EOL, '  '], ' ', $stringAction );
+
+				throw new \InvalidArgumentException( "Invalid action: '{$stringAction}'" );
+			}
 			$this->actionName = strtolower( $properties['file']['action'] );
+
+			if( !is_string( $properties['file']['path'] ) )
+			{
+				$stringPath = var_export( $properties['file']['path'], true );
+				$stringPath = str_replace( [PHP_EOL, '  '], ' ', $stringPath );
+
+				throw new \InvalidArgumentException( "Invalid path: '{$stringPath}'" );
+			}
 
 			switch( $this->actionName )
 			{
@@ -90,7 +107,7 @@ class File extends Action
 					break;
 
 				default:
-					throw new \Exception( "Unsupported file action '{$this->actionName}'." );
+					throw new \DomainException( "Unsupported file action '{$this->actionName}'." );
 					break;
 			}
 
