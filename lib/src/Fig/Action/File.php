@@ -235,6 +235,8 @@ class File extends Action
 			->childDir( $this->profileName );
 
 		$pathSource = "{$assetsDirectory}/{$this->source}";
+		$pathSource = Fig\Fig::replaceVariables( $pathSource, $this->variables );
+
 		$sourceFile = CoreFile\File::getTypedInstance( $pathSource );
 
 		return $sourceFile;

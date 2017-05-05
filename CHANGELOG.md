@@ -5,6 +5,7 @@ All notable changes to Fig will be documented in this file.
 ## [Unreleased]
 ### Fixed
 - Always setting `ignore_errors`, `ignore_output` to true
+- Variable replacement in `file:source` values
 - Handling of unexpected YAML values
 
 ## [0.3.0] - 2017-01-02
