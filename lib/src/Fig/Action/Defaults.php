@@ -19,6 +19,11 @@ class Defaults extends Action
 	public $action = self::READ;
 
 	/**
+	 * @var	string
+	 */
+	public $actionName = 'read';
+
+	/**
 	 * The `defaults` command to be run
 	 *
 	 * @var	string
@@ -110,22 +115,6 @@ class Defaults extends Action
 			$this->value = $properties['defaults']['value'];
 		}
 
-		/* Human-readable action label */
-		switch( $this->action )
-		{
-			case self::READ:
-				$this->actionName = 'read';
-				break;
-
-			case self::WRITE:
-				$this->actionName = 'write';
-				break;
-
-			case self::DELETE:
-				$this->actionName = 'delete';
-				break;
-		}
-
 		/* Build command */
 		$this->command = "defaults {$this->actionName} {$this->domain}";
 		$this->commandSummary = "{$this->domain}";
@@ -196,18 +185,29 @@ class Defaults extends Action
 	 * @param	string	$action
 	 * @return	void
 	 */
-	public function setAction( $action )
+	public function setAction( $actionName )
 	{
-		$action = strtolower( $action );
+		$actionName = strtolower( $actionName );
 
-		switch( $action )
+		switch( $actionName )
 		{
+			case 'read':
+				$this->action = self::READ;
+				$this->actionName = 'read';
+				break;
+
 			case 'delete':
 				$this->action = self::DELETE;
+				$this->actionName = 'delete';
 				break;
 
 			case 'write':
 				$this->action = self::WRITE;
+				$this->actionName = 'write';
+				break;
+
+			default:
+				throw new \InvalidArgumentException( "Unsupported action type '{$actionName}'" );
 				break;
 		}
 	}
