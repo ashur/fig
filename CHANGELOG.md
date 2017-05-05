@@ -3,6 +3,9 @@
 All notable changes to Fig will be documented in this file.
 
 ## [Unreleased]
+### Fixed
+- Always setting `ignore_errors`, `ignore_output` to true
+- Handling of unexpected YAML values
 
 ## [0.3.0] - 2017-01-02
 ### Added

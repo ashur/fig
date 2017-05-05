@@ -15,12 +15,12 @@ abstract class Action
 	/**
 	 * @var	boolean
 	 */
-	protected $ignoreErrors = false;
+	public $ignoreErrors = false;
 
 	/**
 	 * @var	boolean
 	 */
-	protected $ignoreOutput = false;
+	public $ignoreOutput = false;
 
 	/**
 	 * @var	boolean
@@ -93,16 +93,16 @@ abstract class Action
 		$this->name = $properties['name'];
 
 		/* A collection of values users might use to mean `true` */
-		$affirmativeValues = [true, 'true', 'yes'];
+		$affirmativeValues = [true, 'true', 'True', 'TRUE', 'yes', 'Yes', 'YES'];
 
 		/* Ignore Errors & Output */
 		if( isset( $properties['ignore_errors'] ) )
 		{
-			$this->ignoreErrors = true;
+			$this->ignoreErrors = in_array( $properties['ignore_errors'], $affirmativeValues, true );
 		}
 		if( isset( $properties['ignore_output'] ) )
 		{
-			$this->ignoreOutput = true;
+			$this->ignoreOutput = in_array( $properties['ignore_output'], $affirmativeValues, true );
 		}
 
 		/* Privilege Escalation */
