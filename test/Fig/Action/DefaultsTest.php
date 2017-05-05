@@ -98,6 +98,19 @@ class DefaultsTest extends TestCase
 	/**
 	 * @expectedException	InvalidArgumentException
 	 */
+	public function testMissingDomain()
+	{
+		$properties['name'] = 'foo-' . time();
+
+		$properties['defaults']['action'] = 'write';
+		$properties['defaults']['key'] = 'foo';
+
+		$defaults = new Fig\Action\Defaults( $properties );
+	}
+
+	/**
+	 * @expectedException	InvalidArgumentException
+	 */
 	public function testSetInvalidAction()
 	{
 		$properties['name'] = 'foo-' . time();
