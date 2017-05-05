@@ -29,6 +29,15 @@ class Command extends Action
 
 		Fig\Fig::validateRequiredKeys( $properties, ['command'] );
 
+		/* Validate 'command' value */
+		if( !is_string( $properties['command'] ) )
+		{
+			$stringCommand = var_export( $properties['command'], true );
+			$stringCommand = str_replace( PHP_EOL, ' ', $stringCommand );
+
+			throw new \InvalidArgumentException( "Invalid command: '{$stringCommand}'" );
+		}
+
 		/*
 		 * Sanitize command string
 		 */
