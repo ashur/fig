@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of knockov
+ * This file is part of Fig
  */
 
 use PHPUnit\Framework\TestCase;
