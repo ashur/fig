@@ -88,6 +88,14 @@ class File extends Action
 
 					if( isset( $properties['file']['contents'] ) )
 					{
+						if( is_object( $properties['file']['contents'] ) )
+						{
+							$stringContents = var_export( $properties['file']['path'], true );
+							$stringContents = str_replace( [PHP_EOL, '  '], ' ', $stringContents );
+
+							throw new \InvalidArgumentException( "Invalid contents: '{$stringContents}'" );
+						}
+
 						$this->contents = $properties['file']['contents'];
 					}
 

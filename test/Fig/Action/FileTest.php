@@ -24,6 +24,18 @@ class FileTest extends TestCase
 	}
 
 	/**
+	 * Invalid file contents values
+	 *
+	 * @return	array
+	 */
+	public function invalidContentsProvider()
+	{
+		return [
+			[ (object)[] ],
+		];
+	}
+
+	/**
 	 * @expectedException	InvalidArgumentException
 	 */
 	public function testMissingFile()
@@ -41,6 +53,20 @@ class FileTest extends TestCase
 		$properties['name'] = 'foo-' . time();
 		$properties['file']['action'] = $action;
 		$properties['file']['path'] = '~/Desktop';
+
+		$file = new Fig\Action\File( $properties );
+	}
+
+	/**
+	 * @dataProvider		invalidContentsProvider
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testInvalidContents( $contents )
+	{
+		$properties['name'] = 'foo-' . time();
+		$properties['file']['action'] = 'create';
+		$properties['file']['path'] = '~/Desktop';
+		$properties['file']['contents'] = $contents;
 
 		$file = new Fig\Action\File( $properties );
 	}
