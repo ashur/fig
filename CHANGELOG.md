@@ -2,6 +2,10 @@
 
 All notable changes to Fig will be documented in this file.
 
+## Unreleased
+### Fixed
+- Validation of `file:source` values
+
 ## [0.3.1] - 2017-05-05
 ### Fixed
 - Always setting `ignore_errors`, `ignore_output` to true
