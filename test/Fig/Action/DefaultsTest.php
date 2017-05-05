@@ -27,7 +27,7 @@ class DefaultsTest extends TestCase
 	 */
 	public function testInvalidAction( $action )
 	{
-		$properties['name'] = time();
+		$properties['name'] = 'foo-' . time();
 
 		$properties['defaults']['action'] = $action;
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
@@ -42,7 +42,7 @@ class DefaultsTest extends TestCase
 	 */
 	public function testInvalidDomain( $domain )
 	{
-		$properties['name'] = time();
+		$properties['name'] = 'foo-' . time();
 
 		$properties['defaults']['action'] = 'read';
 		$properties['defaults']['domain'] = $domain;
@@ -57,7 +57,7 @@ class DefaultsTest extends TestCase
 	 */
 	public function testInvalidKey( $key )
 	{
-		$properties['name'] = time();
+		$properties['name'] = 'foo-' . time();
 
 		$properties['defaults']['action'] = 'read';
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
@@ -72,7 +72,7 @@ class DefaultsTest extends TestCase
 	 */
 	public function testInvalidValue( $value )
 	{
-		$properties['name'] = time();
+		$properties['name'] = 'foo-' . time();
 
 		$properties['defaults']['action'] = 'write';
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
