@@ -110,6 +110,14 @@ class File extends Action
 					Fig\Fig::validateRequiredKeys( $properties['file'], ['source'] );
 
 					$this->action = self::REPLACE;
+
+					if( !is_string( $properties['file']['source'] ) )
+					{
+						$stringSource = var_export( $properties['file']['source'], true );
+						$stringSource = str_replace( [PHP_EOL, '  '], ' ', $stringSource );
+
+						throw new \InvalidArgumentException( "Invalid source: '{$stringSource}'" );
+					}
 					$this->source = $properties['file']['source'];
 
 					break;

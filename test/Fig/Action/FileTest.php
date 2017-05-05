@@ -84,6 +84,19 @@ class FileTest extends TestCase
 		$file = new Fig\Action\File( $properties );
 	}
 
+	/**
+	 * @dataProvider		invalidStringProvider
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testInvalidSource( $source )
+	{
+		$properties['name'] = 'foo-' . time();
+		$properties['file']['action'] = 'replace';
+		$properties['file']['path'] = '~/Desktop';
+		$properties['file']['source'] = $source;
+
+		$file = new Fig\Action\File( $properties );
+	}
 
 	/**
 	 * @expectedException	InvalidArgumentException
