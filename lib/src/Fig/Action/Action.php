@@ -70,9 +70,11 @@ abstract class Action
 		}
 		if( !is_string( $properties['name'] ) )
 		{
-			$stringName = var_export( $properties['name'], true );
-			$stringName = str_replace( PHP_EOL, ' ', $stringName );
-
+			$stringName = json_encode( $properties['name'], true );
+			if( json_last_error() != JSON_ERROR_NONE )
+			{
+				$stringName = var_export( $properties['name'], true );
+			}
 			throw new \InvalidArgumentException( "Invalid action name: '{$stringName}'" );
 		}
 		$this->name = $properties['name'];
