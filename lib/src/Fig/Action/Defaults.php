@@ -68,7 +68,7 @@ class Defaults extends Action
 			$stringAction = var_export( $properties['defaults']['action'], true );
 			$stringAction = str_replace( PHP_EOL, ' ', $stringAction );
 
-			throw new \InvalidArgumentException( "Invalid action name: '{$stringAction}'" );
+			throw new \InvalidArgumentException( "Invalid action: '{$stringAction}'" );
 		}
 		$this->setAction( $properties['defaults']['action'] );
 
