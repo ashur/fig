@@ -78,6 +78,18 @@ abstract class Action
 	 */
 	public function __construct( array $properties )
 	{
+		/* Validate 'name' value */
+		if( !isset( $properties['name'] ) )
+		{
+			throw new \BadMethodCallException( "Missing required property 'name'." );
+		}
+		if( !is_string( $properties['name'] ) )
+		{
+			$stringName = var_export( $properties['name'], true );
+			$stringName = str_replace( PHP_EOL, ' ', $stringName );
+
+			throw new \InvalidArgumentException( "Invalid action name: '{$stringName}'" );
+		}
 		$this->name = $properties['name'];
 
 		/* A collection of values users might use to mean `true` */
