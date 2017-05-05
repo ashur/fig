@@ -15,11 +15,6 @@ class Command extends Action
 	public $command;
 
 	/**
-	 * @var	boolean
-	 */
-	protected $supportsPrivilegeEscalation = true;
-
-	/**
 	 * @var	string
 	 */
 	public $type = 'Command';
@@ -57,23 +52,7 @@ class Command extends Action
 	public function execute()
 	{
 		/* Replace variables */
-		$this->command = Fig\Fig::replaceVariables( $this->command, $this->variables );
-
-		if( $this->privilegesEscalated )
-		{
-			if( !is_null( $this->sudoPassword ) )
-			{
-				$command = "echo '{$this->sudoPassword}' | sudo -S {$this->command}";
-			}
-			else
-			{
-				$command = "sudo {$this->command}";
-			}
-		}
-		else
-		{
-			$command = $this->command;
-		}
+		$command = Fig\Fig::replaceVariables( $this->command, $this->variables );
 
 		/* Results */
 		exec( "{$command} 2>&1", $output, $exitCode );

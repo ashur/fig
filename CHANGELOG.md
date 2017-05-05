@@ -8,6 +8,9 @@ All notable changes to Fig will be documented in this file.
 - Variable replacement in `file:source` values
 - Handling of unexpected YAML values
 
+### Removed
+- Experimental privilege escalation support
+
 ## [0.3.0] - 2017-01-02
 ### Added
 - `install` command

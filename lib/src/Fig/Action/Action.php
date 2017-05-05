@@ -33,24 +33,9 @@ abstract class Action
 	public $name;
 
 	/**
-	 * @var	boolean
-	 */
-	public $privilegesEscalated = false;
-
-	/**
 	 * @var	string
 	 */
 	protected $profileName;
-
-	/**
-	 * @var	string
-	 */
-	protected $sudoPassword;
-
-	/**
-	 * @var	boolean
-	 */
-	protected $supportsPrivilegeEscalation = false;
 
 	/**
 	 * @var	string
@@ -104,15 +89,6 @@ abstract class Action
 		{
 			$this->ignoreOutput = in_array( $properties['ignore_output'], $affirmativeValues, true );
 		}
-
-		/* Privilege Escalation */
-		if( isset( $properties['sudo'] ) && $this->supportsPrivilegeEscalation )
-		{
-			if( in_array( strtolower( $properties['sudo'] ), $affirmativeValues ) )
-			{
-				$this->privilegesEscalated = true;
-			}
-		}
 	}
 
 	/**
@@ -147,14 +123,6 @@ abstract class Action
 	public function setProfileName( $profileName )
 	{
 		$this->profileName = $profileName;
-	}
-
-	/**
-	 * @param	string	$sudoPassword
-	 */
-	public function setSudoPassword( $sudoPassword )
-	{
-		$this->sudoPassword = $sudoPassword;
 	}
 
 	/**

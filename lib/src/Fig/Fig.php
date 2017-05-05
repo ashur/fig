@@ -28,11 +28,6 @@ class Fig
 	protected $figDirectory;
 
 	/**
-	 * @var	string
-	 */
-	protected $sudoPassword;
-
-	/**
 	 * @return	void
 	 */
 	public function __construct( File\Directory $figDirectory )
@@ -288,13 +283,6 @@ PROFILE;
 			$outputColor = 'green';
 			$actionTitle = $action->getTitle();
 
-			/* Privilege escalation */
-			if( $action->privilegesEscalated )
-			{
-				$action->setSudoPassword( $this->sudoPassword );
-				$actionTitle = "{$actionTitle} 🔑 ";
-			}
-
 			/* Set Fig directory for 'file' actions */
 			if( $action->usesFigDirectory )
 			{
@@ -535,14 +523,6 @@ PROFILE;
 
 		$category = strtoupper( $category );
 		echo sprintf( "%'*-80s", "{$category}: {$title} " ) . PHP_EOL;
-	}
-
-	/**
-	 * @param	string	$sudoPassword
-	 */
-	public function setSudoPassword( $sudoPassword )
-	{
-		$this->sudoPassword = $sudoPassword;
 	}
 
 	/**

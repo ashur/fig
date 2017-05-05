@@ -22,9 +22,6 @@ $commandDeploy = new Command\Command( 'deploy', 'Deploy a profile', function( $q
 		throw new Command\IncorrectUsageException( $this->getUsage(), 1 );
 	}
 
-	/* Privilege escalation */
-	$this->fig->setSudoPassword( $this->getOptionValue( 'sudo-pass' ) );
-
 	try
 	{
 		$this->fig->deployProfile( $params['app'], $params['profile'] );
@@ -40,17 +37,6 @@ $commandDeploy = new Command\Command( 'deploy', 'Deploy a profile', function( $q
 	}
 });
 
-$commandDeploy->registerOption( 'sudo-pass' );
-
-$usageDeploy = <<<USAGE
-deploy <app>/<profile> [options]
-
-OPTIONS
-     --sudo-pass=<password>
-         privilege escalation password
-
-USAGE;
-
-$commandDeploy->setUsage( $usageDeploy );
+$commandDeploy->setUsage( 'deploy <app>/<profile> [options]' );
 
 return $commandDeploy;
