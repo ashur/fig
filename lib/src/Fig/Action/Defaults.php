@@ -65,6 +65,8 @@ class Defaults extends Action
 	{
 		parent::__construct( $properties );
 
+		Fig\Fig::validateRequiredKeys( $properties, ['defaults'] );
+
 		/* Validate 'defaults' definition */
 		if( !is_array( $properties['defaults'] ) )
 		{
