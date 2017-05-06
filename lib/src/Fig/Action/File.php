@@ -59,6 +59,15 @@ class File extends Action
 
 		Fig\Fig::validateRequiredKeys( $properties, ['file'] );
 
+		/* Validate 'file' definition */
+		if( !is_array( $properties['file'] ) )
+		{
+			$stringFile = var_export( $properties['file'], true );
+			$stringFile = str_replace( PHP_EOL, ' ', $stringFile );
+
+			throw new \InvalidArgumentException( "Invalid 'file' action definition: '{$stringFile}'" );
+		}
+
 		if( isset( $properties['file']['action'] ) )
 		{
 			Fig\Fig::validateRequiredKeys( $properties['file'], ['action','path'] );

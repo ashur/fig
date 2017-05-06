@@ -9,6 +9,21 @@ use PHPUnit\Framework\TestCase;
 class FileTest extends TestCase
 {
 	/**
+	 * Invalid values for `file` value
+	 *
+	 * @return	array
+	 */
+	public function invalidFileValueProvider()
+	{
+		return [
+			[ 'string' ],
+			[ false ],
+			[ 1234 ],
+			[ (object)[] ],
+		];
+	}
+
+	/**
 	 * Non-string values
 	 *
 	 * @return	array
@@ -33,6 +48,18 @@ class FileTest extends TestCase
 		return [
 			[ (object)[] ],
 		];
+	}
+
+	/**
+	 * @dataProvider		invalidFileValueProvider
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testInvalidFileDefinition( $file )
+	{
+		$properties['name'] = 'foo-' . time();
+		$properties['file'] = $file;
+
+		$action = new Fig\Action\File( $properties );
 	}
 
 	/**
