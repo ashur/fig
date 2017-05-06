@@ -9,6 +9,21 @@ use PHPUnit\Framework\TestCase;
 class DefaultsTest extends TestCase
 {
 	/**
+	 * Invalid values for `defaults` value
+	 *
+	 * @return	array
+	 */
+	public function invalidDefaultsValueProvider()
+	{
+		return [
+			[ 'string' ],
+			[ false ],
+			[ 1234 ],
+			[ (object)[] ],
+		];
+	}
+
+	/**
 	 * Non-string values
 	 *
 	 * @return	array
@@ -34,6 +49,18 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['key'] = 'foo';
 
 		$defaults = new Fig\Action\Defaults( $properties );
+	}
+
+	/**
+	 * @dataProvider		invalidDefaultsValueProvider
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testInvalidDefaultsDefinition( $defaults )
+	{
+		$properties['name'] = 'foo-' . time();
+		$properties['defaults'] = $defaults;
+
+		$action = new Fig\Action\Defaults( $properties );
 	}
 
 	/**

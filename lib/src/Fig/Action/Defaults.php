@@ -65,6 +65,15 @@ class Defaults extends Action
 	{
 		parent::__construct( $properties );
 
+		/* Validate 'defaults' definition */
+		if( !is_array( $properties['defaults'] ) )
+		{
+			$stringDefaults = var_export( $properties['defaults'], true );
+			$stringDefaults = str_replace( PHP_EOL, ' ', $stringDefaults );
+
+			throw new \InvalidArgumentException( "Invalid 'defaults' action definition: '{$stringDefaults}'" );
+		}
+
 		Fig\Fig::validateRequiredKeys( $properties['defaults'], ['action','domain'] );
 
 		/* Validate 'action' value */
