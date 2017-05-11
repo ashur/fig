@@ -58,7 +58,7 @@ class ActionTest extends TestCase
 	}
 
 	/**
-	 * @expectedException	BadMethodCallException
+	 * @expectedException	InvalidArgumentException
 	 */
 	public function testMissingName()
 	{

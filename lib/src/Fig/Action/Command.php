@@ -25,32 +25,28 @@ class Command extends Action
 	 */
 	public function __construct( array $properties )
 	{
-		parent::__construct( $properties );
-
-		Fig\Fig::validateRequiredKeys( $properties, ['command'] );
-
-		/* Validate 'command' value */
-		if( !is_string( $properties['command'] ) )
-		{
-			$stringCommand = var_export( $properties['command'], true );
-			$stringCommand = str_replace( PHP_EOL, ' ', $stringCommand );
-
-			throw new \InvalidArgumentException( "Invalid command: '{$stringCommand}'" );
-		}
-
 		/*
-		 * Sanitize command string
+		 * Define properties
 		 */
-		$sanitizedCommand = $properties['command'];
-		$sanitizedCommand = trim( $sanitizedCommand );
-
-		/* Strip trailing semicolon, which subverts output/error handling */
-		if( substr( $sanitizedCommand, -1 ) == ';' )
+		$this->defineProperty( 'command', true, 'self::isStringish', function( $value )
 		{
-			$sanitizedCommand = substr( $sanitizedCommand, 0, strlen( $sanitizedCommand ) - 1 );
-		}
+			/*
+			 * Sanitize command string
+			 */
+			$sanitizedCommand = $value;
+			$sanitizedCommand = trim( $sanitizedCommand );
 
-		$this->command = $sanitizedCommand;
+			/* Strip trailing semicolon, which subverts output/error handling */
+			if( substr( $sanitizedCommand, -1 ) == ';' )
+			{
+				$sanitizedCommand = substr( $sanitizedCommand, 0, strlen( $sanitizedCommand ) - 1 );
+			}
+
+			$this->command = $sanitizedCommand;
+
+		});
+
+		parent::__construct( $properties );
 	}
 
 	/**

@@ -5,7 +5,7 @@
  */
 namespace Fig\Action;
 
-abstract class Action
+abstract class Action extends \Fig\Model
 {
 	/**
 	 * @var	string
@@ -55,7 +55,7 @@ abstract class Action
 	/**
 	 * @var	array
 	 */
-	protected $variables=[];
+	protected $variables = [];
 
 	/**
 	 * @param	array	$properties
@@ -63,34 +63,36 @@ abstract class Action
 	 */
 	public function __construct( array $properties )
 	{
-		/* Validate 'name' value */
-		if( !isset( $properties['name'] ) )
+		/*
+		 * Define object properties shared by all Actions
+		 */
+		$this->defineProperty( 'name', true, 'self::isStringish' );
+
+		$this->defineProperty( 'ignore_errors', false, 'self::isBooleanish', function( $value )
 		{
-			throw new \BadMethodCallException( "Missing required property 'name'." );
-		}
-		if( !is_string( $properties['name'] ) )
-		{
-			$stringName = json_encode( $properties['name'], true );
-			if( json_last_error() != JSON_ERROR_NONE )
+			if( is_bool( $value ) )
 			{
-				$stringName = var_export( $properties['name'], true );
+				$this->ignoreErrors = $value;
+				return;
 			}
-			throw new \InvalidArgumentException( "Invalid action name: '{$stringName}'" );
-		}
-		$this->name = $properties['name'];
 
-		/* A collection of values users might use to mean `true` */
-		$affirmativeValues = [true, 'true', 'True', 'TRUE', 'yes', 'Yes', 'YES'];
+			$value = strtolower( $value );
+			$this->ignoreErrors = in_array( $value, $this->truthyValues, true ) ? true : false;
+		});
 
-		/* Ignore Errors & Output */
-		if( isset( $properties['ignore_errors'] ) )
+		$this->defineProperty( 'ignore_output', false, 'self::isBooleanish', function( $value )
 		{
-			$this->ignoreErrors = in_array( $properties['ignore_errors'], $affirmativeValues, true );
-		}
-		if( isset( $properties['ignore_output'] ) )
-		{
-			$this->ignoreOutput = in_array( $properties['ignore_output'], $affirmativeValues, true );
-		}
+			if( is_bool( $value ) )
+			{
+				$this->ignoreOutput = $value;
+				return;
+			}
+
+			$value = strtolower( $value );
+			$this->ignoreOutput = in_array( $value, $this->truthyValues, true ) ? true : false;
+		});
+
+		$this->setPropertyValues( $properties );
 	}
 
 	/**

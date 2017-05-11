@@ -63,70 +63,59 @@ class Defaults extends Action
 	 */
 	public function __construct( array $properties )
 	{
-		parent::__construct( $properties );
+		/*
+		 * Validate 'defaults' definition before continuing.
+		 *
+		 * Since 'defaults' is not stored as a property of the Defaults object, we
+		 * don't use `defineProperty` or `setPropertyValues` for validation.
+		 */
+		if( !isset( $properties['defaults'] ) )
+		{
+			throw new \InvalidArgumentException( "Missing required property 'defaults'." );
+		}
 
-		Fig\Fig::validateRequiredKeys( $properties, ['defaults'] );
-
-		/* Validate 'defaults' definition */
 		if( !is_array( $properties['defaults'] ) )
 		{
-			$stringDefaults = var_export( $properties['defaults'], true );
-			$stringDefaults = str_replace( PHP_EOL, ' ', $stringDefaults );
-
-			throw new \InvalidArgumentException( "Invalid 'defaults' action definition: '{$stringDefaults}'" );
-		}
-
-		Fig\Fig::validateRequiredKeys( $properties['defaults'], ['action','domain'] );
-
-		/* Validate 'action' value */
-		if( !is_string( $properties['defaults']['action'] ) )
-		{
-			$stringAction = var_export( $properties['defaults']['action'], true );
-			$stringAction = str_replace( PHP_EOL, ' ', $stringAction );
-
-			throw new \InvalidArgumentException( "Invalid action: '{$stringAction}'" );
-		}
-		$this->setAction( $properties['defaults']['action'] );
-
-		/* Validate 'domain' value */
-		if( !is_string( $properties['defaults']['domain'] ) )
-		{
-			$stringDomain = var_export( $properties['defaults']['domain'], true );
-			$stringDomain = str_replace( PHP_EOL, ' ', $stringDomain );
-
-			throw new \InvalidArgumentException( "Invalid domain: '{$stringDomain}'" );
-		}
-		$this->domain = $properties['defaults']['domain'];
-
-		/* Validate 'key' value */
-		if( isset( $properties['defaults']['key'] ) )
-		{
-			if( !is_string( $properties['defaults']['key'] ) )
+			$stringValue = json_encode( $properties['defaults'], true );
+			if( json_last_error() != JSON_ERROR_NONE )
 			{
-				$stringKey = var_export( $properties['defaults']['key'], true );
-				$stringKey = str_replace( PHP_EOL, ' ', $stringKey );
+				$stringValue = var_export( $properties['defaults'], true );
+			}
+			throw new \InvalidArgumentException( "Invalid value for 'defaults': '{$stringValue}'" );
+		}
 
-				throw new \InvalidArgumentException( "Invalid key name: '{$stringKey}'" );
+		/*
+		 * Flatten 'defaults' properties with top-level properties, then validate
+		 */
+		$defaultsProperties = array_merge( $properties, $properties['defaults']);
+		unset( $defaultsProperties['defaults'] );
+
+		/* 'action' */
+		$this->defineProperty( 'action', true, function( $value )
+		{
+			if( !is_string( $value ) )
+			{
+				return false;
 			}
 
-			$this->key = $properties['defaults']['key'];
-		}
+			return in_array( strtolower( $value ), ['read', 'write', 'delete'] );
 
-		/* Validate 'value' value */
-		if( isset( $properties['defaults']['value'] ) )
-		{
-			if( !is_string( $properties['defaults']['value'] ) )
-			{
-				$stringValue = var_export( $properties['defaults']['value'], true );
-				$stringValue = str_replace( PHP_EOL, ' ', $stringValue );
+		}, array( $this, 'setAction' ));
 
-				throw new \InvalidArgumentException( "Invalid value: '{$stringValue}'" );
-			}
+		/* 'domain' */
+		$this->defineProperty( 'domain', true, 'self::isStringish' );
 
-			$this->value = $properties['defaults']['value'];
-		}
+		/* 'key' */
+		$this->defineProperty( 'key', false, 'self::isStringish' );
 
-		/* Build command */
+		/* 'value' */
+		$this->defineProperty( 'value', false, 'self::isStringish' );
+
+		parent::__construct( $defaultsProperties );
+
+		/*
+		 * Build command
+		 */
 		$this->command = "defaults {$this->actionName} {$this->domain}";
 		$this->commandSummary = "{$this->domain}";
 
@@ -215,10 +204,6 @@ class Defaults extends Action
 			case 'write':
 				$this->action = self::WRITE;
 				$this->actionName = 'write';
-				break;
-
-			default:
-				throw new \InvalidArgumentException( "Unsupported action type '{$actionName}'" );
 				break;
 		}
 	}
