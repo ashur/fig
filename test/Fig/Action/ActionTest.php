@@ -36,6 +36,8 @@ class ActionTest extends TestCase
 		return [
 			[ [] ],
 			[ (object)[] ],
+			[ false ],
+			[ true ],
 		];
 	}
 
@@ -138,5 +140,31 @@ class ActionTest extends TestCase
 		$properties['defaults']['key'] = 'foo';
 
 		$defaults = new Fig\Action\Defaults( $properties );
+	}
+
+	/**
+	 * @dataProvider		validStringProvider
+	 */
+	public function testValidName( $name )
+	{
+		$properties['name'] = $name;
+		$properties['command'] = 'echo hello';
+
+		$action = new Fig\Action\Command( $properties );
+
+		$this->assertEquals( $name, $action->name );
+	}
+
+	/**
+	 * String-ish values
+	 *
+	 * @return	array
+	 */
+	public function validStringProvider()
+	{
+		return [
+			[ 'hello' ],
+			[ time() ],
+		];
 	}
 }
