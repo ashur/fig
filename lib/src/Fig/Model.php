@@ -28,16 +28,21 @@ class Model
 
 	/**
 	 * @param	string		$name
-	 * @param	boolean		$required
+	 * @param	mixed		$required		boolean or callable
 	 * @param	callable	$validator
 	 * @param	callable	$setter
 	 * @return	void
 	 */
 	public function defineProperty( $name, $required, callable $validator, callable $setter=null )
 	{
+		if( !is_callable( $required ) )
+		{
+			$required = $required === true;
+		}
+
 		$definition = [
 			'name' => $name,
-			'required' => $required === true,
+			'required' => $required,
 			'validator' => $validator,
 			'setter' => $setter
 		];
@@ -120,7 +125,16 @@ class Model
 			}
 			else
 			{
-				if( $propertyDefinition['required'] == true )
+				if( is_callable( $propertyDefinition['required'] ) )
+				{
+					$propertyIsRequired = call_user_func( $propertyDefinition['required'] );
+				}
+				else
+				{
+					$propertyIsRequired = $propertyDefinition['required'];
+				}
+
+				if( $propertyIsRequired )
 				{
 					$missingPropertyMessage = sprintf( FIG::STRING_MISSING_REQUIRED_PROPERTY, $propertyName );
 					throw new \InvalidArgumentException( $missingPropertyMessage );

@@ -23,6 +23,34 @@ class ModelTest extends TestCase
 	/**
 	 * @return	array
 	 */
+	public function optionalPropertyProvider()
+	{
+		return [
+			[false],
+			[function()
+			{
+				return false;
+			}]
+		];
+	}
+
+	/**
+	 * @return	array
+	 */
+	public function requiredPropertyProvider()
+	{
+		return [
+			[true],
+			[function()
+			{
+				return true;
+			}]
+		];
+	}
+
+	/**
+	 * @return	array
+	 */
 	public function validPropertyDefinitionProvider()
 	{
 		return [
@@ -74,6 +102,31 @@ class ModelTest extends TestCase
 		$model->setPropertyValues( $properties );
 
 		$this->assertEquals( 'FIG', $model->name );
+	}
+
+	/**
+	 * @dataProvider		optionalPropertyProvider
+	 */
+	public function testDefineOptionalProperty( $required )
+	{
+		$model = new Fig\Model();
+		$model->defineProperty( 'name', $required, 'self::isStringish' );
+
+		$properties = [ 'foo' => 'bar' ];
+		$model->setPropertyValues( $properties );
+	}
+
+	/**
+	 * @dataProvider		requiredPropertyProvider
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testDefineRequiredProperty( $required )
+	{
+		$model = new Fig\Model();
+		$model->defineProperty( 'name', $required, 'self::isStringish' );
+
+		$properties = [ 'foo' => 'bar' ];
+		$model->setPropertyValues( $properties );
 	}
 
 	/**
