@@ -71,7 +71,8 @@ class Defaults extends Action
 		 */
 		if( !isset( $properties['defaults'] ) )
 		{
-			throw new \InvalidArgumentException( "Missing required property 'defaults'." );
+			$missingPropertyMessage = sprintf( \Fig\Fig::STRING_MISSING_REQUIRED_PROPERTY, 'defaults' );
+			throw new \InvalidArgumentException( $missingPropertyMessage );
 		}
 
 		if( !is_array( $properties['defaults'] ) )
@@ -81,7 +82,9 @@ class Defaults extends Action
 			{
 				$stringValue = var_export( $properties['defaults'], true );
 			}
-			throw new \InvalidArgumentException( "Invalid value for 'defaults': '{$stringValue}'" );
+
+			$invalidPropertyMessage = sprintf( \Fig\Fig::STRING_INVALID_PROPERTY_VALUE, 'defaults', $stringValue );
+			throw new \InvalidArgumentException( $invalidPropertyMessage );
 		}
 
 		/*

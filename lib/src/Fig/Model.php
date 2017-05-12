@@ -97,7 +97,9 @@ class Model
 					{
 						$stringValue = var_export( $propertyValue, true );
 					}
-					throw new \InvalidArgumentException( "Invalid value for {$propertyName}: '{$stringValue}'" );
+
+					$invalidPropertyMessage = sprintf( Fig::STRING_INVALID_PROPERTY_VALUE, $propertyName, $stringValue );
+					throw new \InvalidArgumentException( $invalidPropertyMessage );
 				}
 
 				/* Set property value */
@@ -120,7 +122,8 @@ class Model
 			{
 				if( $propertyDefinition['required'] == true )
 				{
-					throw new \InvalidArgumentException( "Missing required property '{$propertyName}'." );
+					$missingPropertyMessage = sprintf( FIG::STRING_MISSING_REQUIRED_PROPERTY, $propertyName );
+					throw new \InvalidArgumentException( $missingPropertyMessage );
 				}
 			}
 		}

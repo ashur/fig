@@ -12,6 +12,9 @@ use Spyc;
 
 class Fig
 {
+	const STRING_INVALID_PROPERTY_VALUE = "Invalid value for property '%s': %s";
+	const STRING_MISSING_REQUIRED_PROPERTY = "Missing required property '%s'";
+
 	/**
 	 * @var	array
 	 */
