@@ -137,7 +137,19 @@ class FileTest extends TestCase
 	}
 
 	/**
-	 * @expectedException	DomainException
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testMissingSource()
+	{
+		$properties['name'] = 'foo-' . time();
+		$properties['file']['action'] = 'replace';
+		$properties['file']['path'] = '~/Desktop';
+
+		$file = new Fig\Action\File( $properties );
+	}
+
+	/**
+	 * @expectedException	InvalidArgumentException
 	 */
 	public function testUnsupportedAction()
 	{

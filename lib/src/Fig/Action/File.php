@@ -36,6 +36,11 @@ class File extends Action
 	protected $figDirectory;
 
 	/**
+	 * @var	boolean
+	 */
+	protected $propertySourceIsRequired=false;
+
+	/**
 	 * @var	Huxtable\Core\File\File
 	 */
 	protected $target;
@@ -55,147 +60,70 @@ class File extends Action
 	 */
 	public function __construct( array $properties )
 	{
-		parent::__construct( $properties );
-
-		Fig\Fig::validateRequiredKeys( $properties, ['file'] );
-
-		/* Validate 'file' definition */
-		if( !is_array( $properties['file'] ) )
+		/*
+		 * Validate 'file' definition before continuing.
+		 *
+		 * Since 'file' is not stored as a property of the Defaults object, we
+		 * don't use `defineProperty` or `setPropertyValues` for validation.
+		 */
+		if( !isset( $properties['file'] ) )
 		{
-			$stringFile = var_export( $properties['file'], true );
-			$stringFile = str_replace( PHP_EOL, ' ', $stringFile );
-
-			throw new \InvalidArgumentException( "Invalid 'file' action definition: '{$stringFile}'" );
+			$missingPropertyMessage = sprintf( \Fig\Fig::STRING_MISSING_REQUIRED_PROPERTY, 'file' );
+			throw new \InvalidArgumentException( $missingPropertyMessage );
 		}
 
-		if( isset( $properties['file']['action'] ) )
+		if( !is_array( $properties['file'] ) )
 		{
-			Fig\Fig::validateRequiredKeys( $properties['file'], ['action','path'] );
-
-			/* Action */
-			if( !is_string( $properties['file']['action'] ) )
+			$stringValue = json_encode( $properties['file'], true );
+			if( json_last_error() != JSON_ERROR_NONE )
 			{
-				$stringAction = var_export( $properties['file']['action'], true );
-				$stringAction = str_replace( [PHP_EOL, '  '], ' ', $stringAction );
-
-				throw new \InvalidArgumentException( "Invalid action: '{$stringAction}'" );
-			}
-			$this->actionName = strtolower( $properties['file']['action'] );
-
-			if( !is_string( $properties['file']['path'] ) )
-			{
-				$stringPath = var_export( $properties['file']['path'], true );
-				$stringPath = str_replace( [PHP_EOL, '  '], ' ', $stringPath );
-
-				throw new \InvalidArgumentException( "Invalid path: '{$stringPath}'" );
+				$stringValue = var_export( $properties['file'], true );
 			}
 
-			switch( $this->actionName )
-			{
-				case 'create':
-					$this->action = self::CREATE;
-
-					if( isset( $properties['file']['contents'] ) )
-					{
-						if( is_object( $properties['file']['contents'] ) )
-						{
-							$stringContents = var_export( $properties['file']['path'], true );
-							$stringContents = str_replace( [PHP_EOL, '  '], ' ', $stringContents );
-
-							throw new \InvalidArgumentException( "Invalid contents: '{$stringContents}'" );
-						}
-
-						$this->contents = $properties['file']['contents'];
-					}
-
-					break;
-
-				case 'delete':
-					$this->action = self::DELETE;
-
-					break;
-
-				case 'replace':
-					Fig\Fig::validateRequiredKeys( $properties['file'], ['source'] );
-
-					$this->action = self::REPLACE;
-
-					if( !is_string( $properties['file']['source'] ) )
-					{
-						$stringSource = var_export( $properties['file']['source'], true );
-						$stringSource = str_replace( [PHP_EOL, '  '], ' ', $stringSource );
-
-						throw new \InvalidArgumentException( "Invalid source: '{$stringSource}'" );
-					}
-					$this->source = $properties['file']['source'];
-
-					break;
-
-				default:
-					throw new \DomainException( "Unsupported file action '{$this->actionName}'." );
-					break;
-			}
-
-			$this->target = CoreFile\File::getTypedInstance( $properties['file']['path'] );
+			$invalidPropertyMessage = sprintf( \Fig\Fig::STRING_INVALID_PROPERTY_VALUE, 'file', $stringValue );
+			throw new \InvalidArgumentException( $invalidPropertyMessage );
 		}
 
 		/*
-		 * Deprecated
+		 * Flatten 'file' properties with top-level properties, then validate
 		 */
-		else
+		$fileProperties = array_merge( $properties, $properties['file']);
+		unset( $fileProperties['file'] );
+
+		/* 'action' */
+		$this->defineProperty( 'action', true, function( $value )
 		{
-			$this->usesDeprecatedSyntax = true;
-
-			/* Create */
-			if( isset( $properties['file']['create'] ) )
+			if( !is_string( $value ) )
 			{
-				$this->action = self::CREATE;
-				$this->target = CoreFile\File::getTypedInstance( $properties['file']['create'] );
-
-				if( isset( $properties['file']['contents'] ) )
-				{
-					$this->contents = $properties['file']['contents'];
-				}
+				return false;
 			}
 
-			/* Replace */
-			if( isset( $properties['file']['replace'] ) )
-			{
-				Fig\Fig::validateRequiredKeys( $properties['file'], ['source'] );
+			return in_array( strtolower( $value ), ['create', 'replace', 'delete'] );
 
-				$this->action = self::REPLACE;
-				$this->target = CoreFile\File::getTypedInstance( $properties['file']['replace'] );
-				$this->source = $properties['file']['source'];
-			}
+		}, array( $this, 'setAction' ));
 
-			/* Delete */
-			if( isset( $properties['file']['delete'] ) )
-			{
-				$this->action = self::DELETE;
-				$this->target = CoreFile\File::getTypedInstance( $properties['file']['delete'] );
-			}
+		/* 'path' */
+		$this->defineProperty( 'path', true, 'self::isStringish', function( $value )
+		{
+			$this->target = CoreFile\File::getTypedInstance( $value );
+		});
 
-			/* Human-readable action label */
-			switch( $this->action )
-			{
-				case self::CREATE:
-					$this->actionName = 'create';
-					break;
+		/* 'contents' */
+		$this->defineProperty( 'contents', false, function( $value )
+		{
+			/* `file_put_contents` accepts strings or arrays */
+			return self::isStringish( $value ) || is_array( $value );
+		});
 
-				case self::REPLACE:
-					$this->actionName = 'replace';
-					break;
+		/* 'source' */
+		$this->defineProperty( 'source', function()
+		{
+			/* This property is only required for `file:replace` actions */
+			return $this->propertySourceIsRequired;
 
-				case self::DELETE:
-					$this->actionName = 'delete';
-					break;
+		}, 'is_string' );
 
-				case self::SKIP:
-				default:
-					$this->actionName = 'skip';
-					break;
-			}
-		}
+		parent::__construct( $fileProperties );
 	}
 
 	/**
@@ -293,6 +221,35 @@ class File extends Action
 		$title = Fig\Fig::replaceVariables( $title, $this->variables );
 
 		return $title;
+	}
+
+	/**
+	 * @param	string	$actionName
+	 * @return	void
+	 */
+	public function setAction( $actionName )
+	{
+		$actionName = strtolower( $actionName );
+
+		switch( $actionName )
+		{
+			case 'create':
+				$this->action = self::CREATE;
+				$this->actionName = 'create';
+				break;
+
+			case 'delete':
+				$this->action = self::DELETE;
+				$this->actionName = 'delete';
+				break;
+
+			case 'replace':
+				$this->action = self::REPLACE;
+				$this->actionName = 'replace';
+
+				$this->propertySourceIsRequired = true;
+				break;
+		}
 	}
 
 	/**
