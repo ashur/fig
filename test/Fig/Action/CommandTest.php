@@ -3,6 +3,7 @@
 /*
  * This file is part of Fig
  */
+namespace Fig\Action;
 
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +28,7 @@ class CommandTest extends TestCase
 	public function testMissingCommand()
 	{
 		$properties['name'] = 'foo-' . time();
-		$action = new Fig\Action\Command( $properties );
+		$action = new Command( $properties );
 	}
 
 	/**
@@ -39,6 +40,6 @@ class CommandTest extends TestCase
 		$properties['name'] = 'foo-' . time();
 		$properties['command'] = $command;
 
-		$action = new Fig\Action\Command( $properties );
+		$action = new Command( $properties );
 	}
 }

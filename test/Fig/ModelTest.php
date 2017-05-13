@@ -3,6 +3,7 @@
 /*
  * This file is part of Fig
  */
+namespace Fig;
 
 use PHPUnit\Framework\TestCase;
 
@@ -66,7 +67,7 @@ class ModelTest extends TestCase
 	 */
 	public function testDefinePropertyWithInvalidValue( $name, $required, $validator, $value )
 	{
-		$model = new Fig\Model();
+		$model = new Model();
 		$model->defineProperty( $name, $required, $validator );
 
 		$properties = [ $name => $value ];
@@ -78,7 +79,7 @@ class ModelTest extends TestCase
 	 */
 	public function testDefinePropertyWithValidValue( $name, $required, $validator, $value )
 	{
-		$model = new Fig\Model();
+		$model = new Model();
 		$model->defineProperty( $name, $required, $validator );
 
 		$properties = [ $name => $value ];
@@ -92,7 +93,7 @@ class ModelTest extends TestCase
 	 */
 	public function testDefinePropertyWithCustomSetter()
 	{
-		$model = new Fig\Model();
+		$model = new Model();
 		$model->defineProperty( 'name', false, 'self::isStringish', function( $value )
 		{
 			$this->name = strtoupper( $value );
@@ -109,7 +110,7 @@ class ModelTest extends TestCase
 	 */
 	public function testDefineOptionalProperty( $required )
 	{
-		$model = new Fig\Model();
+		$model = new Model();
 		$model->defineProperty( 'name', $required, 'self::isStringish' );
 
 		$properties = [ 'foo' => 'bar' ];
@@ -122,7 +123,7 @@ class ModelTest extends TestCase
 	 */
 	public function testDefineRequiredProperty( $required )
 	{
-		$model = new Fig\Model();
+		$model = new Model();
 		$model->defineProperty( 'name', $required, 'self::isStringish' );
 
 		$properties = [ 'foo' => 'bar' ];
@@ -134,7 +135,7 @@ class ModelTest extends TestCase
 	 */
 	public function testMissingRequiredPropertyThrowsException()
 	{
-		$model = new Fig\Model();
+		$model = new Model();
 
 		$model->defineProperty( 'name', true, 'self::isStringish' );
 		$model->defineProperty( 'optional', false, 'self::isStringish' );

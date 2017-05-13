@@ -3,6 +3,7 @@
 /*
  * This file is part of Fig
  */
+namespace Fig\Action;
 
 use PHPUnit\Framework\TestCase;
 
@@ -48,7 +49,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 		$properties['defaults']['key'] = 'foo';
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 	}
 
 	/**
@@ -60,7 +61,7 @@ class DefaultsTest extends TestCase
 		$properties['name'] = 'foo-' . time();
 		$properties['defaults'] = $defaults;
 
-		$action = new Fig\Action\Defaults( $properties );
+		$action = new Defaults( $properties );
 	}
 
 	/**
@@ -75,7 +76,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['domain'] = $domain;
 		$properties['defaults']['key'] = 'foo';
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 	}
 
 	/**
@@ -90,7 +91,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 		$properties['defaults']['key'] = $key;
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 	}
 
 	/**
@@ -106,7 +107,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['key'] = 'foo';
 		$properties['defaults']['value'] = $value;
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 	}
 
 	/**
@@ -119,7 +120,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 		$properties['defaults']['key'] = 'foo';
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 	}
 
 	/**
@@ -128,7 +129,7 @@ class DefaultsTest extends TestCase
 	public function testMissingDefaults()
 	{
 		$properties['name'] = 'foo-' . time();
-		$action = new Fig\Action\Defaults( $properties );
+		$action = new Defaults( $properties );
 	}
 
 	/**
@@ -141,7 +142,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['action'] = 'write';
 		$properties['defaults']['key'] = 'foo';
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 	}
 
 	/**
@@ -154,7 +155,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['action'] = 'foo-action';
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 	}
 
 	/**
@@ -167,7 +168,7 @@ class DefaultsTest extends TestCase
 		$properties['defaults']['action'] = $actionName;
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 
 		$this->assertEquals( $action, $defaults->action );
 		$this->assertEquals( $actionName, $defaults->actionName );
@@ -179,9 +180,9 @@ class DefaultsTest extends TestCase
 	public function validActionProvider()
 	{
 		return [
-			['read', Fig\Action\Defaults::READ],
-			['write', Fig\Action\Defaults::WRITE],
-			['delete', Fig\Action\Defaults::DELETE],
+			['read', Defaults::READ],
+			['write', Defaults::WRITE],
+			['delete', Defaults::DELETE],
 		];
 	}
 }

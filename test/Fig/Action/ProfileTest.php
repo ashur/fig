@@ -3,6 +3,7 @@
 /*
  * This file is part of Fig
  */
+namespace Fig\Action;
 
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +33,7 @@ class ProfileTest extends TestCase
 		$properties['name'] = 'foo-' . time();
 		$properties['include'] = $include;
 
-		$action = new Fig\Action\Profile( $properties );
+		$action = new Profile( $properties );
 	}
 
 	/**
@@ -43,7 +44,7 @@ class ProfileTest extends TestCase
 		$properties['name'] = 'foo-' . time();
 		$properties['include'] = $include;
 
-		$action = new Fig\Action\Profile( $properties );
+		$action = new Profile( $properties );
 
 		$this->assertEquals( $include, $action->getIncludedProfileName() );
 	}

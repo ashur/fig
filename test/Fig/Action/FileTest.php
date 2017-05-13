@@ -3,6 +3,7 @@
 /*
  * This file is part of Fig
  */
+namespace Fig\Action;
 
 use PHPUnit\Framework\TestCase;
 
@@ -59,7 +60,7 @@ class FileTest extends TestCase
 		$properties['name'] = 'foo-' . time();
 		$properties['file'] = $file;
 
-		$action = new Fig\Action\File( $properties );
+		$action = new File( $properties );
 	}
 
 	/**
@@ -68,7 +69,7 @@ class FileTest extends TestCase
 	public function testMissingFile()
 	{
 		$properties['name'] = 'foo-' . time();
-		$action = new Fig\Action\File( $properties );
+		$action = new File( $properties );
 	}
 
 	/**
@@ -81,7 +82,7 @@ class FileTest extends TestCase
 		$properties['file']['action'] = $action;
 		$properties['file']['path'] = '~/Desktop';
 
-		$file = new Fig\Action\File( $properties );
+		$file = new File( $properties );
 	}
 
 	/**
@@ -95,7 +96,7 @@ class FileTest extends TestCase
 		$properties['file']['path'] = '~/Desktop';
 		$properties['file']['contents'] = $contents;
 
-		$file = new Fig\Action\File( $properties );
+		$file = new File( $properties );
 	}
 
 	/**
@@ -108,7 +109,7 @@ class FileTest extends TestCase
 		$properties['file']['action'] = 'create';
 		$properties['file']['path'] = $path;
 
-		$file = new Fig\Action\File( $properties );
+		$file = new File( $properties );
 	}
 
 	/**
@@ -122,7 +123,7 @@ class FileTest extends TestCase
 		$properties['file']['path'] = '~/Desktop';
 		$properties['file']['source'] = $source;
 
-		$file = new Fig\Action\File( $properties );
+		$file = new File( $properties );
 	}
 
 	/**
@@ -133,7 +134,7 @@ class FileTest extends TestCase
 		$properties['name'] = 'foo-' . time();
 		$properties['file']['action'] = 'create';
 
-		$file = new Fig\Action\File( $properties );
+		$file = new File( $properties );
 	}
 
 	/**
@@ -145,7 +146,7 @@ class FileTest extends TestCase
 		$properties['file']['action'] = 'replace';
 		$properties['file']['path'] = '~/Desktop';
 
-		$file = new Fig\Action\File( $properties );
+		$file = new File( $properties );
 	}
 
 	/**
@@ -157,6 +158,6 @@ class FileTest extends TestCase
 		$properties['file']['action'] = 'foo';
 		$properties['file']['path'] = '~/Desktop';
 
-		$file = new Fig\Action\File( $properties );
+		$file = new File( $properties );
 	}
 }

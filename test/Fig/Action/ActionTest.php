@@ -3,6 +3,7 @@
 /*
  * This file is part of Fig
  */
+namespace Fig\Action;
 
 use PHPUnit\Framework\TestCase;
 
@@ -68,7 +69,7 @@ class ActionTest extends TestCase
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 		$properties['defaults']['key'] = 'foo';
 
-		$action = new Fig\Action\Defaults( $properties );
+		$action = new Defaults( $properties );
 	}
 
 	/**
@@ -80,7 +81,7 @@ class ActionTest extends TestCase
 		$properties['command'] = 'echo hello';
 		$properties['ignore_errors'] = $ignoreErrors;
 
-		$action = new Fig\Action\Command( $properties );
+		$action = new Command( $properties );
 
 		$this->assertTrue( $action->ignoreErrors );
 	}
@@ -94,7 +95,7 @@ class ActionTest extends TestCase
 		$properties['command'] = 'echo hello';
 		$properties['ignore_errors'] = $ignoreErrors;
 
-		$action = new Fig\Action\Command( $properties );
+		$action = new Command( $properties );
 
 		$this->assertFalse( $action->ignoreErrors );
 	}
@@ -108,7 +109,7 @@ class ActionTest extends TestCase
 		$properties['command'] = 'echo hello';
 		$properties['ignore_output'] = $ignoreOutput;
 
-		$action = new Fig\Action\Command( $properties );
+		$action = new Command( $properties );
 
 		$this->assertTrue( $action->ignoreOutput );
 	}
@@ -122,7 +123,7 @@ class ActionTest extends TestCase
 		$properties['command'] = 'echo hello';
 		$properties['ignore_output'] = $ignoreOutput;
 
-		$action = new Fig\Action\Command( $properties );
+		$action = new Command( $properties );
 
 		$this->assertFalse( $action->ignoreOutput );
 	}
@@ -139,7 +140,7 @@ class ActionTest extends TestCase
 		$properties['defaults']['domain'] = 'co.cabreramade.Fig';
 		$properties['defaults']['key'] = 'foo';
 
-		$defaults = new Fig\Action\Defaults( $properties );
+		$defaults = new Defaults( $properties );
 	}
 
 	/**
@@ -150,7 +151,7 @@ class ActionTest extends TestCase
 		$properties['name'] = $name;
 		$properties['command'] = 'echo hello';
 
-		$action = new Fig\Action\Command( $properties );
+		$action = new Command( $properties );
 
 		$this->assertEquals( $name, $action->name );
 	}
