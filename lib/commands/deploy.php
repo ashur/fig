@@ -37,6 +37,6 @@ $commandDeploy = new Command\Command( 'deploy', 'Deploy a profile', function( $q
 	}
 });
 
-$commandDeploy->setUsage( 'deploy <app>/<profile> [options]' );
+$commandDeploy->setUsage( 'deploy <app>/<profile>' );
 
 return $commandDeploy;
