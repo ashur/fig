@@ -30,11 +30,15 @@ class Profile extends Action
 	 */
 	public function __construct( array $properties )
 	{
+		/*
+		 * Define properties
+		 */
+		$this->defineProperty( 'include', true, 'self::isStringish', function( $value )
+		{
+			$this->includedProfileName = $value;
+		});
+
 		parent::__construct( $properties );
-
-		Fig\Fig::validateRequiredKeys( $properties, ['include'] );
-
-		$this->includedProfileName = $properties['include'];
 	}
 
 	/**
@@ -54,6 +58,7 @@ class Profile extends Action
 
 	/**
 	 * A stub, since we don't need to print out profile inclusion actions
+	 *
 	 * @return	string
 	 */
 	public function getTitle(){}
