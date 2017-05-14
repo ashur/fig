@@ -38,7 +38,7 @@ class Profile extends Action
 			$this->includedProfileName = $value;
 		});
 
-		parent::__construct( $properties );
+		$this->setPropertyValues( $properties );
 	}
 
 	/**

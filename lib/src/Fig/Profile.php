@@ -148,7 +148,6 @@ class Profile
 			/* Include */
 			if( isset( $profileItem['include'] ) )
 			{
-				$profileItem['name'] = "import {$profileItem['include']}";
 				$action = new Action\Profile( $profileItem );
 			}
 			/* Actions */

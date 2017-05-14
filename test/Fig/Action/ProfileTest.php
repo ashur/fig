@@ -30,9 +30,7 @@ class ProfileTest extends TestCase
 	 */
 	public function testInvalidIncludeDefinition( $include )
 	{
-		$properties['name'] = 'foo-' . time();
 		$properties['include'] = $include;
-
 		$action = new Profile( $properties );
 	}
 
@@ -41,9 +39,7 @@ class ProfileTest extends TestCase
 	 */
 	public function testValidIncludeDefinition( $include )
 	{
-		$properties['name'] = 'foo-' . time();
 		$properties['include'] = $include;
-
 		$action = new Profile( $properties );
 
 		$this->assertEquals( $include, $action->getIncludedProfileName() );
