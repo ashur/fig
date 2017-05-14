@@ -8,7 +8,7 @@ namespace Fig;
 use Cranberry\Core\File;
 use Fig\Action;
 
-class Profile
+class Profile extends Model
 {
 	const ASSETS_DIRNAME = 'assets';
 
@@ -43,8 +43,16 @@ class Profile
 	 */
 	public function __construct( $name, $appName )
 	{
-		$this->name = $name;
-		$this->appName = $appName;
+		/*
+		 * Define properties
+		 */
+		$this->defineProperty( 'name', true, 'self::isStringish' );
+		$this->defineProperty( 'appName', true, 'self::isStringish' );
+
+		$properties['name'] = $name;
+		$properties['appName'] = $appName;
+
+		$this->setPropertyValues( $properties );
 	}
 
 	/**
