@@ -69,31 +69,30 @@ class Profile extends Model
 	}
 
 	/**
-	 * Apply this profile's properties to a parent profile
-	 *   then return the resulting profile object
+	 * Apply the child $profile's properties to this object then return the result
 	 *
-	 * @param	Fig\Profile		$profile
+	 * @param	Fig\Profile		$childProfile
 	 * @return	Fig\Profile
 	 */
-	public function extendWith( Profile $profile )
+	public function extendWith( Profile $childProfile )
 	{
 		$extendedProfile = clone $this;
 
 		// A profile cannot extend itself
-		if( $extendedProfile->getName() == $profile->getName() )
+		if( $extendedProfile->getName() == $childProfile->getName() )
 		{
 			$extendedProfile->setParentName( null );
 			return $extendedProfile;
 		}
 
 		/* Rename */
-		$extendedProfile->setName( $profile->getName() );
+		$extendedProfile->setName( $childProfile->getName() );
 
 		/*
 		 * Actions
 		 */
 		/* Add extending profile's actions */
-		$actions = $profile->getActions();
+		$actions = $childProfile->getActions();
 		foreach( $actions as $action )
 		{
 			$action->setVariables( $this->variables );
@@ -106,7 +105,7 @@ class Profile extends Model
 		}
 
 		/* Variables */
-		$profileVariables = $profile->getVariables();
+		$profileVariables = $childProfile->getVariables();
 		$extendedProfile->setVariables( $profileVariables );
 
 		return $extendedProfile;
