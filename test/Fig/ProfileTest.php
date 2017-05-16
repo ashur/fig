@@ -105,4 +105,45 @@ class ProfileTest extends TestCase
 		$name = 'foo-profile-' . time();
 		$profile = new Profile( $name, $appName );
 	}
+
+	/**
+	 * @dataProvider		invalidStringProvider
+	 */
+	public function testSetInvalidVariableValue( $variable )
+	{
+		$profile = new Profile( 'profile', 'app' );
+
+		$variables['foo'] = $variable;
+		$profile->setVariables( $variables );
+
+		$this->assertEquals( [], $profile->getVariables() );
+	}
+
+	/**
+	 * @dataProvider		validVariableValueProvider
+	 */
+	public function testSetValidVariableValue( $variable )
+	{
+		$profile = new Profile( 'profile', 'app' );
+
+		$variables['foo'] = $variable;
+		$profile->setVariables( $variables );
+
+		$this->assertEquals( $variables, $profile->getVariables() );
+	}
+
+	/**
+	 * Scalar values
+	 *
+	 * @return	array
+	 */
+	public function validVariableValueProvider()
+	{
+		return [
+			[ 'foo' ],
+			[ time() ],
+			[ true ],
+			[ false ],
+		];
+	}
 }
