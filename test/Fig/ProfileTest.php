@@ -22,6 +22,70 @@ class ProfileTest extends TestCase
 		];
 	}
 
+	public function testExtendWithUsesChildName()
+	{
+		$appName = 'app-' . time();
+
+		/* Parent */
+		$parentName = 'profile-parent';
+		$parentProfile = new Profile( $parentName, $appName );
+
+		/* Child */
+		$childName = 'profile-child';
+		$childProfile = new Profile( $childName, $appName );
+
+		/* Extended */
+		$extendedProfile = $parentProfile->extendWith( $childProfile );
+
+		$this->assertEquals( $childName, $extendedProfile->getName() );
+	}
+
+	public function testExtendWithInheritsParentVariables()
+	{
+		$appName = 'app-' . time();
+
+		/* Parent */
+		$parentVariables['boo'] = 'far';
+		$parentVariables['foo'] = 'bar';
+
+		$parentProfile = new Profile( 'profile-parent', $appName );
+		$parentProfile->setVariables( $parentVariables );
+
+		/* Child */
+		$childProfile = new Profile( 'profile-child', $appName );
+
+		/* Extended */
+		$extendedProfile = $parentProfile->extendWith( $childProfile );
+
+		$this->assertEquals( $parentVariables, $extendedProfile->getVariables() );
+	}
+
+	public function testExtendWithChildAndParentVariables()
+	{
+		$appName = 'app-' . time();
+
+		/* Parent */
+		$parentVariables['foo'] = 'parent-foo';
+		$parentVariables['bar'] = 'parent-bar';
+
+		$parentProfile = new Profile( 'profile-parent', $appName );
+		$parentProfile->setVariables( $parentVariables );
+
+		/* Child */
+		$childVariables['foo'] = 'child-foo';
+
+		$childProfile = new Profile( 'profile-child', $appName );
+		$childProfile->setVariables( $childVariables );
+
+		/* Extended */
+		$extendedVariables['foo'] = $childVariables['foo'];
+		$extendedVariables['bar'] = $parentVariables['bar'];
+
+		$extendedProfile = $parentProfile->extendWith( $childProfile );
+
+		$this->assertEquals( $extendedVariables, $extendedProfile->getVariables() );
+	}
+
 	/**
 	 * @dataProvider		invalidStringProvider
 	 * @expectedException	InvalidArgumentException
