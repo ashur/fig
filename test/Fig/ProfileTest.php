@@ -22,6 +22,32 @@ class ProfileTest extends TestCase
 		];
 	}
 
+	/**
+	 * Adding an Action to a Profile should set profileName and appName
+	 */
+	public function testAddingActionSetsProfileAndAppNames()
+	{
+		$profileName = 'foo-profile';
+		$appName = 'bar-app';
+
+		$profile = new Profile( $profileName, $appName );
+
+		$action = new Action\Command
+		([
+			'name'		=> 'baz-action',
+			'command'	=> 'echo hello'
+		] );
+
+		$profile->addAction( $action );
+		$actions = $profile->getActions();
+
+		$this->assertTrue( is_array( $actions ) );
+		$this->assertEquals( 1, count( $actions ) );
+
+		$this->assertEquals( $profileName, $actions[0]->getProfileName() );
+		$this->assertEquals( $appName, $actions[0]->getAppName() );
+	}
+
 	public function testExtendWithUsesChildName()
 	{
 		$appName = 'app-' . time();

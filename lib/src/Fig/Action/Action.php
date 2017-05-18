@@ -105,10 +105,27 @@ abstract class Action extends \Fig\Model
 	/**
 	 * @return	string
 	 */
+	public function getAppName()
+	{
+		return $this->appName;
+	}
+
+	/**
+	 * @return	string
+	 */
+	public function getProfileName()
+	{
+		return $this->profileName;
+	}
+
+	/**
+	 * @return	string
+	 */
 	abstract public function getTitle();
 
 	/**
-	 * Called when adding action to profile
+	 * Called when adding action to profile; used primarily by Fig\Action\File,
+	 *    but made available to all Action\Action classes
 	 *
 	 * @param	string	$appName
 	 * @return	void
@@ -119,7 +136,8 @@ abstract class Action extends \Fig\Model
 	}
 
 	/**
-	 * Called when adding action to profile
+	 * Called when adding action to profile; used primarily by Fig\Action\File,
+	 *    but made available to all Action\Action classes
 	 *
 	 * @param	string	$profileName
 	 * @return	void
