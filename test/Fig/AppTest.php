@@ -28,21 +28,6 @@ class AppTest extends TestCase
 	}
 
 	/**
-	 * Valid $name values
-	 *
-	 * @return	array
-	 */
-	public function validNameProvider()
-	{
-		return [
-			[ 'foo-' . time() ],
-			[ 'föö-bar' ],
-			[ '😋' ],
-			[ time() ],
-		];
-	}
-
-	/**
 	 * @dataProvider		invalidNameProvider
 	 * @expectedException	InvalidArgumentException
 	 */
@@ -58,5 +43,20 @@ class AppTest extends TestCase
 	{
 		$app = new App( $name );
 		$this->assertEquals( $name, $app->getName() );
+	}
+
+	/**
+	 * Valid $name values
+	 *
+	 * @return	array
+	 */
+	public function validNameProvider()
+	{
+		return [
+			[ 'foo-' . time() ],
+			[ 'föö-bar' ],
+			[ '😋' ],
+			[ time() ],
+		];
 	}
 }
