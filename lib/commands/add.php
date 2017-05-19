@@ -18,6 +18,10 @@ use Cranberry\CLI\Input;
 $command = new Command\Command( 'add', 'Create apps and profiles', function( $query )
 {
 	$params = parseQuery( $query, '/', ['app','profile'] );
+	if( !isset( $params['app'] ) )
+	{
+		throw new Command\CommandInvokedException( "Missing app name in '{$query}'. See 'fig --help add'.", 1 );
+	}
 
 	$shouldAddProfile = isset( $params['profile'] );
 
@@ -67,7 +71,14 @@ $command = new Command\Command( 'add', 'Create apps and profiles', function( $qu
 		/* Create from scratch */
 		else
 		{
-			$app = $this->fig->createApp( $params['app'] );
+			try
+			{
+				$app = $this->fig->createApp( $params['app'] );
+			}
+			catch( \InvalidArgumentException $e )
+			{
+				throw new Command\CommandInvokedException( $e->getMessage(), 1 );
+			}
 
 			$stringAppName = new Format\String( $params['app'] );
 			$stringAppName->foregroundColor( 'green' );

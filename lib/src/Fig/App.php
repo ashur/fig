@@ -8,7 +8,7 @@ namespace Fig;
 use Cranberry\Core\File;
 use Fig\Action\Action;
 
-class App
+class App extends Model
 {
 	/**
 	 * @var	string
@@ -26,7 +26,32 @@ class App
 	 */
 	public function __construct( $name )
 	{
-		$this->name = $name;
+		/*
+		 * Define object properties
+		 */
+		$this->defineProperty( 'name', true, function( $value )
+		{
+			if( !$this->isStringish( $value ) )
+			{
+				return false;
+			}
+
+			$invalidCharacters = ['/', '\\', ':', ' '];
+			foreach( $invalidCharacters as $invalidCharacter )
+			{
+				if( substr_count( $value, $invalidCharacter ) > 0 )
+				{
+					$invalidCharactersString = sprintf( '"%s"', implode( '', $invalidCharacters ) );
+					$invalidPropertyMessage = sprintf( "Invalid app name '{$value}': Contains one or more invalid characters, {$invalidCharactersString}" );
+
+					throw new \InvalidArgumentException( $invalidPropertyMessage );
+				}
+			}
+
+			return true;
+		});
+
+		$this->setPropertyValues( ['name' => $name] );
 	}
 
 	/**

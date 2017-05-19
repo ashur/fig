@@ -73,11 +73,15 @@ class Fig
 	/**
 	 * Create an template app folder
 	 *
-	 * @param	string	$appName
+	 * @param	string	$newAppName
 	 * @return	Fig\App
 	 */
-	public function createApp( $appName )
+	public function createApp( $newAppName )
 	{
+		/* Create new instance to validate $newAppName value */
+		$app = new App( $newAppName );
+		$appName = $app->getName();
+
 		$appDir = $this->figDirectory->childDir( $appName );
 
 		if( $appDir->exists() )
