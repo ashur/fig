@@ -113,6 +113,22 @@ class ProfileTest extends TestCase
 	}
 
 	/**
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testIncludingSelfThrowsException()
+	{
+		$profileName = 'foo-profile-' . time();
+		$profile = new Profile ( $profileName, 'foo-app' );
+
+		$action = new Action\Profile([
+			'name'	=> 'test include action',
+			'include'	=> $profileName,
+		]);
+
+		$profile->addAction( $action );
+	}
+
+	/**
 	 * @dataProvider		invalidStringProvider
 	 * @expectedException	InvalidArgumentException
 	 */

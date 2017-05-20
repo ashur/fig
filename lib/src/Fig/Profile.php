@@ -61,6 +61,14 @@ class Profile extends Model
 	 */
 	public function addAction( Action\Action $action )
 	{
+		if( $action instanceof Action\Profile )
+		{
+			if( $this->name == $action->getIncludedProfileName() )
+			{
+				throw new \InvalidArgumentException( "Profile '{$this->name}' cannot include itself" );
+			}
+		}
+
 		$action->setAppName( $this->appName );
 		$action->setProfileName( $this->name );
 
