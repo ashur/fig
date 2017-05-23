@@ -7,7 +7,7 @@ All notable changes to Fig will be documented in this file.
 - Support for nested variable definitions in multi-level `include`s
 
 ### Fixed
-- Validation of `file:source` values
+- Validation of profile and action definitions
 
 ## [0.3.1] - 2017-05-05
 ### Fixed
