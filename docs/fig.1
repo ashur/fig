@@ -39,7 +39,6 @@ fig \- Manage and deploy configuration profiles\&.
 \fIfig remove\fR <app>[/<profile>]
 \fIfig show\fR [\-a] [\-l] [<app>]
 \fIfig snapshot\fR <app>/<profile>
-\fIfig upgrade\fR
 .fi
 .SH "DESCRIPTION"
 .sp
@@ -104,11 +103,4 @@ actions, Fig will update profile assets using their live counterparts, copying f
 \fIpath\fR
 to
 \fIsource\fR\&.
-.RE
-.PP
-\fIupgrade\fR
-.RS 4
-Fetches and installs the latest version of Fig\&.
-.sp
-NOTE \(em If the local version of PHP is older than the minimum version required by the new version of Fig, the upgrade will not be performed\&.
 .RE

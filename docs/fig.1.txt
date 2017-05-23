@@ -16,7 +16,6 @@ SYNOPSIS
 'fig remove' <app>[/<profile>]
 'fig show' [-a] [-l] [<app>]
 'fig snapshot' <app>/<profile>
-'fig upgrade'
 
 
 DESCRIPTION
@@ -66,9 +65,3 @@ option `-l` to list in long format.
 'snapshot'::
 If <app>/<profile> contains 'file:replace' actions, Fig will update profile
 assets using their live counterparts, copying from 'path' to 'source'.
-
-'upgrade'::
-Fetches and installs the latest version of Fig.
-+
-NOTE — If the local version of PHP is older than the minimum version required by
-the new version of Fig, the upgrade will not be performed.
