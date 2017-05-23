@@ -11,6 +11,10 @@ All notable changes to Fig will be documented in this file.
 
 ### Fixed
 - Validation of profile and action definitions
+- Prevent profile from including itself
+
+### Removed
+- `action` and `path`-less File action syntax
 
 ## [0.3.1] - 2017-05-05
 ### Fixed
