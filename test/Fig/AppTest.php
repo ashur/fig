@@ -10,6 +10,33 @@ use PHPUnit\Framework\TestCase;
 class AppTest extends TestCase
 {
 	/**
+	 * Create test fixtures
+	 */
+	static public function setUpBeforeClass()
+	{
+		$fixturesPath = dirname( dirname( __FILE__ ) ) . '/fixtures';
+		$fixturesDirectory = new \Cranberry\Core\File\Directory( $fixturesPath );
+
+		$fixturesDirectory->create();
+
+		/* App directory */
+		$appName = 'app';
+		$appDirectory = $fixturesDirectory->childDir( $appName );
+		$appDirectory->create();
+
+		/* Profile */
+		$profileFile = $appDirectory->child( 'profile-date.yml' );
+		$profileContents = <<<PROFILE
+# a test profile
+---
+
+- name: show date
+  command: date
+PROFILE;
+		$profileFile->putContents( $profileContents );
+	}
+
+	/**
 	 * Invalid $name values;
 	 *
 	 * @return	array
@@ -45,6 +72,21 @@ class AppTest extends TestCase
 		$this->assertEquals( $profile, $app->getProfile( $profileName ) );
 
 		return $app;
+	}
+
+	/**
+	 * @dataProvider	validProfileFileProvider
+	 */
+	public function testAddProfileFile( \Cranberry\Core\File\File $profileFile )
+	{
+		$appName = 'foo';
+		$app = new App( $appName );
+
+		$app->addProfileFile( $profileFile );
+		$profileName = $profileFile->getBasename( '.yml' );
+
+		$profile = $app->getProfile( $profileName );
+		$this->assertEquals( $profileName, $profile->getName() );
 	}
 
 	/**
@@ -280,5 +322,38 @@ class AppTest extends TestCase
 			[ '😋' ],
 			[ time() ],
 		];
+	}
+
+	/**
+	 * @return	array
+	 */
+	public function validProfileFileProvider()
+	{
+		$fixturesPath = dirname( dirname( __FILE__ ) ) . '/fixtures';
+		$fixturesDirectory = new \Cranberry\Core\File\Directory( $fixturesPath );
+
+		$appName = 'app';
+		$appDirectory = $fixturesDirectory->childDir( $appName );
+
+		// Only .yml files
+		$fileFilter = new \Cranberry\Core\File\Filter();
+		$fileFilter->setDefaultMethod( \Cranberry\Core\File\Filter::METHOD_INCLUDE );
+		$fileFilter->includeFileExtension( 'yml' );
+
+		/* Profiles */
+		$profileFiles = $appDirectory->children( $fileFilter );
+
+		return [$profileFiles];
+	}
+
+	/**
+	 * Tear down fixtures
+	 */
+	static public function tearDownAfterClass()
+	{
+		$fixturesPath = dirname( dirname( __FILE__ ) ) . '/fixtures';
+		$fixturesDirectory = new \Cranberry\Core\File\Directory( $fixturesPath );
+
+		$fixturesDirectory->delete();
 	}
 }

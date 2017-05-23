@@ -6,6 +6,9 @@ All notable changes to Fig will be documented in this file.
 ### Added
 - Support for nested variable definitions in multi-level `include`s
 
+### Changed
+- Lazy-load profile definition files
+
 ### Fixed
 - Validation of profile and action definitions
 

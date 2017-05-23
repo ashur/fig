@@ -16,9 +16,17 @@ class App extends Model
 	protected $name;
 
 	/**
+	 * Array of Fig\Profile objects
 	 * @var	array
 	 */
 	protected $profiles=[];
+
+	/**
+	 * Array of Cranberry\Core\File\File objects
+	 *
+	 * @var	array
+	 */
+	protected $profileFiles=[];
 
 	/**
 	 * @param	string	$name
@@ -67,6 +75,17 @@ class App extends Model
 	}
 
 	/**
+	 * Register a profile definition file, for possible later instantiation
+	 *
+	 * @param	Cranberry\Core\File\File	$profileFile
+	 */
+	public function addProfileFile( File\File $profileFile )
+	{
+		$profileName = $profileFile->getBasename( '.yml' );
+		$this->profileFiles[$profileName] = $profileFile;
+	}
+
+	/**
 	 * @param	Huxtable\Core\File\Directory	$dirApp
 	 * @return	Fig\App
 	 */
@@ -85,8 +104,7 @@ class App extends Model
 
 		foreach( $profileFiles as $profileFile )
 		{
-			$profile = Profile::getInstanceFromFile( $profileFile );
-			$app->addProfile( $profile );
+			$app->addProfileFile( $profileFile );
 		}
 
 		return $app;
@@ -108,7 +126,17 @@ class App extends Model
 	{
 		if( !isset( $this->profiles[$profileName] ) )
 		{
-			throw new \OutOfRangeException( "Profile '{$this->name}/{$profileName}' not found." );
+			if( !isset( $this->profileFiles[$profileName] ) )
+			{
+				throw new \OutOfRangeException( "Profile '{$this->name}/{$profileName}' not found." );
+			}
+
+			/* Lazy-load profile from file */
+			else
+			{
+				$profile = Profile::getInstanceFromFile( $this->profileFiles[$profileName] );
+				$this->addProfile( $profile );
+			}
 		}
 
 		$profile = $this->profiles[$profileName];

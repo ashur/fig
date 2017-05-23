@@ -11,3 +11,4 @@ Autoloader::register();
 
 /* Vendor autoloading */
 include_once( "{$projectDir}/vendor/cranberry/cli/autoload.php" );
+include_once( "{$projectDir}/vendor/spyc/Spyc.php" );
