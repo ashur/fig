@@ -13,7 +13,6 @@ SYNOPSIS
 'fig add' <app>/<profile>
 'fig deploy' <app>/<profile>
 'fig edit' <app>/<profile>
-'fig install' [--dir=<dir>]
 'fig remove' <app>[/<profile>]
 'fig show' [-a] [-l] [<app>]
 'fig snapshot' <app>/<profile>
@@ -54,10 +53,6 @@ the extending profile's assets.
 
 'edit'::
 Opens <app>/<profile>'s YAML file in $EDITOR.
-
-'install'::
-Symlinks the Fig executable to a convenient location. The default location
-`/usr/local/bin` can be overridden with `--dir=<dir>`.
 
 'remove'::
 Deletes top-level apps and all their profiles, or just individual profiles.

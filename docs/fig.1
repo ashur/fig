@@ -2,12 +2,12 @@
 .\"     Title: fig
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/02/2017
+.\"      Date: 05/23/2017
 .\"    Manual: \ \&
 .\"    Source: \ \&
 .\"  Language: English
 .\"
-.TH "FIG" "1" "01/02/2017" "\ \&" "\ \&"
+.TH "FIG" "1" "05/23/2017" "\ \&" "\ \&"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -36,7 +36,6 @@ fig \- Manage and deploy configuration profiles\&.
 \fIfig add\fR <app>/<profile>
 \fIfig deploy\fR <app>/<profile>
 \fIfig edit\fR <app>/<profile>
-\fIfig install\fR [\-\-dir=<dir>]
 \fIfig remove\fR <app>[/<profile>]
 \fIfig show\fR [\-a] [\-l] [<app>]
 \fIfig snapshot\fR <app>/<profile>
@@ -79,14 +78,6 @@ actions will use the extending profile\(cqs assets\&.
 \fIedit\fR
 .RS 4
 Opens <app>/<profile>\*(Aqs YAML file in $EDITOR\&.
-.RE
-.PP
-\fIinstall\fR
-.RS 4
-Symlinks the Fig executable to a convenient location\&. The default location
-/usr/local/bin
-can be overridden with
-\-\-dir=<dir>\&.
 .RE
 .PP
 \fIremove\fR
