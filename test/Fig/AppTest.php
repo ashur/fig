@@ -329,6 +329,12 @@ PROFILE;
 	 */
 	public function validProfileFileProvider()
 	{
+		/*
+		 * Hack for PHPUnit: dataProvider methods seem to be called *before*
+		 *    setUpBeforeClass
+		 */
+		self::setUpBeforeClass();
+
 		$fixturesPath = dirname( dirname( __FILE__ ) ) . '/fixtures';
 		$fixturesDirectory = new \Cranberry\Core\File\Directory( $fixturesPath );
 
