@@ -208,7 +208,14 @@ class App extends Model
 	 */
 	public function getProfiles()
 	{
-		return $this->profiles;
+		$profiles = $this->profiles;
+
+		foreach( $this->profileFiles as $profileName => $profileFile )
+		{
+			$profiles[$profileName] = $this->getProfile( $profileName );
+		}
+
+		return $profiles;
 	}
 
 	/**

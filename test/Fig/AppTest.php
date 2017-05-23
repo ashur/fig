@@ -171,6 +171,26 @@ PROFILE;
 	}
 
 	/**
+	 * @dataProvider	validProfileFileProvider
+	 */
+	public function testGetProfilesFromProfileFiles( \Cranberry\Core\File\File $profileFile )
+	{
+		$appName = 'foo';
+		$app = new App( $appName );
+
+		$app->addProfileFile( $profileFile );
+		$profileName = $profileFile->getBasename( '.yml' );
+
+		$profiles = $app->getProfiles();
+
+		$this->assertTrue( is_array( $profiles ) );
+		$this->assertEquals( 1, count( $profiles ) );
+
+		$profile = $profiles[$profileName];
+		$this->assertEquals( $profileName, $profile->getName() );
+	}
+
+	/**
 	 *
 	 */
 	public function testGetProfileActions()
