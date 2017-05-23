@@ -140,15 +140,11 @@ class App extends Model
 		}
 
 		$profile = $this->profiles[$profileName];
+
+		/* Perform recursive profile extending */
 		while( !is_null( $profile->getParentName() ) )
 		{
-			$parentProfileName = $profile->getParentName();
-			if( !isset( $this->profiles[$parentProfileName] ) )
-			{
-				throw new \OutOfRangeException( "Profile '{$this->name}/{$parentProfileName}' not found." );
-			}
-
-			$parentProfile = $this->profiles[$parentProfileName];
+			$parentProfile = $this->getProfile( $profile->getParentName() );
 			$profile = $parentProfile->extendWith( $profile );
 		}
 
