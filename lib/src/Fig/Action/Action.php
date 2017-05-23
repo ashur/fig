@@ -124,6 +124,14 @@ abstract class Action extends \Fig\Model
 	abstract public function getTitle();
 
 	/**
+	 * @return	array
+	 */
+	public function getVariables()
+	{
+		return $this->variables;
+	}
+
+	/**
 	 * Called when adding action to profile; used primarily by Fig\Action\File,
 	 *    but made available to all Action\Action classes
 	 *
@@ -153,6 +161,9 @@ abstract class Action extends \Fig\Model
 	 */
 	public function setVariables( array $variables )
 	{
-		$this->variables = $variables;
+		foreach( $variables as $key => $value )
+		{
+			$this->variables[$key] = $value;
+		}
 	}
 }

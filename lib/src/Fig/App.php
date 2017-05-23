@@ -128,6 +128,54 @@ class App extends Model
 	}
 
 	/**
+	 * @param	string	$profileName
+	 * @return	array	Array of Fig\Action\Action objects
+	 */
+	public function getProfileActions( $profileName )
+	{
+		$profile = $this->getProfile( $profileName );
+		$profileActions = $profile->getActions();
+		$profileVariables = $profile->getVariables();
+
+		do
+		{
+			$didExpandExternalAction = false;
+
+			for( $paOffset = 0; $paOffset < count( $profileActions ); $paOffset++ )
+			{
+				$profileAction = $profileActions[$paOffset];
+
+				/* $profile is 'include'-ing an external Profile */
+				if( $profileAction instanceof \Fig\Action\Profile )
+				{
+					/* Replace Action\Profile object with included Profile's Actions */
+					$includedProfileName = $profileAction->getIncludedProfileName();
+					$includedProfile = $this->getProfile( $includedProfileName );
+					$includedProfileActions = $includedProfile->getActions();
+					$includedProfileVariables = $includedProfile->getVariables();
+
+					/* Merge variables, preferring the top-level Profile */
+					$profileVariables = array_merge( $includedProfileVariables, $profileVariables );
+
+					foreach( $includedProfileActions as &$includedProfileAction )
+					{
+						$includedProfileAction->setVariables( $profileVariables );
+					}
+
+					array_splice( $profileActions, $paOffset, 1, $includedProfileActions );
+
+					/* The new Actions may 'include' Profiles themselves, so take another pass */
+					$didExpandExternalAction = true;
+					break 1;
+				}
+			}
+		}
+		while( $didExpandExternalAction == true );
+
+		return $profileActions;
+	}
+
+	/**
 	 * @return	array
 	 */
 	public function getProfiles()

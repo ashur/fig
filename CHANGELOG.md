@@ -3,6 +3,9 @@
 All notable changes to Fig will be documented in this file.
 
 ## Unreleased
+### Added
+- Support for nested variable definitions in multi-level `include`s
+
 ### Fixed
 - Validation of `file:source` values
 

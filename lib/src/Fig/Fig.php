@@ -273,12 +273,11 @@ PROFILE;
 	public function deployProfile( $appName, $profileName, array $variables=null )
 	{
 		$app = $this->getApp( $appName );
-		$profile = $app->getProfile( $profileName );
 
 		/*
 		 * Actions
 		 */
-		$actions = $profile->getActions();
+		$actions = $app->getProfileActions( $profileName );
 		foreach( $actions as $action )
 		{
 			/* Variables */
@@ -294,22 +293,6 @@ PROFILE;
 			if( $action->usesFigDirectory )
 			{
 				$action->setFigDirectory( $this->figDirectory );
-			}
-
-			/*
-			 * Deploy included Profile
-			 *
-			 * NOTE: 'include' actions will not produce output on their own, so
-			 *   we skip that portion of the show
-			 */
-			if( $action->includesProfile )
-			{
-				$includedProfileName = $action->getIncludedProfileName();
-				$profileVariables = $profile->getVariables();
-
-				$this->deployProfile( $appName, $includedProfileName, $profileVariables );
-
-				continue;
 			}
 
 			self::outputActionTitle( $action->type, $actionTitle );
