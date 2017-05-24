@@ -15,6 +15,8 @@ All notable changes to Fig will be documented in this file.
 
 ### Removed
 - `action` and `path`-less File action syntax
+- `install` command
+- `upgrade` command
 
 ## [0.3.1] - 2017-05-05
 ### Fixed
