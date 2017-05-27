@@ -115,6 +115,42 @@ class ProfileTest extends TestCase
 	/**
 	 * @expectedException	InvalidArgumentException
 	 */
+	public function testGetInstanceFromFileWithNonArrayAction()
+	{
+		$appDirectory = new \Cranberry\Core\File\Directory( 'app' );
+
+		/*
+		 * Define File object stub
+		 */
+		$profileFileStub = $this->createMock( \Cranberry\Core\File\File::class );
+		$profileFileStub
+			->method( 'parent' )
+			->willReturn( $appDirectory );
+
+		$profileFileStub
+			->method( 'getBasename' )
+			->willReturn( 'profile' );
+
+		$profileContents = <<<PROFILE
+# invalid-yaml
+---
+
+This line is invalid YAML
+
+- name: hello
+  command: echo "hello, world"
+PROFILE;
+
+		$profileFileStub
+			->method( 'getContents' )
+			->willReturn( $profileContents );
+
+		$profile = Profile::getInstanceFromFile( $profileFileStub );
+	}
+
+	/**
+	 * @expectedException	InvalidArgumentException
+	 */
 	public function testIncludingSelfThrowsException()
 	{
 		$profileName = 'foo-profile-' . time();

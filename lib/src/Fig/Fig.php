@@ -182,7 +182,8 @@ PROFILE;
 	 */
 	static public function decodeFile( File\File $file )
 	{
-		$data = Spyc::YAMLLoad( $file );
+		$fileContents = $file->getContents();
+		$data = Spyc::YAMLLoadString( $fileContents );
 		return $data;
 	}
 

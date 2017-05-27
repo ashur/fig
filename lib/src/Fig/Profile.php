@@ -168,6 +168,17 @@ class Profile extends Model
 			/* Actions */
 			else
 			{
+				if( !is_array( $profileItem ) )
+				{
+					$stringValue = json_encode( $profileItem, true );
+					if( json_last_error() != JSON_ERROR_NONE )
+					{
+						$stringValue = var_export( $profileItem, true );
+					}
+
+					$exceptionMessage = sprintf( 'Invalid YAML found in \'%s\': %s', $profileFile->getBasename(), $stringValue );
+					throw new \InvalidArgumentException( $exceptionMessage );
+				}
 				$action = Fig::getActionInstanceFromData( $profileItem );
 			}
 
