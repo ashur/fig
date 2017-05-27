@@ -92,6 +92,34 @@ PROFILE;
 	/**
 	 *
 	 */
+	public function testExtendedProfileShouldBeReturned()
+	{
+		$appName = 'foo';
+		$app = new App( $appName );
+
+		/* Construct first Profile */
+		$profileName1 = 'profile-1';
+		$profile1 = new Profile( $profileName1, $appName );
+		$profile1->setParentName( 'profile-2' );
+
+		$app->addProfile( $profile1 );
+
+		/* Construct second Profile */
+		$profileName2 = 'profile-2';
+		$profile2 = new Profile( $profileName2, $appName );
+
+		$app->addProfile( $profile2 );
+
+		/* Test properties of extended profile */
+		$extendedProfile = $app->getProfile( $profileName1 );
+
+		$this->assertEquals( $profileName1, $extendedProfile->getName() );
+		$this->assertEquals( $profileName2, $extendedProfile->getParentName() );
+	}
+
+	/**
+	 *
+	 */
 	public function testIncludedProfileInheritsVariables()
 	{
 		$appName = 'foo';

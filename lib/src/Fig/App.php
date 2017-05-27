@@ -140,6 +140,7 @@ class App extends Model
 		}
 
 		$profile = $this->profiles[$profileName];
+		$originalParentName = $profile->getParentName();
 
 		/* Perform recursive profile extending */
 		while( !is_null( $profile->getParentName() ) )
@@ -147,6 +148,9 @@ class App extends Model
 			$parentProfile = $this->getProfile( $profile->getParentName() );
 			$profile = $parentProfile->extendWith( $profile );
 		}
+
+		/* Set parentName back to original value */
+		$profile->setParentName( $originalParentName );
 
 		return $profile;
 	}
