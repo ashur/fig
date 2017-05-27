@@ -2,6 +2,11 @@
 
 All notable changes to Fig will be documented in this file.
 
+## Unreleased
+### Fixed
+- [#17](https://github.com/ashur/fig/issues/17) – `show` no longer highlights extending profiles
+- [#18](https://github.com/ashur/fig/issues/18) – Invalid YAML is not correctly handled
+
 ## [0.4.0] - 2017-05-23
 ### Added
 - Support for nested variable definitions in multi-level `include`s
