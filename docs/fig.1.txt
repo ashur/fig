@@ -10,7 +10,7 @@ SYNOPSIS
 --------
 [verse]
 'fig add' <app> [--url=<url>]
-'fig add' <app>/<profile>
+'fig add' <app>/<profile> [--extend=<parent>]
 'fig deploy' <app>/<profile>
 'fig edit' <app>/<profile>
 'fig remove' <app>[/<profile>]
@@ -38,6 +38,9 @@ COMMANDS
 'add'::
 Creates new top-level app <app> or adds a configuration profile <profile> to an
 existing app.
++
+When a profile is added using --extend=<parent>, Fig creates the profile
+with a default action "extend: <parent>".
 +
 When an app is created with `--url=<url>`, Fig attempts to clone the Git
 repository at <url>.

@@ -109,7 +109,22 @@ $command = new Command\Command( 'add', 'Create apps and profiles', function( $qu
 			}
 
 			/* Create a profile */
-			$this->fig->createProfile( $params['app'], $profileName );
+			$actionContents = <<<ACTION
+# A command example
+- name: hello
+  command: echo 'hello!'
+ACTION;
+
+			if( $this->getOptionValue( 'extend' ) != null )
+			{
+				$parentProfileName = $this->getOptionValue( 'extend' );
+
+			$actionContents = <<<ACTION
+- extend: {$parentProfileName}
+ACTION;
+			}
+
+			$this->fig->createProfile( $params['app'], $profileName, $actionContents );
 		}
 		catch( \Exception $e )
 		{
@@ -119,8 +134,14 @@ $command = new Command\Command( 'add', 'Create apps and profiles', function( $qu
 });
 
 $command->registerAlias( 'create' );
+$command->registerOption( 'extend' );
 $command->registerOption( 'url' );
 
-$command->setUsage( "add <app>[/<profile>]\n       fig add <app> --url=<url>" );
+$commandUsage = <<<USAGE
+add <app> [--url=<url>]
+       fig add <app>/<profile> [--extend=<parent>]
+USAGE;
+
+$command->setUsage( $commandUsage );
 
 return $command;

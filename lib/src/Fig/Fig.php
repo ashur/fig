@@ -130,9 +130,10 @@ class Fig
 	/**
 	 * @param	string	$appName
 	 * @param	string	$profileName
+	 * @param	string	$actionContents
 	 * @return	void
 	 */
-	public function createProfile( $appName, $profileName )
+	public function createProfile( $appName, $profileName, $actionContents )
 	{
 		if( !isset( $this->appDirs[$appName] ) )
 		{
@@ -157,9 +158,7 @@ class Fig
 # {$profileName}
 ---
 
-# A command example
-- name: hello
-  command: echo 'hello!'
+{$actionContents}
 
 PROFILE;
 
