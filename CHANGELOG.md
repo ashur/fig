@@ -3,6 +3,9 @@
 All notable changes to Fig will be documented in this file.
 
 ## Unreleased
+### Added
+- `file:replace_string`
+
 ### Fixed
 - [#17](https://github.com/ashur/fig/issues/17) – `show` no longer highlights extending profiles
 - [#18](https://github.com/ashur/fig/issues/18) – Invalid YAML is not correctly handled

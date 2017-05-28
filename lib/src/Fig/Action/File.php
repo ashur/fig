@@ -10,15 +10,30 @@ use Fig;
 
 class File extends Action
 {
-	const SKIP    = 0;
-	const CREATE  = 1;
-	const REPLACE = 2;
-	const DELETE  = 4;
+	const SKIP           = 0;
+	const CREATE         = 1;
+	const REPLACE        = 2;
+	const DELETE         = 4;
+	const REPLACE_STRING = 8;
+
+	const STRING_INVALID_PATH = 'Invalid path: %s';
+
+	/**
+	 * Valid actions
+	 *
+	 * @var	array
+	 */
+	protected $actions = ['create', 'delete', 'replace', 'replace_string'];
 
 	/**
 	 * @var	int
 	 */
 	protected $action = self::SKIP;
+
+	/**
+	 * @var	string
+	 */
+	protected $actionName;
 
 	/**
 	 * @var	string
@@ -39,6 +54,21 @@ class File extends Action
 	 * @var	boolean
 	 */
 	protected $propertySourceIsRequired=false;
+
+	/**
+	 * @var	boolean
+	 */
+	protected $propertyStringIsRequired=false;
+
+	/**
+	 * @var	string
+	 */
+	protected $replacementStringNew='';
+
+	/**
+	 * @var	string
+	 */
+	protected $replacementStringOld='';
 
 	/**
 	 * @var	Huxtable\Core\File\File
@@ -98,7 +128,7 @@ class File extends Action
 				return false;
 			}
 
-			return in_array( strtolower( $value ), ['create', 'replace', 'delete'] );
+			return in_array( strtolower( $value ), $this->actions );
 
 		}, array( $this, 'setAction' ));
 
@@ -122,6 +152,36 @@ class File extends Action
 			return $this->propertySourceIsRequired;
 
 		}, 'is_string' );
+
+		/* 'string' */
+		$this->defineProperty( 'string', function()
+		{
+			/* This property is only required for `file:replace_string` actions */
+			return $this->propertyStringIsRequired;
+		},
+		function( $value )
+		{
+			/* 'string' must conform to ['old'=>~string, 'new'=>~string] */
+			if( !is_array( $value ) )
+			{
+				return false;
+			}
+			if( !array_key_exists( 'old', $value ) || !array_key_exists( 'new', $value ) )
+			{
+				return false;
+			}
+			if( !self::isStringish( $value['old'] ) || !self::isStringish( $value['new'] ) )
+			{
+				return false;
+			}
+
+			return true;
+		},
+		function( $value )
+		{
+			$this->replacementStringOld = $value['old'];
+			$this->replacementStringNew = $value['new'];
+		});
 
 		parent::__construct( $fileProperties );
 	}
@@ -170,6 +230,46 @@ class File extends Action
 			$didSucceed = $didSucceed && $sourceFile->copyTo( $target );
 		}
 
+		/* Replace String */
+		if( $this->action == self::REPLACE_STRING )
+		{
+			/* Validate $target */
+			if( !$target->exists() )
+			{
+				$invalidPropertyMessage = sprintf( \Fig\Fig::STRING_INVALID_PROPERTY_VALUE, 'path', "No such file '{$target}'" );
+				throw new \InvalidArgumentException( $invalidPropertyMessage );
+			}
+
+			if( $target->isDir() )
+			{
+				$invalidPropertyMessage = sprintf( \Fig\Fig::STRING_INVALID_PROPERTY_VALUE, 'path', "'{$target}' is a directory" );
+				throw new \InvalidArgumentException( $invalidPropertyMessage );
+			}
+
+			if( !is_readable( $target ) )
+			{
+				$invalidPropertyMessage = sprintf( \Fig\Fig::STRING_INVALID_PROPERTY_VALUE, 'path', "Cannot read from '{$target}': Permission denied" );
+				throw new \InvalidArgumentException( $invalidPropertyMessage );
+			}
+
+			if( !is_writeable( $target ) )
+			{
+				$invalidPropertyMessage = sprintf( \Fig\Fig::STRING_INVALID_PROPERTY_VALUE, 'path', "Cannot write to '{$target}': Permission denied" );
+				throw new \InvalidArgumentException( $invalidPropertyMessage );
+			}
+
+			/* Perform replacement */
+			$oldContents = $target->getContents();
+
+			$oldString = Fig\Fig::replaceVariables( $this->replacementStringOld, $this->variables );
+			$newString = Fig\Fig::replaceVariables( $this->replacementStringNew, $this->variables );
+
+			$oldPattern = "/{$oldString}/";
+			$newContents = preg_replace( $oldPattern, $newString, $oldContents );
+
+			$target->putContents( $newContents );
+		}
+
 		/* Delete */
 		if( $this->action == self::DELETE )
 		{
@@ -193,6 +293,27 @@ class File extends Action
 
 		return $result;
 	}
+
+	/**
+	 * Get integer representation of action
+	 *
+	 * @return	int
+	 */
+	public function getAction()
+	{
+		return $this->action;
+	}
+
+	/**
+	 * Get string representation of action
+	 *
+	 * @return	string
+	 */
+	public function getActionName()
+	{
+		return $this->actionName;
+	}
+
 
 	/**
 	 * @return	Huxtable\Core\File\Directory
@@ -248,6 +369,13 @@ class File extends Action
 				$this->actionName = 'replace';
 
 				$this->propertySourceIsRequired = true;
+				break;
+
+			case 'replace_string':
+				$this->action = self::REPLACE_STRING;
+				$this->actionName = 'replace_string';
+
+				$this->propertyStringIsRequired = true;
 				break;
 		}
 	}
