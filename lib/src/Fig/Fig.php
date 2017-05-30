@@ -383,9 +383,6 @@ PROFILE;
 	 */
 	static public function getActionInstanceFromData( array $data )
 	{
-		/* Verify required keys are set */
-		self::validateRequiredKeys( $data, ['name'] );
-
 		/* Get instance of Action class */
 		$actionClasses['command']	= 'Command';
 		$actionClasses['defaults']	= 'Defaults';
@@ -523,21 +520,5 @@ PROFILE;
 	public function updateProfileAssetsFromTarget( Profile $profile )
 	{
 		$profile->updateAssetsFromTarget( $this->figDirectory );
-	}
-
-	/**
-	 * @param	array	$array
-	 * @param	arra	$requiredKeys
-	 * @return	void
-	 */
-	static public function validateRequiredKeys( array $array, array $requiredKeys )
-	{
-		foreach( $requiredKeys as $requiredKey )
-		{
-			if( !isset( $array[$requiredKey] ) )
-			{
-				throw new \InvalidArgumentException( "Missing required key '{$requiredKey}'." );
-			}
-		}
 	}
 }
