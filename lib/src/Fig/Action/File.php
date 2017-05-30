@@ -104,13 +104,9 @@ class File extends Action
 
 		if( !is_array( $properties['file'] ) )
 		{
-			$stringValue = json_encode( $properties['file'], true );
-			if( json_last_error() != JSON_ERROR_NONE )
-			{
-				$stringValue = var_export( $properties['file'], true );
-			}
-
+			$stringValue = \Fig\Fig::getStringRepresentation( $properties['file'] );
 			$invalidPropertyMessage = sprintf( \Fig\Fig::STRING_INVALID_PROPERTY_VALUE, 'file', $stringValue );
+
 			throw new \InvalidArgumentException( $invalidPropertyMessage );
 		}
 

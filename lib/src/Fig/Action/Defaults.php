@@ -77,13 +77,9 @@ class Defaults extends Action
 
 		if( !is_array( $properties['defaults'] ) )
 		{
-			$stringValue = json_encode( $properties['defaults'], true );
-			if( json_last_error() != JSON_ERROR_NONE )
-			{
-				$stringValue = var_export( $properties['defaults'], true );
-			}
-
+			$stringValue = \Fig\Fig::getStringRepresentation( $properties['defaults'] );
 			$invalidPropertyMessage = sprintf( \Fig\Fig::STRING_INVALID_PROPERTY_VALUE, 'defaults', $stringValue );
+
 			throw new \InvalidArgumentException( $invalidPropertyMessage );
 		}
 

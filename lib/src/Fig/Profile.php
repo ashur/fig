@@ -170,13 +170,9 @@ class Profile extends Model
 			{
 				if( !is_array( $profileItem ) )
 				{
-					$stringValue = json_encode( $profileItem, true );
-					if( json_last_error() != JSON_ERROR_NONE )
-					{
-						$stringValue = var_export( $profileItem, true );
-					}
-
+					$stringValue = Fig::getStringRepresentation( $profileItem );
 					$exceptionMessage = sprintf( 'Invalid YAML found in \'%s\': %s', $profileFile->getBasename(), $stringValue );
+
 					throw new \InvalidArgumentException( $exceptionMessage );
 				}
 				$action = Action\Action::getInstanceFromData( $profileItem );

@@ -97,13 +97,9 @@ class Model
 
 				if( !$didPassValidation )
 				{
-					$stringValue = json_encode( $propertyValue, true );
-					if( json_last_error() != JSON_ERROR_NONE )
-					{
-						$stringValue = var_export( $propertyValue, true );
-					}
-
+					$stringValue = Fig::getStringRepresentation( $propertyValue );
 					$invalidPropertyMessage = sprintf( Fig::STRING_INVALID_PROPERTY_VALUE, $propertyName, $stringValue );
+
 					throw new \InvalidArgumentException( $invalidPropertyMessage );
 				}
 
