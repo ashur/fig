@@ -342,41 +342,6 @@ PROFILE;
 
 	/**
 	 * @param	string	$appName
-	 * @param	string	$commandName
-	 * @return	void
-	 * @todo	Gracefully handle command returning exit code
-	 */
-	public function executeCommand( $appName, $commandName )
-	{
-		$app = $this->getApp( $appName );
-
-		$command = $app->getCommand( $commandName );
-		$commandResult = $command->exec();
-
-		$output = ['OK'];
-		$outputColor = 'green';
-
-		/* Always */
-		if( count( $commandResult['output'] ) > 0 && !$command->ignoreErrors )
-		{
-			$output = $commandResult['output'];
-		}
-
-		/* Failure */
-		if( $commandResult['exitCode'] != 0 )
-		{
-			if( !$command->ignoreErrors )
-			{
-				$outputColor = 'red';
-			}
-		}
-
-		echo PHP_EOL;
-		self::outputAction( 'Run', "{$appName}:{$commandName}", $output, $outputColor );
-	}
-
-	/**
-	 * @param	string	$appName
 	 * @return	Fig\App
 	 */
 	public function getApp( $appName )
