@@ -376,32 +376,6 @@ PROFILE;
 	}
 
 	/**
-	 * This needs to live in Fig since Action\Action is abstract
-	 *
-	 * @param	array	$data
-	 * @return	Fig\Action\Action
-	 */
-	static public function getActionInstanceFromData( array $data )
-	{
-		/* Get instance of Action class */
-		$actionClasses['command']	= 'Command';
-		$actionClasses['defaults']	= 'Defaults';
-		$actionClasses['file']		= 'File';
-
-		foreach( $actionClasses as $dataKey => $actionClass )
-		{
-			if( isset( $data[$dataKey] ) )
-			{
-				$className = "Fig\Action\\{$actionClass}";
-				$action = new $className( $data );
-				return $action;
-			}
-		}
-
-		throw new \Exception( 'Unknown action' );
-	}
-
-	/**
 	 * @param	string	$appName
 	 * @return	Fig\App
 	 */
@@ -446,6 +420,23 @@ PROFILE;
 	public function getFigDirectory()
 	{
 		return $this->figDirectory;
+	}
+
+	/**
+	 * Convert user-supplied values to strings for output
+	 *
+	 * @param	mixed	$value
+	 * @return	string
+	 */
+	public static function getStringRepresentation( $value )
+	{
+		$stringValue = json_encode( $value, true );
+		if( json_last_error() != JSON_ERROR_NONE )
+		{
+			$stringValue = var_export( $value, true );
+		}
+
+		return $stringValue;
 	}
 
 	/**

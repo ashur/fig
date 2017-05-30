@@ -111,6 +111,31 @@ abstract class Action extends \Fig\Model
 	}
 
 	/**
+	 * @param	array	$data
+	 * @return	Fig\Action\Action
+	 */
+	public static function getInstanceFromData( array $data )
+	{
+		/* Get instance of Action class */
+		$actionClasses['command']	= 'Command';
+		$actionClasses['defaults']	= 'Defaults';
+		$actionClasses['file']		= 'File';
+
+		foreach( $actionClasses as $dataKey => $actionClass )
+		{
+			if( isset( $data[$dataKey] ) )
+			{
+				$className = "Fig\Action\\{$actionClass}";
+				$action = new $className( $data );
+				return $action;
+			}
+		}
+
+		$stringValue = \Fig\Fig::getStringRepresentation( $data );
+		throw new \InvalidArgumentException( "Unsupported action definition: '{$stringValue}'. See https://github.com/ashur/fig/wiki/Actions" );
+	}
+
+	/**
 	 * @return	string
 	 */
 	public function getProfileName()

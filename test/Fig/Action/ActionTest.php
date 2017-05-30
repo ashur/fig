@@ -73,6 +73,17 @@ class ActionTest extends TestCase
 	}
 
 	/**
+	 * @expectedException	InvalidArgumentException
+	 */
+	public function testGetInstanceFromDataRequiresValidAction()
+	{
+		$properties['name'] = 'unknown action';
+		$properties['foo'] = 'bar';
+
+		$action = Action::getInstanceFromData( $properties );
+	}
+
+	/**
 	 * @dataProvider	affirmativeValuesProvider
 	 */
 	public function testIgnoreErrorsAffirmative( $ignoreErrors )

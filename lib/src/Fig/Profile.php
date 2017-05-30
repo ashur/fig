@@ -179,7 +179,7 @@ class Profile extends Model
 					$exceptionMessage = sprintf( 'Invalid YAML found in \'%s\': %s', $profileFile->getBasename(), $stringValue );
 					throw new \InvalidArgumentException( $exceptionMessage );
 				}
-				$action = Fig::getActionInstanceFromData( $profileItem );
+				$action = Action\Action::getInstanceFromData( $profileItem );
 			}
 
 			$profile->addAction( $action );
