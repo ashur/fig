@@ -3,6 +3,8 @@
 All notable changes to Fig will be documented in this file.
 
 ## Unreleased
+
+## [0.4.1] - 2017-06-04
 ### Added
 - `file:replace_string`
 - [#19](https://github.com/ashur/fig/issues/19) – Add `--extend` option to `add` command
