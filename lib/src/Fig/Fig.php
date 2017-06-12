@@ -320,7 +320,7 @@ PROFILE;
 
 			if( $action->usesDeprecatedSyntax )
 			{
-				$deprecationWarning = new Format\String( 'WARNING: This action uses a deprecated syntax. See https://github.com/ashur/fig/wiki/Actions' );
+				$deprecationWarning = new Output\FormattedString( 'WARNING: This action uses a deprecated syntax. See https://github.com/ashur/fig/wiki/Actions' );
 				$deprecationWarning->foregroundColor( 'yellow' );
 
 				echo $deprecationWarning . PHP_EOL;
@@ -427,7 +427,7 @@ PROFILE;
 	 */
 	public function outputAction( $output, $outputColor )
 	{
-		$outputString = new Format\String();
+		$outputString = new Output\FormattedString();
 		$outputString->foregroundColor( $outputColor );
 
 		if( is_scalar( $output ) )

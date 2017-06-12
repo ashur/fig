@@ -34,7 +34,7 @@ function listApps( array $apps, $listHiddenItems = false, $longListing = false )
 	{
 		foreach( $apps as $app )
 		{
-			$stringApp = new Format\String;
+			$stringApp = new Output\FormattedString;
 
 			$appName = $app->getName();
 
@@ -88,7 +88,7 @@ function listProfiles( App $app, $listHiddenItems = false, $longListing = false 
 
 	foreach( $profiles as $profile )
 	{
-		$stringProfile = new Format\String;
+		$stringProfile = new Output\FormattedString;
 
 		$profileName = $profile->getName();
 		$extendsProfile = $profile->getParentName();

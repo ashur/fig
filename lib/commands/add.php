@@ -80,7 +80,7 @@ $command = new Command\Command( 'add', 'Create apps and profiles', function( $qu
 				throw new Command\CommandInvokedException( $e->getMessage(), 1 );
 			}
 
-			$stringAppName = new Format\String( $params['app'] );
+			$stringAppName = new Output\FormattedString( $params['app'] );
 			$stringAppName->foregroundColor( 'green' );
 
 			if( !$shouldAddProfile )
