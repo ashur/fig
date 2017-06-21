@@ -5,7 +5,7 @@
  */
 namespace Fig;
 
-use Cranberry\CLI\Format;
+use Cranberry\CLI\Output;
 use Cranberry\CLI\Shell;
 use Cranberry\Core\File;
 use Spyc;

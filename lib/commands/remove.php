@@ -6,7 +6,6 @@
 namespace Fig;
 
 use Cranberry\CLI\Command;
-use Cranberry\CLI\Format;
 use Cranberry\CLI\Input;
 
 /**
