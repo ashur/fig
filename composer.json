@@ -1,0 +1,26 @@
+{
+    "name": "ashur/fig",
+    "description": "Quickly build and deploy configuration profiles",
+    "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/cranberry/shell"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Ashur Cabrera",
+            "email": "hello@cabreramade.co"
+        }
+    ],
+    "require": {
+        "cranberry/shell": "dev-develop",
+        "mustangostang/spyc": "^0.6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fig\\": "src/"
+        }
+    }
+}
