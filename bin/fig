@@ -2,79 +2,40 @@
 <?php
 
 /*
- * Paths
+ * This file is part of Fig
  */
-$pathBase = dirname( __DIR__ );
+namespace Fig;
 
-/*
- * Autoload: Vendor
- */
-include_once( $pathBase . '/lib/helpers/autoload.php' );
-
-/*
- * Directories
- */
-$dirApp = new Cranberry\Core\File\Directory( $pathBase );
-$dirLib = $dirApp->childDir( 'lib' );
-
-$dirCommands = $dirLib->childDir( 'commands' );
-$dirHelpers = $dirLib->childDir( 'helpers' );
-$dirOptions = $dirLib->childDir( 'options' );
-
-/*
- * App Configuration
- */
-$configFile = $dirLib->child( 'config.json' );
-$configJSON = $configFile->getContents();
-$config = Cranberry\Core\JSON::decode( $configJSON, true );
-
-$appName = basename( __FILE__ );
-$app = new Cranberry\CLI\Application\Application( $appName, $config['version'], $config['php-min'], $dirApp );
-
-/*
- * Autoload: Project
- */
-registerNamespaceAutoloader( $config['namespace'] );
-
-/*
- * Helpers
- */
-$helperFiles = $dirHelpers->children();
-foreach( $helperFiles as $helperFile )
-{
-	include_once( $helperFile );
-}
-
-/* Clean up after previous versions */
-foreach( $cleanupActions as $version => $action )
-{
-	$app->registerCleanupAction( $version, $action );
-}
-$app->cleanUpSelf();
-
-/*
- * Commands & Executable Options
- */
-$fileFilter = new Cranberry\Core\File\Filter();
-$fileFilter->includeFileExtension( 'php' );
-
-$commandFiles = $dirCommands->children( $fileFilter );
-$app->registerCommandFiles( $commandFiles );
-
-$optionFiles = $dirOptions->children( $fileFilter );
-$app->registerExecutableOptionFiles( $optionFiles );
-
-/*
- * Run
- */
 try
 {
-	$app->run();
+	$autoloadFilename = dirname( __DIR__ ) . '/vendor/autoload.php';
+	if( !file_exists( $autoloadFilename ) )
+	{
+		throw new \RuntimeException( 'fatal: Missing dependencies.', 1 );
+	}
+	require( $autoloadFilename );
+
+	/*
+	 * Configure app
+	 */
+	$appName = Application::NAME;
+	$appVersion = Application::VERSION;
+	$phpMinimum = Application::PHP_MIN;
+
+	$app = \Cranberry\Shell\ApplicationFactory::create( $appName, $appVersion, $phpMinimum, $argv, $_SERVER );
 }
-catch( Exception $e )
+catch( \RuntimeException $e )
 {
-	$output = Cranberry\CLI\Output\Output::exceptionLog( $e, $argv, $config['url'] );
-	echo $output;
+	echo $e->getMessage() . PHP_EOL;
+	exit( $e->getCode() );
 }
 
-$app->stop();
+/* Bootstrap */
+require( __DIR__ . '/bootstrap.php' );
+$___bootstrap( $app );
+
+/*
+ * Run and exit
+ */
+$app->run();
+$app->exit();
