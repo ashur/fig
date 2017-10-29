@@ -21,6 +21,7 @@
     <testsuites>
         <testsuite name="AllTests">
         <directory>./test</directory>
+        <exclude>/test/.original</exclude>
         </testsuite>
     </testsuites>
 
@@ -33,13 +34,5 @@
                 <file></file>
             </exclude>
         </blacklist>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php"></directory>
-            <file></file>
-            <exclude>
-                <directory suffix=".php"></directory>
-                <file></file>
-            </exclude>
-        </whitelist>
     </filter>
 </phpunit>
