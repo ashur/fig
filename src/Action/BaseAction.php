@@ -5,6 +5,7 @@
  */
 namespace Fig\Action;
 
+use Fig\Engine;
 use Fig\Variablizable;
 
 abstract class BaseAction extends Variablizable
@@ -33,6 +34,15 @@ abstract class BaseAction extends Variablizable
 	 * @var	string
 	 */
 	protected $outputString;
+
+	/**
+	 * Executes action, setting output and error status
+	 *
+	 * @param	Fig\Engine	$engine
+	 *
+	 * @return	void
+	 */
+	abstract public function deploy( Engine $engine );
 
 	/**
 	 * Returns whether deployment resulted in an error
