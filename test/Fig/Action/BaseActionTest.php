@@ -15,6 +15,45 @@ class BaseActionTest extends TestCase
 		return $stub;
 	}
 
+	public function provider_didError() : array
+	{
+		return [
+			[true],
+			[false],
+		];
+	}
+
+	/**
+	 * @dataProvider	provider_didError
+	 */
+	public function test_didError_alwaysReturnsFalse_whenIgnoringErrors( $didError )
+	{
+		$exampleAction = new ExampleAction( 'name' );
+
+		$exampleAction->ignoreErrors( true );
+		$exampleAction->___setDidError( $didError );
+
+		$this->assertEquals( false, $exampleAction->didError() );
+	}
+
+	public function test_didError_returnsNullBeforeDeployment()
+	{
+		$exampleAction = new ExampleAction( 'name' );
+		$this->assertEquals( null, $exampleAction->didError() );
+	}
+
+	/**
+	 * @dataProvider	provider_didError
+	 */
+	public function test_didError_returnsValueByDefault( $didError )
+	{
+		$exampleAction = new ExampleAction( 'name' );
+
+		$exampleAction->___setDidError( $didError );
+
+		$this->assertEquals( $didError, $exampleAction->didError() );
+	}
+
 	public function test_getName_returnsString()
 	{
 		$expectedName = 'action-' . microtime( true );
@@ -37,6 +76,34 @@ class BaseActionTest extends TestCase
 		$exampleAction->setVariables( $variables );
 
 		$this->assertEquals( $expectedName, $exampleAction->getName() );
+	}
+
+	public function test_getOutput_returnsNullBeforeDeployment()
+	{
+		$exampleAction = new ExampleAction( 'name' );
+		$this->assertEquals( null, $exampleAction->getOutput() );
+	}
+
+	public function test_getOutput_returnsStringOK_whenIgnoringOutput()
+	{
+		$exampleAction = new ExampleAction( 'name' );
+
+		$exampleAction->ignoreOutput( true );
+
+		$outputString = (string) microtime( true );
+		$exampleAction->___setOutputString( $outputString );
+
+		$this->assertEquals( 'OK', $exampleAction->getOutput() );
+	}
+
+	public function test_getOutput_returnsValueByDefault()
+	{
+		$exampleAction = new ExampleAction( 'name' );
+
+		$outputString = (string) microtime( true );
+		$exampleAction->___setOutputString( $outputString );
+
+		$this->assertEquals( $outputString, $exampleAction->getOutput() );
 	}
 
 	public function provider_ignoreMethods_supportBooleanishValues() : array
@@ -119,5 +186,36 @@ class ExampleAction extends BaseAction
 	public function __construct( string $name )
 	{
 		$this->name = $name;
+	}
+
+	/**
+	 * Executes action, setting output and error status
+	 *
+	 * @return	void
+	 */
+	public function deploy(){}
+
+	/**
+	 * Sets didError to simulate deployment
+	 *
+	 * @param	boolean	$didError
+	 *
+	 * @return	void
+	 */
+	public function ___setDidError( bool $didError )
+	{
+		$this->didError = $didError;
+	}
+
+	/**
+	 * Sets output string to simulate deployment
+	 *
+	 * @param	string	$outputString
+	 *
+	 * @return	void
+	 */
+	public function ___setOutputString( string $outputString )
+	{
+		$this->outputString = $outputString;
 	}
 }

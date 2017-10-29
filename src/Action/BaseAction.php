@@ -12,6 +12,11 @@ abstract class BaseAction extends Variablizable
 	/**
 	 * @var	bool
 	 */
+	protected $didError;
+
+	/**
+	 * @var	bool
+	 */
 	protected $ignoreErrors=false;
 
 	/**
@@ -25,6 +30,29 @@ abstract class BaseAction extends Variablizable
 	protected $name;
 
 	/**
+	 * @var	string
+	 */
+	protected $outputString;
+
+	/**
+	 * Returns whether deployment resulted in an error
+	 *
+	 * Will return NULL if deployment has not occurred. If deployment has occurred
+	 * and errors are ignored, will always return true.
+	 *
+	 * @return	null|bool
+	 */
+	public function didError()
+	{
+		if( $this->ignoreErrors && $this->didError != null )
+		{
+			return false;
+		}
+
+		return $this->didError;
+	}
+
+	/**
 	 * Returns action name string
 	 *
 	 * @return	string
@@ -32,6 +60,24 @@ abstract class BaseAction extends Variablizable
 	public function getName() : string
 	{
 		return $this->replaceVariablesInString( $this->name );
+	}
+
+	/**
+	 * Returns output resulting from deployment
+	 *
+	 * Will return NULL if deployment has not occurred. If deployment has occurred
+	 * and output is ignored, will always return 'OK'.
+	 *
+	 * @return	null|string
+	 */
+	public function getOutput()
+	{
+		if( $this->ignoreOutput && $this->outputString != null )
+		{
+			return 'OK';
+		}
+
+		return $this->outputString;
 	}
 
 	/**
