@@ -5,6 +5,7 @@
  */
 namespace Fig\Action;
 
+use Fig\Engine;
 use PHPUnit\Framework\TestCase;
 
 class BaseActionTest extends TestCase
@@ -191,9 +192,11 @@ class ExampleAction extends BaseAction
 	/**
 	 * Executes action, setting output and error status
 	 *
+	 * @param	Fig\Engine	$engine
+	 *
 	 * @return	void
 	 */
-	public function deploy(){}
+	public function deploy( Engine $engine ){}
 
 	/**
 	 * Sets didError to simulate deployment
