@@ -8,6 +8,7 @@ All notable changes to Fig will be documented in this file.
 
 - Refactored `fig` executable for use with Cranberry\Shell
 - Refactored `command` action
+- Refactored `defaults` action
 
 ## [0.4.2] - 2017-06-21
 ### Fixed
