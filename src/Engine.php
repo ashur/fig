@@ -7,6 +7,8 @@ namespace Fig;
 
 class Engine
 {
+	const STRING_ERROR_COMMANDNOTFOUND = 'Command not found: %s';
+
 	/**
 	 * Returns whether a command exists on the host system
 	 *

@@ -9,8 +9,6 @@ use Fig\Engine;
 
 class CommandAction extends BaseAction
 {
-	const STRING_ERROR_COMMANDNOTFOUND = 'Command not found: %s';
-
 	/**
 	 * @var	string
 	 */
@@ -50,7 +48,7 @@ class CommandAction extends BaseAction
 		/* Make sure the command exists before trying to execute it */
 		if( !$engine->commandExists( $this->command ) )
 		{
-			$exceptionMessage = sprintf( self::STRING_ERROR_COMMANDNOTFOUND, $this->command );
+			$exceptionMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, $this->command );
 			throw new CommandNotFoundException( $exceptionMessage );
 		}
 
