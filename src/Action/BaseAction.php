@@ -10,6 +10,8 @@ use Fig\Variablizable;
 
 abstract class BaseAction extends Variablizable
 {
+	const STRING_STATUS_SUCCESS = 'OK';
+
 	/**
 	 * @var	bool
 	 */
@@ -84,7 +86,7 @@ abstract class BaseAction extends Variablizable
 	{
 		if( $this->ignoreOutput && $this->outputString != null )
 		{
-			return 'OK';
+			return self::STRING_STATUS_SUCCESS;
 		}
 
 		return $this->outputString;

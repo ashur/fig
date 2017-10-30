@@ -57,7 +57,15 @@ class CommandAction extends BaseAction
 		$result = $engine->executeCommand( $this->getCommand(), $this->getCommandArguments() );
 
 		$this->didError = $result['exitCode'] !== 0;
-		$this->outputString = implode( PHP_EOL, $result['output'] );
+
+		if( count( $result['output'] ) == 0 )
+		{
+			$this->outputString = self::STRING_STATUS_SUCCESS;
+		}
+		else
+		{
+			$this->outputString = implode( PHP_EOL, $result['output'] );
+		}
 	}
 
 	/**

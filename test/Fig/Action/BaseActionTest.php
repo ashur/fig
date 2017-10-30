@@ -94,7 +94,7 @@ class BaseActionTest extends TestCase
 		$outputString = (string) microtime( true );
 		$exampleAction->___setOutputString( $outputString );
 
-		$this->assertEquals( 'OK', $exampleAction->getOutput() );
+		$this->assertEquals( BaseAction::STRING_STATUS_SUCCESS, $exampleAction->getOutput() );
 	}
 
 	public function test_getOutput_returnsValueByDefault()

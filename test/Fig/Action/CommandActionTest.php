@@ -59,6 +59,33 @@ class CommandActionTest extends TestCase
 		$this->assertEquals( $outputString, $commandAction->getOutput() );
 	}
 
+	public function test_deploy_commandWithoutOutput_outputsOK()
+	{
+		$actionName = 'action' . microtime( true );
+		$commandName = 'command-' . time();
+
+		$engineMock = $this
+			->getMockBuilder( Engine::class )
+			->setMethods( ['commandExists','executeCommand'] )
+			->getMock();
+
+		$engineMock
+			->method( 'commandExists' )
+			->willReturn( true );
+
+		$engineMock
+			->method( 'executeCommand' )
+			->willReturn([
+				'output' => [],
+				'exitCode' => 0
+			]);
+
+		$commandAction = new CommandAction( $actionName, $commandName, [] );
+		$commandAction->deploy( $engineMock );
+
+		$this->assertEquals( CommandAction::STRING_STATUS_SUCCESS, $commandAction->getOutput() );
+	}
+
 	public function test_getCommand_supportsVariables()
 	{
 		$actionName = 'action' . microtime( true );
