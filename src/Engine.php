@@ -43,7 +43,9 @@ class Engine
 			$commandPiece = escapeshellarg( $commandPiece );
 		}
 
-		$commandString = implode( ' ', $commandPieces );
+		$commandString  = implode( ' ', $commandPieces );
+		$commandString .= ' 2>&1'; // redirect STDERR to STDOUT
+
 		exec( $commandString, $output, $exitCode );
 
 		return [
