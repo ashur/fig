@@ -37,6 +37,44 @@ class CommandActionTest extends TestCase
 		$commandAction->deploy( $engineMock );
 	}
 
+	public function test_getCommand_supportsVariables()
+	{
+		$actionName = 'action' . microtime( true );
+
+		$time = microtime( true );
+		$variables = ['time' => $time];
+
+		$pattern = 'name-%s';
+		$commandString = sprintf( $pattern, '{{ time }}' );
+		$expectedCommand = sprintf( $pattern, $time );
+
+		$commandAction = new CommandAction( $actionName, $commandString );
+		$commandAction->setVariables( $variables );
+
+		$this->assertEquals( $expectedCommand, $commandAction->getCommand() );
+	}
+
+	public function test_getCommandArguments_supportsVariables()
+	{
+		$actionName = 'action' . microtime( true );
+
+		$time = microtime( true );
+		$variables = ['time' => $time];
+
+		$pattern = '%s-%s';
+
+		$commandArguments[] = sprintf( $pattern, 'arg1', '{{ time }}' );
+		$commandArguments[] = sprintf( $pattern, 'arg2', '{{ time }}' );
+
+		$expectedArguments[] = sprintf( $pattern, 'arg1', $time );
+		$expectedArguments[] = sprintf( $pattern, 'arg2', $time );
+
+		$commandAction = new CommandAction( $actionName, 'command', $commandArguments );
+		$commandAction->setVariables( $variables );
+
+		$this->assertEquals( $expectedArguments, $commandAction->getCommandArguments() );
+	}
+
 	/**
 	 * @expectedException	Fig\Action\CommandNotFoundException
 	 */

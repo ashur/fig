@@ -47,13 +47,39 @@ class CommandAction extends BaseAction
 	 */
 	public function deploy( Engine $engine )
 	{
-		/* Make sure the command exists first */
+		/* Make sure the command exists before trying to execute it */
 		if( !$engine->commandExists( $this->command ) )
 		{
 			$exceptionMessage = sprintf( self::ERROR_STRING_COMMANDNOTFOUND, $this->command );
 			throw new CommandNotFoundException( $exceptionMessage );
 		}
 
-		$engine->executeCommand( $this->command, $this->commandArguments );
+		$result = $engine->executeCommand( $this->getCommand(), $this->getCommandArguments() );
+	}
+
+	/**
+	 * Returns command name
+	 *
+	 * @return	string
+	 */
+	public function getCommand() : string
+	{
+		return $this->replaceVariablesInString( $this->command );
+	}
+
+	/**
+	 * Returns command arguments
+	 *
+	 * @return	array
+	 */
+	public function getCommandArguments() : array
+	{
+		$commandArguments = [];
+		foreach( $this->commandArguments as $commandArgument )
+		{
+			$commandArguments[] = $this->replaceVariablesInString( $commandArgument );
+		}
+
+		return $commandArguments;
 	}
 }
