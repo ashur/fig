@@ -40,7 +40,7 @@ class CommandActionTest extends TestCase
 		$engineMock
 			->method( 'executeCommand' )
 			->willReturn([
-				'output' => $outputString,
+				'output' => [$outputString],
 				'exitCode' => $exitCode
 			]);
 
