@@ -4,6 +4,11 @@ All notable changes to Fig will be documented in this file.
 
 ## Unreleased
 
+### Changed
+
+- Refactored `fig` executable for use with Cranberry\Shell
+- Refactored `command` action
+
 ## [0.4.2] - 2017-06-21
 ### Fixed
 - [#22](https://github.com/ashur/fig/issues/22) – Cranberry\CLI\Format\String class is incompatible with PHP 7
