@@ -10,7 +10,19 @@ use PHPUnit\Framework\TestCase;
 
 class CommandActionTest extends TestCase
 {
-	public function test_deployExecutesCommandViaEngine()
+	public function provider_deploy_callsEngineExecuteCommand() : array
+	{
+		return [
+			[ 'this is command output', 0, false ],
+			[ 'this is error output', 1, true ],
+			[ 'this is different error output', 126, true ],
+		];
+	}
+
+	/**
+	 * @dataProvider	provider_deploy_callsEngineExecuteCommand
+	 */
+	public function test_deploy_callsEngineExecuteCommand( string $outputString, int $exitCode, bool $shouldError )
 	{
 		$actionName = 'action' . microtime( true );
 		$commandName = 'command-' . time();
@@ -26,6 +38,13 @@ class CommandActionTest extends TestCase
 			->willReturn( true );
 
 		$engineMock
+			->method( 'executeCommand' )
+			->willReturn([
+				'output' => $outputString,
+				'exitCode' => $exitCode
+			]);
+
+		$engineMock
 			->expects( $this->once() )
 			->method( 'executeCommand' )
 			->with(
@@ -35,6 +54,9 @@ class CommandActionTest extends TestCase
 
 		$commandAction = new CommandAction( $actionName, $commandName, $commandArgs );
 		$commandAction->deploy( $engineMock );
+
+		$this->assertEquals( $shouldError, $commandAction->didError() );
+		$this->assertEquals( $outputString, $commandAction->getOutput() );
 	}
 
 	public function test_getCommand_supportsVariables()
