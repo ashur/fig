@@ -107,6 +107,13 @@ class BaseActionTest extends TestCase
 		$this->assertEquals( $outputString, $exampleAction->getOutput() );
 	}
 
+	public function test_getType()
+	{
+		$exampleAction = new ExampleAction( 'name' );
+
+		$this->assertEquals( 'Example', $exampleAction->getType() );
+	}
+
 	public function provider_ignoreMethods_supportBooleanishValues() : array
 	{
 		return [
@@ -179,6 +186,11 @@ class BaseActionTest extends TestCase
 
 class ExampleAction extends BaseAction
 {
+	/**
+	 * @var	string
+	 */
+	protected $type = 'Example';
+
 	/**
 	 * @param	string	$name
 	 *

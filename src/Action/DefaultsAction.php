@@ -24,6 +24,11 @@ class DefaultsAction extends BaseAction
 	protected $key;
 
 	/**
+	 * @var	string
+	 */
+	protected $type = 'Defaults';
+
+	/**
 	 * @param	string	$name
 	 *
 	 * @param	int	$method

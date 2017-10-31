@@ -93,6 +93,16 @@ abstract class BaseAction extends Variablizable
 	}
 
 	/**
+	 * Returns action type
+	 *
+	 * @return	string
+	 */
+	public function getType() : string
+	{
+		return $this->type;
+	}
+
+	/**
 	 * Specify whether errors should be ignored during deployment
 	 *
 	 * @param	bool	$shouldIgnoreErrors

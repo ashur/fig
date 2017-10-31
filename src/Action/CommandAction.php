@@ -20,6 +20,11 @@ class CommandAction extends BaseAction
 	protected $commandArguments;
 
 	/**
+	 * @var	string
+	 */
+	protected $type = 'Command';
+
+	/**
 	 * @param	string	$name
 	 *
 	 * @param	string	$command
