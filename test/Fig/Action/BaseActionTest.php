@@ -178,6 +178,13 @@ class BaseActionTest extends TestCase
 		$stubAction->ignoreOutput( 'hello' );
 	}
 
+	public function test_isDeprecated_returnsFalseByDefault()
+	{
+		$exampleAction = new ExampleAction( 'name' );
+
+		$this->assertFalse( $exampleAction->isDeprecated() );
+	}
+
 	public function test_willNotIgnoreErrorsByDefault()
 	{
 		$stubAction = $this->getStub();

@@ -28,6 +28,11 @@ abstract class BaseAction extends Variablizable
 	protected $ignoreOutput=false;
 
 	/**
+	 * @var	bool
+	 */
+	protected $isDeprecated=false;
+
+	/**
 	 * @var	string
 	 */
 	protected $name;
@@ -147,6 +152,16 @@ abstract class BaseAction extends Variablizable
 			$exceptionMessage = 'Invalid value for ignore_output: ' . $e->getMessage();
 			throw new \DomainException( $exceptionMessage, $e->getCode(), $e );
 		}
+	}
+
+	/**
+	 * Returns whether action is deprecated
+	 *
+	 * @return	bool
+	 */
+	public function isDeprecated() : bool
+	{
+		return $this->isDeprecated;
 	}
 
 	/**
