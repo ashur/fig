@@ -93,6 +93,13 @@ abstract class BaseAction extends Variablizable
 	}
 
 	/**
+	 * Returns action subtitle
+	 *
+	 * @return	string
+	 */
+	abstract public function getSubtitle() : string;
+
+	/**
 	 * Returns action type
 	 *
 	 * @return	string

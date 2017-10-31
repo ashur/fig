@@ -107,6 +107,13 @@ class BaseActionTest extends TestCase
 		$this->assertEquals( $outputString, $exampleAction->getOutput() );
 	}
 
+	public function test_getSubtitle()
+	{
+		$exampleAction = new ExampleAction( 'name' );
+
+		$this->assertEquals( 'subtitle', $exampleAction->getSubtitle() );
+	}
+
 	public function test_getType()
 	{
 		$exampleAction = new ExampleAction( 'name' );
@@ -209,6 +216,16 @@ class ExampleAction extends BaseAction
 	 * @return	void
 	 */
 	public function deploy( Engine $engine ){}
+
+	/**
+	 * Returns action subtitle
+	 *
+	 * @return	string
+	 */
+	public function getSubtitle() : string
+	{
+		return 'subtitle';
+	}
 
 	/**
 	 * Sets didError to simulate deployment

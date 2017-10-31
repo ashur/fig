@@ -57,8 +57,10 @@ class CommandAction extends BaseAction
 			throw new CommandNotFoundException( $exceptionMessage );
 		}
 
+		/* Execute command */
 		$result = $engine->executeCommand( $this->getCommand(), $this->getCommandArguments() );
 
+		/* Populate output, error */
 		$this->didError = $result['exitCode'] !== 0;
 
 		if( count( $result['output'] ) == 0 )
@@ -95,5 +97,15 @@ class CommandAction extends BaseAction
 		}
 
 		return $commandArguments;
+	}
+
+	/**
+	 * Returns command name as action subtitle
+	 *
+	 * @return	string
+	 */
+	public function getSubtitle() : string
+	{
+		return $this->getCommand();
 	}
 }

@@ -124,6 +124,26 @@ class CommandActionTest extends TestCase
 		$this->assertEquals( $expectedArguments, $commandAction->getCommandArguments() );
 	}
 
+	public function provider_getSubtitle_returnsCommand() : array
+	{
+
+		return [
+			['echo', [], 'echo'],
+			['{{ command }}', ['command'=>'echo'], 'echo'],
+		];
+	}
+
+	/**
+	 * @dataProvider	provider_getSubtitle_returnsCommand
+	 */
+	public function test_getSubtitle_returnsCommand( string $command, array $variables, string $expectedSubtitle )
+	{
+		$commandAction = new CommandAction( 'My Command', $command );
+		$commandAction->setVariables( $variables );
+
+		$this->assertEquals( $expectedSubtitle, $commandAction->getSubtitle() );
+	}
+
 	/**
 	 * @expectedException	Fig\Action\CommandNotFoundException
 	 */

@@ -47,6 +47,24 @@ class DefaultsActionTest extends TestCase
 		$defaultsAction->getKey();
 	}
 
+	public function provider_getSubtitle_returnsMethodAsString() : array
+	{
+		return [
+			[DefaultsAction::READ, 'read'],
+			[DefaultsAction::WRITE, 'write'],
+			[DefaultsAction::DELETE, 'delete'],
+		];
+	}
+
+	/**
+	 * @dataProvider	provider_getSubtitle_returnsMethodAsString
+	 */
+	public function test_getSubtitle_returnsMethodAsString( int $method, string $expectedSubtitle )
+	{
+		$defaultsAction = new DefaultsAction( 'my defaults action', $method, 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
+		$this->assertEquals( $expectedSubtitle, $defaultsAction->getSubtitle() );
+	}
+
 	public function test_getValue_supportsVariables()
 	{
 		$time = microtime( true );

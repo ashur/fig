@@ -67,32 +67,13 @@ class DefaultsAction extends BaseAction
 			throw new CommandNotFoundException( $exceptionMessage );
 		}
 
-		switch( $this->method )
+		if( $this->method == self::WRITE && !$this->hasValue() )
 		{
-			case self::READ:
-				$methodString = 'read';
-				break;
-
-			case self::WRITE:
-				$methodString = 'write';
-
-				if( !$this->hasValue() )
-				{
-					throw new InvalidActionArgumentsException( 'defaults.method=write requires defaults.value' );
-				}
-				break;
-
-			case self::DELETE:
-				$methodString = 'delete';
-				break;
-
-			default:
-				throw new \DomainException( "Unknown method: '{$this->method}'" );
-				break;
+			throw new InvalidActionArgumentsException( 'defaults.method=write requires defaults.value' );
 		}
 
 		/* Build command */
-		$commandArguments[] = $methodString;
+		$commandArguments[] = $this->getMethodString();
 		$commandArguments[] = $this->getDomain();
 
 		if( $this->hasKey() )
@@ -149,6 +130,47 @@ class DefaultsAction extends BaseAction
 		}
 
 		return $this->replaceVariablesInString( $this->key );
+	}
+
+	/**
+	 * Returns string representation of defaults method
+	 *
+	 * @throws	DomainException	If unknown method value is set
+	 *
+	 * @return	string
+	 */
+	protected function getMethodString() : string
+	{
+		switch( $this->method )
+		{
+			case self::READ:
+				$methodString = 'read';
+				break;
+
+			case self::WRITE:
+				$methodString = 'write';
+				break;
+
+			case self::DELETE:
+				$methodString = 'delete';
+				break;
+
+			default:
+				throw new \DomainException( "Unknown method: '{$this->method}'" );
+				break;
+		}
+
+		return $methodString;
+	}
+
+	/**
+	 * Returns method string as action subtitle
+	 *
+	 * @return	string
+	 */
+	public function getSubtitle() : string
+	{
+		return $this->getMethodString();
 	}
 
 	/**
