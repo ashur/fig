@@ -5,6 +5,10 @@
     "repositories": [
         {
             "type": "vcs",
+            "url": "https://github.com/cranberry/filesystem"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/cranberry/shell"
         }
     ],
@@ -15,6 +19,7 @@
         }
     ],
     "require": {
+        "cranberry/filesystem": "dev-develop",
         "cranberry/shell": "dev-develop",
         "mustangostang/spyc": "^0.6.2"
     },
