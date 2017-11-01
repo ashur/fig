@@ -65,6 +65,12 @@ class DefaultsActionTest extends TestCase
 		$this->assertEquals( $expectedSubtitle, $defaultsAction->getSubtitle() );
 	}
 
+	public function test_getType()
+	{
+		$action = new DefaultsAction( 'My Defaults Action', DefaultsAction::READ, 'com.example.Newton' );
+		$this->assertEquals( 'Defaults', $action->getType() );
+	}
+
 	public function test_getValue_supportsVariables()
 	{
 		$time = microtime( true );

@@ -144,6 +144,12 @@ class CommandActionTest extends TestCase
 		$this->assertEquals( $expectedSubtitle, $commandAction->getSubtitle() );
 	}
 
+	public function test_getType()
+	{
+		$action = new CommandAction( 'name', 'command', [] );
+		$this->assertEquals( 'Command', $action->getType() );
+	}
+
 	/**
 	 * @expectedException	Fig\Action\CommandNotFoundException
 	 */
