@@ -5,6 +5,7 @@
  */
 namespace Fig;
 
+use Cranberry\Filesystem;
 use PHPUnit\Framework\TestCase;
 
 class EngineTest extends TestCase
