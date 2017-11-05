@@ -42,6 +42,7 @@ class DeleteFileActionTest extends TestCase
 		return [
 			[ Filesystem\File::class ],
 			[ Filesystem\Directory::class ],
+			[ Filesystem\Link::class ],
 		];
 	}
 
