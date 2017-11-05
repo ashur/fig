@@ -12,7 +12,8 @@ class EngineTest extends TestCase
 {
 	static public function getTempDirectory() : Filesystem\Directory
 	{
-		return new Filesystem\Directory( dirname( __DIR__ ) . '/tmp' );
+		$tempPathname = sprintf( '%s/tmp-%s', dirname( __DIR__ ), str_replace( '\\', '_', __CLASS__ ) );
+		return new Filesystem\Directory( $tempPathname );
 	}
 
 	static public function setUpBeforeClass()
@@ -70,18 +71,62 @@ class EngineTest extends TestCase
 		$this->assertEquals( Filesystem\File::class, get_class( $targetNode ) );
 	}
 
+	public function test_getFilesystemNodeFromPath_withLink_returnsLink()
+	{
+		$tempDirectory = self::getTempDirectory();
+		$file = $tempDirectory->getChild( microtime( true ), Filesystem\Node::FILE );
+		$file->create();
+
+		$linkFilename = 'link-' . microtime( true );
+		$link = $tempDirectory->getChild( $linkFilename, Filesystem\Node::LINK );
+		symlink( $file, $link );
+
+		$this->assertTrue( file_exists( $file->getPathname() ) );
+		$this->assertTrue( is_link( $link->getPathname() ) );
+
+		$engine = new Engine();
+		$linkNode = $engine->getFilesystemNodeFromPath( $link->getPathname() );
+
+		$this->assertEquals( Filesystem\Link::class, get_class( $linkNode ) );
+	}
+
 	/**
 	 * @expectedException	Fig\NonExistentFilesystemPathException
 	 */
-	public function test_getFilesystemNodeFromPath_withNonExistentPath_throwsException()
+	public function test_getFilesystemNodeFromPath_withNonExistentPath_throwsExceptionIfTypeNotSpecified()
 	{
-		$targetPath = '~/Desktop/' . microtime( true );
+		$pathname = sprintf( '%s/%s', self::getTempDirectory(), microtime( true ) );
 		$engine = new Engine();
 
-		$this->assertFalse( file_exists( $targetPath ) );
+		$this->assertFalse( file_exists( $pathname ) );
 
-		$targetNode = $engine->getFilesystemNodeFromPath( $targetPath );
+		$node = $engine->getFilesystemNodeFromPath( $pathname );
 	}
+
+	public function provider_nodeType_expectedClass() : array
+	{
+		return [
+			[Filesystem\Node::DIRECTORY, Filesystem\Directory::class],
+			[Filesystem\Node::FILE, Filesystem\File::class],
+			[Filesystem\Node::LINK, Filesystem\Link::class],
+		];
+	}
+
+	/**
+	* @dataProvider	provider_nodeType_expectedClass
+	*/
+	public function test_getFilesystemNodeFromPath_withNonExistentPathAndSpecifiedType_returnsNodeObject( int $nodeType, string $expectedClass )
+	{
+		$pathname = sprintf( '%s/%s', self::getTempDirectory(), microtime( true ) );
+		$engine = new Engine();
+
+		$this->assertFalse( file_exists( $pathname ) );
+
+		$node = $engine->getFilesystemNodeFromPath( $pathname, $nodeType );
+
+		$this->assertEquals( $expectedClass, get_class( $node ) );
+	}
+
 
 	static public function tearDownAfterClass()
 	{

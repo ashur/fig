@@ -61,25 +61,44 @@ class Engine
 	 *
 	 * @param	string	$path
 	 *
-	 * @throws	Fig\NonExistentFilesystemPathException	If path doesn't exist
+	 * @param	int	$type	Cranberry\Filesystem\Node::DIRECTORY, FILE, or LINK
+	 *
+	 * @throws	Fig\NonExistentFilesystemPathException	If $path doesn't exist and $type isn't specified
 	 *
 	 * @return	Cranberry\Filesystem\Node
 	 */
-	public function getFilesystemNodeFromPath( string $path ) : Filesystem\Node
+	public function getFilesystemNodeFromPath( string $path, int $type=null ) : Filesystem\Node
 	{
 		/* Instantiate to get automatic `~/` substitution for free */
 		$node = new Filesystem\File( $path );
 
-		if( $node->exists() )
+		try
 		{
-			if( is_dir( $node->getPathname() ) )
-			{
-				$node = new Filesystem\Directory( $path );
-			}
+			$node = Filesystem\Node::createNodeFromPathname( $node->getPathname() );
+
+			/* Node exists, so let's return it */
 		}
-		else
+		catch( Filesystem\Exception $e )
 		{
-			throw new NonExistentFilesystemPathException( "No such file or directory: {$path}" );
+			/* Node does not exist, so let's create it manually */
+			switch( $type )
+			{
+				case null:
+					throw new NonExistentFilesystemPathException( "No such file or directory: {$path}" );
+					break;
+
+				case Filesystem\Node::DIRECTORY:
+					$node = new Filesystem\Directory( $path );
+					break;
+
+				case Filesystem\Node::FILE:
+					$node = new Filesystem\File( $path );
+					break;
+
+				case Filesystem\Node::LINK:
+					$node = new Filesystem\Link( $path );
+					break;
+			}
 		}
 
 		return $node;
