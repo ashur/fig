@@ -38,14 +38,18 @@ class DeleteFileAction extends BaseFileAction
 	 */
 	public function deploy( Engine $engine )
 	{
+		/* When deleting a node, we don't care what type it is or even whether
+		   it exists... */
 		try
 		{
+			/* ...so we don't try to infer or pass the type... */
 			$targetNode = $engine->getFilesystemNodeFromPath( $this->getTargetPath() );
 			$targetNode->delete();
 		}
 		catch( NonExistentFilesystemPathException $e )
 		{
-            // Quietly ignore non-existent nodes during deletion
+			/* ...and we just silently ignore the exception thrown by trying to
+			   instantiate a non-existent node object without a type. */
 		}
 
 		$this->didError = false;
