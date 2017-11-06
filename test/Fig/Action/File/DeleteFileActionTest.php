@@ -16,6 +16,7 @@ class DeleteFileActionTest extends TestCase
 	{
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['getFilesystemNodeFromPath'] )
 			->getMock();
 
@@ -24,6 +25,22 @@ class DeleteFileActionTest extends TestCase
 			->willReturn( $node );
 
 		return $engineMock;
+	}
+
+	public function getEngineObject() : Engine
+	{
+		$figDirectoryMock = $this->getFigDirectoryMock();
+		$engine = new Engine( $figDirectoryMock );
+
+		return $engine;
+	}
+
+	public function getFigDirectoryMock() : Filesystem\Directory
+	{
+		return $this
+			->getMockBuilder( Filesystem\Directory::class )
+			->disableOriginalConstructor()
+			->getMock();
 	}
 
 	public function getNodeMock( string $nodeClass ) : Filesystem\Node
@@ -93,7 +110,7 @@ class DeleteFileActionTest extends TestCase
 	{
 		$targetPath = '~/Desktop/' . microtime( true );
 		$action = new DeleteFileAction( 'My File Action', $targetPath );
-		$engine = new Engine();
+		$engine = $this->getEngineObject();
 
 		$action->deploy( $engine );
 
@@ -104,7 +121,7 @@ class DeleteFileActionTest extends TestCase
 	{
 		$targetPath = '~/Desktop/' . microtime( true );
 		$action = new DeleteFileAction( 'My File Action', $targetPath );
-		$engine = new Engine();
+		$engine = $this->getEngineObject();
 
 		$action->deploy( $engine );
 

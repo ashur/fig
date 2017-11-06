@@ -10,6 +10,22 @@ use PHPUnit\Framework\TestCase;
 
 class EngineTest extends TestCase
 {
+	public function getEngineObject() : Engine
+	{
+		$figDirectoryMock = $this->getFigDirectoryMock();
+		$engine = new Engine( $figDirectoryMock );
+
+		return $engine;
+	}
+
+	public function getFigDirectoryMock() : Filesystem\Directory
+	{
+		return $this
+			->getMockBuilder( Filesystem\Directory::class )
+			->disableOriginalConstructor()
+			->getMock();
+	}
+
 	static public function getTempDirectory() : Filesystem\Directory
 	{
 		$tempPathname = sprintf( '%s/tmp-%s', dirname( __DIR__ ), str_replace( '\\', '_', __CLASS__ ) );
@@ -28,7 +44,8 @@ class EngineTest extends TestCase
 
 	public function test_executeCommand_returnsArray()
 	{
-		$engine = new Engine();
+		$engine = $this->getEngineObject();
+
 		$result = $engine->executeCommand( 'echo', ['hello'] );
 
 		$this->assertTrue( is_array( $result ) );
@@ -49,7 +66,7 @@ class EngineTest extends TestCase
 
 		$this->assertTrue( file_exists( $targetPath ) );
 
-		$engine = new Engine();
+		$engine = $this->getEngineObject();
 		$targetNode = $engine->getFilesystemNodeFromPath( $targetPath );
 
 		$this->assertEquals( Filesystem\Directory::class, get_class( $targetNode ) );
@@ -65,7 +82,7 @@ class EngineTest extends TestCase
 
 		$this->assertTrue( file_exists( $targetPath ) );
 
-		$engine = new Engine();
+		$engine = $this->getEngineObject();
 		$targetNode = $engine->getFilesystemNodeFromPath( $targetPath );
 
 		$this->assertEquals( Filesystem\File::class, get_class( $targetNode ) );
@@ -84,7 +101,7 @@ class EngineTest extends TestCase
 		$this->assertTrue( file_exists( $file->getPathname() ) );
 		$this->assertTrue( is_link( $link->getPathname() ) );
 
-		$engine = new Engine();
+		$engine = $this->getEngineObject();
 		$linkNode = $engine->getFilesystemNodeFromPath( $link->getPathname() );
 
 		$this->assertEquals( Filesystem\Link::class, get_class( $linkNode ) );
@@ -96,7 +113,8 @@ class EngineTest extends TestCase
 	public function test_getFilesystemNodeFromPath_withNonExistentPath_throwsExceptionIfTypeNotSpecified()
 	{
 		$pathname = sprintf( '%s/%s', self::getTempDirectory(), microtime( true ) );
-		$engine = new Engine();
+
+		$engine = $this->getEngineObject();
 
 		$this->assertFalse( file_exists( $pathname ) );
 
@@ -118,7 +136,8 @@ class EngineTest extends TestCase
 	public function test_getFilesystemNodeFromPath_withNonExistentPathAndSpecifiedType_returnsNodeObject( int $nodeType, string $expectedClass )
 	{
 		$pathname = sprintf( '%s/%s', self::getTempDirectory(), microtime( true ) );
-		$engine = new Engine();
+
+		$engine = $this->getEngineObject();
 
 		$this->assertFalse( file_exists( $pathname ) );
 

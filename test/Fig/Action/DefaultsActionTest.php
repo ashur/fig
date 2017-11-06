@@ -135,6 +135,7 @@ class DefaultsActionTest extends TestCase
 	{
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists'] )
 			->getMock();
 
@@ -158,6 +159,7 @@ class DefaultsActionTest extends TestCase
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
 
@@ -205,6 +207,7 @@ class DefaultsActionTest extends TestCase
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
 
@@ -240,6 +243,7 @@ class DefaultsActionTest extends TestCase
 	{
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists'] )
 			->getMock();
 
@@ -259,6 +263,7 @@ class DefaultsActionTest extends TestCase
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
 
@@ -292,6 +297,7 @@ class DefaultsActionTest extends TestCase
 	{
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
 
@@ -329,6 +335,7 @@ class DefaultsActionTest extends TestCase
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
 
@@ -366,6 +373,7 @@ class DefaultsActionTest extends TestCase
 	{
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists'] )
 			->getMock();
 

@@ -12,6 +12,21 @@ class Engine
 	const STRING_ERROR_COMMANDNOTFOUND = 'Command not found: %s';
 
 	/**
+	 * @var	Cranberry\Filesystem\Directory
+	 */
+	protected $figDirectory;
+
+	/**
+	 * @param	Cranberry\Filesystem\Directory	$figDirectory
+	 *
+	 * @return	void
+	 */
+	public function __construct( Filesystem\Directory $figDirectory )
+	{
+		$this->figDirectory = $figDirectory;
+	}
+
+	/**
 	 * Returns whether a command exists on the host system
 	 *
 	 * @param	string	$command

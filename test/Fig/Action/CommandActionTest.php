@@ -10,6 +10,14 @@ use PHPUnit\Framework\TestCase;
 
 class CommandActionTest extends TestCase
 {
+	public function getFigDirectoryMock() : Filesystem\Directory
+	{
+		return $this
+			->getMockBuilder( Filesystem\Directory::class )
+			->disableOriginalConstructor()
+			->getMock();
+	}
+
 	public function provider_deploy_callsEngineExecuteCommand() : array
 	{
 		return [
@@ -30,6 +38,7 @@ class CommandActionTest extends TestCase
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists','executeCommand'] )
 			->getMock();
 
@@ -66,6 +75,7 @@ class CommandActionTest extends TestCase
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists','executeCommand'] )
 			->getMock();
 
@@ -160,6 +170,7 @@ class CommandActionTest extends TestCase
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
+			->disableOriginalConstructor()
 			->setMethods( ['commandExists'] )
 			->getMock();
 
