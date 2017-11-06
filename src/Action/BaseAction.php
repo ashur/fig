@@ -43,6 +43,11 @@ abstract class BaseAction extends Variablizable
 	protected $outputString;
 
 	/**
+	 * @var	string
+	 */
+	protected $profileName;
+
+	/**
 	 * Executes action, setting output and error status
 	 *
 	 * @param	Fig\Engine	$engine
@@ -95,6 +100,18 @@ abstract class BaseAction extends Variablizable
 		}
 
 		return $this->outputString;
+	}
+
+	/**
+	 * Returns profile name
+	 *
+	 * Will return NULL if profile name not set.
+	 *
+	 * @return	null|string
+	 */
+	public function getProfileName()
+	{
+		return $this->profileName;
 	}
 
 	/**
@@ -203,6 +220,18 @@ abstract class BaseAction extends Variablizable
 		}
 
 		throw new \DomainException( "'{$value}' is not booleanish" );
+	}
+
+	/**
+	 * Sets name of profile to which the action belongs
+	 *
+	 * @param	string	$profileName
+	 *
+	 * @return	void
+	 */
+	public function setProfileName( string $profileName )
+	{
+		$this->profileName = $profileName;
 	}
 
 	/**

@@ -107,6 +107,23 @@ class BaseActionTest extends TestCase
 		$this->assertEquals( $outputString, $exampleAction->getOutput() );
 	}
 
+	public function test_getProfileName_returnsNull_whenUndefined()
+	{
+		$action = new ExampleAction( 'name' );
+
+		$this->assertNull( $action->getProfileName() );
+	}
+
+	public function test_getProfileName_returnsString()
+	{
+		$action = new ExampleAction( 'name' );
+
+		$profileName = sprintf( 'profile-', microtime( true ) );
+		$action->setProfileName( $profileName );
+
+		$this->assertEquals( $profileName, $action->getProfileName() );
+	}
+
 	public function test_getSubtitle()
 	{
 		$exampleAction = new ExampleAction( 'name' );
