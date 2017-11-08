@@ -146,6 +146,114 @@ class EngineTest extends TestCase
 		$this->assertEquals( $expectedClass, get_class( $node ) );
 	}
 
+	public function test_getProfileAssetNode_returnsNode()
+	{
+		$profileName = sprintf( 'profile-%s', microtime( true ) );
+		$assetName = sprintf( 'asset-%s', microtime( true ) );
+
+		/*
+		 * Asset file; i.e., `~/.fig/<repo>/assets>/<profile>/<file>`
+		 */
+		$profileAssetFileMock = $this
+ 			->getMockBuilder( Filesystem\Directory::class )
+ 			->disableOriginalConstructor()
+ 			->getMock();
+
+		/*
+		 * Assets directory for profile; i.e., `~/.fig/<repo>/assets/<profile>`
+		 */
+		$profileAssetsDirectoryMock = $this
+			->getMockBuilder( Filesystem\Directory::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getChild'] )
+			->getMock();
+
+		/* Mock behavior of Cranberry\Filesystem\Directory::getChild when
+		   attempting to get non-existent child node */
+		$profileAssetsDirectoryMock
+			->method( 'getChild' )
+			->willReturn( $profileAssetFileMock );
+
+		$profileAssetsDirectoryMock
+			->expects( $this->once() )
+			->method( 'getChild' )
+			->with( $assetName );
+
+		/*
+		 * Top-level assets directory; i.e., `~/.fig/<repo>/assets`
+		 */
+		$figDirectoryMock = $this
+			->getMockBuilder( Filesystem\Directory::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getChild'] )
+			->getMock();
+
+		$figDirectoryMock
+			->method( 'getChild' )
+			->willReturn( $profileAssetsDirectoryMock );
+
+		$figDirectoryMock
+			->expects( $this->once() )
+			->method( 'getChild' )
+			->with( $profileName );
+
+		$engine = new Engine( $figDirectoryMock );
+
+		$profileAssetNode = $engine->getProfileAssetNode( $profileName, $assetName );
+
+		$this->assertEquals( $profileAssetFileMock, $profileAssetNode );
+	}
+
+	/**
+	 * @expectedException	Fig\NonExistentFilesystemPathException
+	 */
+	public function test_getProfileAssetNode_throwsExceptionForNonExistentAsset()
+	{
+		$profileName = sprintf( 'profile-%s', microtime( true ) );
+		$assetName = sprintf( 'asset-%s', microtime( true ) );
+
+		/*
+		 * Assets directory for profile; i.e., `~/.fig/<repo>/assets/<profile>`
+		 */
+		$profileAssetsDirectoryMock = $this
+			->getMockBuilder( Filesystem\Directory::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getChild'] )
+			->getMock();
+
+		/* Mock behavior of Cranberry\Filesystem\Directory::getChild when
+		   attempting to get non-existent child node */
+		$profileAssetsDirectoryMock
+			->method( 'getChild' )
+			->will( $this->throwException( new \BadMethodCallException ) );
+
+		$profileAssetsDirectoryMock
+			->expects( $this->once() )
+			->method( 'getChild' )
+			->with( $assetName );
+
+		/*
+		 * Top-level assets directory; i.e., `~/.fig/<repo>/assets`
+		 */
+		$figDirectoryMock = $this
+			->getMockBuilder( Filesystem\Directory::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getChild'] )
+			->getMock();
+
+		$figDirectoryMock
+			->method( 'getChild' )
+			->willReturn( $profileAssetsDirectoryMock );
+
+		$figDirectoryMock
+			->expects( $this->once() )
+			->method( 'getChild' )
+			->with( $profileName );
+
+		$engine = new Engine( $figDirectoryMock );
+
+		$engine->getProfileAssetNode( $profileName, $assetName );
+	}
 
 	static public function tearDownAfterClass()
 	{

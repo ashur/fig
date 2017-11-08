@@ -118,4 +118,34 @@ class Engine
 
 		return $node;
 	}
+
+	/**
+	 * Returns Cranberry\Filesystem\Node object representing a given profile asset
+	 *
+	 * @param	string	$profileName
+	 *
+	 * @param	string	$assetName
+	 *
+	 * @throws	Fig\NonExistentFilesystemPathException	If asset does not exist
+	 *
+	 * @return	Cranberry\Filesystem\Node
+	 */
+	public function getProfileAssetNode( string $profileName, string $assetName ) : Filesystem\Node
+	{
+		try
+		{
+			$profileAssetNode = $this->figDirectory
+				->getChild( $profileName )
+				->getChild( $assetName );
+		}
+		/* If $filename does not exist and no node $type is specified,
+		   Cranberry\Filesystem\Directory::getChild will throw an exception
+		   which we'll catch here and re-throw as a Fig exception */
+		catch( \Exception $e )
+		{
+			throw new NonExistentFilesystemPathException( "Missing profile asset: {$profileName}/{$assetName}", 1, $e );
+		}
+
+		return $profileAssetNode;
+	}
 }
