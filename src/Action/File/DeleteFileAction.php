@@ -7,6 +7,7 @@ namespace Fig\Action\File;
 
 use Fig\Action\BaseAction;
 use Fig\Engine;
+use Fig\Exception;
 use Fig\NonExistentFilesystemPathException;
 
 class DeleteFileAction extends BaseFileAction
@@ -34,6 +35,8 @@ class DeleteFileAction extends BaseFileAction
 	 *
 	 * @param	Fig\Engine	$engine
 	 *
+	 * @throws	Fig\Exception\RuntimeException	If target exists but is not deletable
+	 *
 	 * @return	void
 	 */
 	public function deploy( Engine $engine )
@@ -42,14 +45,24 @@ class DeleteFileAction extends BaseFileAction
 		   it exists... */
 		try
 		{
-			/* ...so we don't try to infer or pass the type... */
+			/* ...so we don't try to infer or pass the type. */
 			$targetNode = $engine->getFilesystemNodeFromPath( $this->getTargetPath() );
+
+			/* If the node does exist, attempt to delete it. */
 			$targetNode->delete();
 		}
-		catch( NonExistentFilesystemPathException $e )
+
+		/* If the node doesn't exist, we don't really care. Silently ignore the
+		   exception thrown by Fig::Engine and finish up deployment. */
+		catch( NonExistentFilesystemPathException $e ) {}
+
+		/* If the node does exist but is not deletable, it will throw
+		   Cranberry\Filesystem\Exception. */
+		catch( \Cranberry\Filesystem\Exception $e )
 		{
-			/* ...and we just silently ignore the exception thrown by trying to
-			   instantiate a non-existent node object without a type. */
+            /* Re-throw it as a Fig\Exception\RuntimeException for proper
+			   handling up the stack */
+			throw new Exception\RuntimeException( $e->getMessage(), Exception\RuntimeException::FILESYSTEM_PERMISSION_DENIED, $e );
 		}
 
 		$this->didError = false;
