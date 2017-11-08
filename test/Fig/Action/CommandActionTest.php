@@ -161,7 +161,8 @@ class CommandActionTest extends TestCase
 	}
 
 	/**
-	 * @expectedException	Fig\Action\CommandNotFoundException
+	 * @expectedException	Fig\Exception\RuntimeException
+	 * @expectedExceptionCode	Fig\Exception\RuntimeException::COMMAND_NOT_FOUND
 	 */
 	public function test_invalidCommand_throwsExceptionDuringDeployment()
 	{

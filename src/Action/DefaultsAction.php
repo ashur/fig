@@ -6,6 +6,7 @@
 namespace Fig\Action;
 
 use Fig\Engine;
+use Fig\Exception;
 
 class DefaultsAction extends BaseAction
 {
@@ -64,7 +65,7 @@ class DefaultsAction extends BaseAction
 		if( !$engine->commandExists( 'defaults' ) )
 		{
 			$exceptionMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
-			throw new CommandNotFoundException( $exceptionMessage );
+			throw new Exception\RuntimeException( $exceptionMessage, Exception\RuntimeException::COMMAND_NOT_FOUND );
 		}
 
 		if( $this->method == self::WRITE && !$this->hasValue() )

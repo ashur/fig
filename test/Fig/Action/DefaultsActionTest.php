@@ -129,8 +129,9 @@ class DefaultsActionTest extends TestCase
 	/**
 	 * `defaults` command may not exist on host system (i.e., non-macOS UNIX)
 	 *
-	 * @expectedException	Fig\Action\CommandNotFoundException
-	 */
+ 	 * @expectedException	Fig\Exception\RuntimeException
+ 	 * @expectedExceptionCode	Fig\Exception\RuntimeException::COMMAND_NOT_FOUND
+ 	 */
 	public function test_invalidCommand_throwsExceptionDuringDeployment()
 	{
 		$engineMock = $this

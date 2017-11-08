@@ -6,6 +6,7 @@
 namespace Fig\Action;
 
 use Fig\Engine;
+use Fig\Exception;
 
 class CommandAction extends BaseAction
 {
@@ -46,6 +47,8 @@ class CommandAction extends BaseAction
 	 *
 	 * @param	Fig\Engine	$engine
 	 *
+	 * @throws	Fig\Exception\RuntimeException	If command not found
+	 *
 	 * @return	void
 	 */
 	public function deploy( Engine $engine )
@@ -54,7 +57,7 @@ class CommandAction extends BaseAction
 		if( !$engine->commandExists( $this->command ) )
 		{
 			$exceptionMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, $this->command );
-			throw new CommandNotFoundException( $exceptionMessage );
+			throw new Exception\RuntimeException( $exceptionMessage, Exception\RuntimeException::COMMAND_NOT_FOUND );
 		}
 
 		/* Execute command */
