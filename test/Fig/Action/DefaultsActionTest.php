@@ -368,7 +368,8 @@ class DefaultsActionTest extends TestCase
 	}
 
 	/**
-	 * @expectedException	Fig\Action\InvalidActionArgumentsException
+	 * @expectedException	Fig\Exception\ProfileSyntaxException
+	 * @expectedExceptionCode	Fig\Exception\ProfileSyntaxException::MISSING_REQUIRED_PROPERTY
 	 */
 	public function test_writeMethod_throwsExceptionWhenMissingValue()
 	{

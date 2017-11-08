@@ -57,6 +57,8 @@ class DefaultsAction extends BaseAction
 	 *
 	 * @param	Fig\Engine	$engine
 	 *
+	 * @throws	Fig\Exception\ProfileSyntaxException	If missing required 'value' property
+	 *
 	 * @return	void
 	 */
 	public function deploy( Engine $engine )
@@ -70,7 +72,7 @@ class DefaultsAction extends BaseAction
 
 		if( $this->method == self::WRITE && !$this->hasValue() )
 		{
-			throw new InvalidActionArgumentsException( 'defaults.method=write requires defaults.value' );
+			throw new Exception\ProfileSyntaxException( 'defaults.method=write requires defaults.value', Exception\ProfileSyntaxException::MISSING_REQUIRED_PROPERTY );
 		}
 
 		/* Build command */
