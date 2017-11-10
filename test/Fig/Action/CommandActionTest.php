@@ -160,11 +160,7 @@ class CommandActionTest extends TestCase
 		$this->assertEquals( 'Command', $action->getType() );
 	}
 
-	/**
-	 * @expectedException	Fig\Exception\RuntimeException
-	 * @expectedExceptionCode	Fig\Exception\RuntimeException::COMMAND_NOT_FOUND
-	 */
-	public function test_invalidCommand_throwsExceptionDuringDeployment()
+	public function test_invalidCommand_causesError()
 	{
 		$actionName = 'action' . microtime( true );
 		$commandName = 'command-' . time();
@@ -182,5 +178,10 @@ class CommandActionTest extends TestCase
 
 		$commandAction = new CommandAction( $actionName, $commandName );
 		$commandAction->deploy( $engineMock );
+
+		$this->assertTrue( $commandAction->didError() );
+
+		$expectedErrorMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, $commandName );
+		$this->assertEquals( $expectedErrorMessage, $commandAction->getOutput() );
 	}
 }

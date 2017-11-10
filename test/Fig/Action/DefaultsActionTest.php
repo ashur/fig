@@ -128,11 +128,8 @@ class DefaultsActionTest extends TestCase
 
 	/**
 	 * `defaults` command may not exist on host system (i.e., non-macOS UNIX)
-	 *
- 	 * @expectedException	Fig\Exception\RuntimeException
- 	 * @expectedExceptionCode	Fig\Exception\RuntimeException::COMMAND_NOT_FOUND
  	 */
-	public function test_invalidCommand_throwsExceptionDuringDeployment()
+	public function test_invalidCommand_causesError()
 	{
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
@@ -151,6 +148,11 @@ class DefaultsActionTest extends TestCase
 
 		$defaultsAction = new DefaultsAction( 'my defaults action', DefaultsAction::READ, 'com.example.Newton' );
 		$defaultsAction->deploy( $engineMock );
+
+		$this->assertTrue( $defaultsAction->didError() );
+
+		$expectedErrorMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
+		$this->assertEquals( $expectedErrorMessage, $defaultsAction->getOutput() );
 	}
 
 	public function test_invalidDomainCausesError()

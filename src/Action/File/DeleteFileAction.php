@@ -35,12 +35,13 @@ class DeleteFileAction extends BaseFileAction
 	 *
 	 * @param	Fig\Engine	$engine
 	 *
-	 * @throws	Fig\Exception\RuntimeException	If target exists but is not deletable
-	 *
 	 * @return	void
 	 */
 	public function deploy( Engine $engine )
 	{
+		$this->didError = false;
+		$this->outputString = BaseAction::STRING_STATUS_SUCCESS;
+
 		/* When deleting a node, we don't care what type it is or even whether
 		   it exists... */
 		try
@@ -52,20 +53,17 @@ class DeleteFileAction extends BaseFileAction
 			$targetNode->delete();
 		}
 
-		/* If the node doesn't exist, we don't really care. Silently ignore the
-		   exception thrown by Fig::Engine and finish up deployment. */
+		/* If the node doesn't exist, we don't really care; silently ignore the
+		   exception thrown by Fig::Engine */
 		catch( NonExistentFilesystemPathException $e ) {}
 
 		/* If the node does exist but is not deletable, it will throw
 		   Cranberry\Filesystem\Exception. */
 		catch( \Cranberry\Filesystem\Exception $e )
 		{
-            /* Re-throw it as a Fig\Exception\RuntimeException for proper
-			   handling up the stack */
-			throw new Exception\RuntimeException( $e->getMessage(), Exception\RuntimeException::FILESYSTEM_PERMISSION_DENIED, $e );
+            /* Action deployment has failed with an error */
+			$this->didError = true;
+			$this->outputString = $e->getMessage();
 		}
-
-		$this->didError = false;
-		$this->outputString = BaseAction::STRING_STATUS_SUCCESS;
 	}
 }

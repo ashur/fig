@@ -66,8 +66,10 @@ class DefaultsAction extends BaseAction
 		/* Make sure the command exists before trying to execute it */
 		if( !$engine->commandExists( 'defaults' ) )
 		{
-			$exceptionMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
-			throw new Exception\RuntimeException( $exceptionMessage, Exception\RuntimeException::COMMAND_NOT_FOUND );
+			$this->didError = true;
+			$this->outputString = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
+
+			return;
 		}
 
 		if( $this->method == self::WRITE && !$this->hasValue() )

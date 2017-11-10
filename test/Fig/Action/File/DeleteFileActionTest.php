@@ -102,10 +102,8 @@ class DeleteFileActionTest extends TestCase
 
 	/**
 	 * @dataProvider	provider_nodeClasses
-	 * @expectedException	Fig\Exception\RuntimeException
-	 * @expectedExceptionCode	Fig\Exception\RuntimeException::FILESYSTEM_PERMISSION_DENIED
 	 */
-	public function test_deploy_existingUndeletableNode_throwsException( string $nodeClass )
+	public function test_deploy_existingUndeletableNode_causesError( string $nodeClass )
 	{
 		$targetPath = '~/Desktop/' . microtime( true );
 		$action = new DeleteFileAction( 'My File Action', $targetPath );
@@ -114,13 +112,17 @@ class DeleteFileActionTest extends TestCase
 
 		/* Simulate exception thrown when attempting to delete undeletable
 		   Cranberry\Filesystem\Node objects */
+		$exceptionMessage = sprintf( \Cranberry\Filesystem\Node::ERROR_STRING_DELETE, $targetPath, 'Permission denied' );
 		$nodeMock
 			->method( 'delete' )
-			->will( $this->throwException( new \Cranberry\Filesystem\Exception ) );
+			->will( $this->throwException( new \Cranberry\Filesystem\Exception( $exceptionMessage ) ) );
 
 		$engineMock = $this->getEngineMock( $nodeMock );
 
 		$action->deploy( $engineMock );
+
+		$this->assertTrue( $action->didError() );
+		$this->assertEquals( $exceptionMessage, $action->getOutput() );
 	}
 
 	public function test_getSubtitle()
