@@ -8,7 +8,6 @@ namespace Fig\Action\File;
 use Fig\Action\BaseAction;
 use Fig\Engine;
 use Fig\Exception;
-use Fig\NonExistentFilesystemPathException;
 
 class DeleteFileAction extends BaseFileAction
 {
@@ -55,7 +54,7 @@ class DeleteFileAction extends BaseFileAction
 
 		/* If the node doesn't exist, we don't really care; silently ignore the
 		   exception thrown by Fig::Engine */
-		catch( NonExistentFilesystemPathException $e ) {}
+		catch( Exception\RuntimeException $e ) {}
 
 		/* If the node does exist but is not deletable, it will throw
 		   Cranberry\Filesystem\Exception. */

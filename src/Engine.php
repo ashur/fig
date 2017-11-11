@@ -78,7 +78,7 @@ class Engine
 	 *
 	 * @param	int	$type	Cranberry\Filesystem\Node::DIRECTORY, FILE, or LINK
 	 *
-	 * @throws	Fig\NonExistentFilesystemPathException	If $path doesn't exist and $type isn't specified
+	 * @throws	Fig\Exception\RuntimeException	If $path doesn't exist and $type isn't specified
 	 *
 	 * @return	Cranberry\Filesystem\Node
 	 */
@@ -99,7 +99,12 @@ class Engine
 			switch( $type )
 			{
 				case null:
-					throw new NonExistentFilesystemPathException( "No such file or directory: {$path}" );
+					throw new Exception\RuntimeException
+					(
+						"No such file or directory: {$path}",
+						Exception\RuntimeException::FILESYSTEM_NODE_NOT_FOUND,
+						$e
+					);
 					break;
 
 				case Filesystem\Node::DIRECTORY:
@@ -126,7 +131,7 @@ class Engine
 	 *
 	 * @param	string	$assetName
 	 *
-	 * @throws	Fig\NonExistentFilesystemPathException	If asset does not exist
+	 * @throws	Fig\Exception\RuntimeException	If asset does not exist
 	 *
 	 * @return	Cranberry\Filesystem\Node
 	 */
@@ -143,7 +148,12 @@ class Engine
 		   which we'll catch here and re-throw as a Fig exception */
 		catch( \Exception $e )
 		{
-			throw new NonExistentFilesystemPathException( "Missing profile asset: {$profileName}/{$assetName}", 1, $e );
+			throw new Exception\RuntimeException
+			(
+				"Missing profile asset: {$profileName}/{$assetName}",
+				Exception\RuntimeException::FILESYSTEM_NODE_NOT_FOUND,
+				$e
+			);
 		}
 
 		return $profileAssetNode;

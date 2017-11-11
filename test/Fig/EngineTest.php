@@ -108,7 +108,8 @@ class EngineTest extends TestCase
 	}
 
 	/**
-	 * @expectedException	Fig\NonExistentFilesystemPathException
+	 * @expectedException	Fig\Exception\RuntimeException
+	 * @expectedExceptionCode	Fig\Exception\RuntimeException::FILESYSTEM_NODE_NOT_FOUND
 	 */
 	public function test_getFilesystemNodeFromPath_withNonExistentPath_throwsExceptionIfTypeNotSpecified()
 	{
@@ -205,7 +206,8 @@ class EngineTest extends TestCase
 	}
 
 	/**
-	 * @expectedException	Fig\NonExistentFilesystemPathException
+	 * @expectedException	Fig\Exception\RuntimeException
+	 * @expectedExceptionCode	Fig\Exception\RuntimeException::FILESYSTEM_NODE_NOT_FOUND
 	 */
 	public function test_getProfileAssetNode_throwsExceptionForNonExistentAsset()
 	{
