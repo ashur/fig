@@ -9,6 +9,10 @@ use Fig\Action\BaseAction;
 
 abstract class BaseFileAction extends BaseAction
 {
+	const ERROR_STRING_INVALIDTARGET = 'Invalid target %s: %s.';
+	const ERROR_STRING_UNDELETABLE_NODE = 'Cannot delete %s: %s.';
+	const ERROR_STRING_PERMISSION_DENIED = 'Permission denied';
+
 	/**
 	 * @var	string
 	 */
