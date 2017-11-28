@@ -10,36 +10,64 @@ use PHPUnit\Framework\TestCase;
 
 class ReadDefaultsActionTest extends TestCase
 {
-	/**
-	 * @todo	Add variables
-	 */
 	public function getInstance_withKey() : array
 	{
-		$values['name']   = 'action ' . microtime( true );
-		$values['domain'] = 'com.example.Foo.' . microtime( true );
-		$values['key']    = 'DefaultsKey' . microtime( true );
+		$varTimeValue = microtime( true );
 
-		$data = [
-			'action' => new ReadDefaultsAction( $values['name'], $values['domain'], $values['key'] ),
-			'values' => $values
-		];
+		/* Name */
+		$namePattern = 'action %s';
+		$nameOriginalValue = sprintf( $namePattern, '{{  time  }}' );
+		$nameExpectedValue = sprintf( $namePattern, $varTimeValue );
+
+		$values['name'] = $nameExpectedValue;
+
+		/* Domain */
+		$domainPattern = 'com.example.Foo.%s';
+		$domainOriginalValue = sprintf( $domainPattern, '{{ time }}' );
+		$domainExpectedValue = sprintf( $domainPattern, $varTimeValue );
+
+		$values['domain'] = $domainExpectedValue;
+
+		/* Key */
+		$keyPattern = 'DefaultsKey%s';
+		$keyOriginalValue = sprintf( $keyPattern, '{{time}}' );
+		$keyExpectedValue = sprintf( $keyPattern, $varTimeValue );
+
+		$values['key'] = $keyExpectedValue;
+
+		$action = new ReadDefaultsAction( $nameOriginalValue, $domainOriginalValue, $keyOriginalValue );
+		$action->setVariables( ['time' => $varTimeValue] );
+
+		$data = [ 'action' => $action, 'values' => $values ];
 
 		return $data;
 	}
 
-	/**
-	 * @todo	Add variables
-	 */
 	public function getInstance_withoutKey() : array
 	{
-		$values['name']   = 'action ' . microtime( true );
-		$values['domain'] = 'com.example.Foo.' . microtime( true );
-		$values['key']    = null;
+		$varTimeValue = microtime( true );
 
-		$data = [
-			'action' => new ReadDefaultsAction( $values['name'], $values['domain'], $values['key'] ),
-			'values' => $values
-		];
+		/* Name */
+		$namePattern = 'action %s';
+		$nameOriginalValue = sprintf( $namePattern, '{{  time  }}' );
+		$nameExpectedValue = sprintf( $namePattern, $varTimeValue );
+
+		$values['name'] = $nameExpectedValue;
+
+		/* Domain */
+		$domainPattern = 'com.example.Foo.%s';
+		$domainOriginalValue = sprintf( $domainPattern, '{{ time }}' );
+		$domainExpectedValue = sprintf( $domainPattern, $varTimeValue );
+
+		$values['domain'] = $domainExpectedValue;
+
+		/* Key */
+		$values['key'] = null;
+
+		$action = new ReadDefaultsAction( $nameOriginalValue, $domainOriginalValue, null );
+		$action->setVariables( ['time' => $varTimeValue] );
+
+		$data = [ 'action' => $action, 'values' => $values ];
 
 		return $data;
 	}
