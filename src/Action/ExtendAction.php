@@ -15,6 +15,11 @@ class ExtendAction extends BaseAction
 	protected $extendedProfileName;
 
 	/**
+	 * @var	string
+	 */
+	protected $type = 'Extend';
+
+	/**
 	 * @param	string	$name
 	 *
 	 * @param	string	$extendedProfileName

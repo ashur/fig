@@ -20,6 +20,11 @@ class IncludeAction extends BaseAction
 	protected $includedProfileName;
 
 	/**
+	 * @var	string
+	 */
+	protected $type = 'Include';
+
+	/**
 	 * @param	string	$name
 	 *
 	 * @param	string	$includedProfileName

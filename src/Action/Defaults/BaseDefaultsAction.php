@@ -29,6 +29,11 @@ abstract class BaseDefaultsAction extends BaseAction
 	/**
 	 * @var	string
 	 */
+	protected $type = 'Defaults';
+
+	/**
+	 * @var	string
+	 */
 	protected $value;
 
 	/**

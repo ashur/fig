@@ -29,4 +29,14 @@ class ExtendActionTest extends TestCase
 
 		$this->assertEquals( $actionName, $action->getName() );
 	}
+
+	public function test_getType()
+	{
+		$actionName = sprintf( 'action %s', microtime( true ) );
+		$profileName = sprintf( 'profile-%s', microtime( true ) );
+
+		$action = new ExtendAction( $actionName, $profileName );
+
+		$this->assertEquals( 'Extend', $action->getType() );
+	}
 }

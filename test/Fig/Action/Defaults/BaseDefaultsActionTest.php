@@ -47,6 +47,13 @@ class BaseDefaultsActionTest extends TestCase
 		$action->getKey();
 	}
 
+	public function test_getType()
+	{
+		$action = new ExampleDefaultsAction( 'my defaults action', 'com.example.Newton', 'SerialNumber' );
+
+		$this->assertEquals( 'Defaults', $action->getType() );
+	}
+
 	public function test_getValue_supportsVariables()
 	{
 		$time = microtime( true );
