@@ -6,7 +6,7 @@
 namespace Fig\Action\Defaults;
 
 use Fig\Engine;
-use PHPUnit\Framework\TestCase;
+use FigTest\Action\TestCase;
 
 class ReadDefaultsActionTest extends TestCase
 {
@@ -216,21 +216,21 @@ class ReadDefaultsActionTest extends TestCase
 		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
 	}
 
-	/**
-	 * Make sure BaseDefaultsAction subclasses don't omit setting `name`
-	 *
-	 * @dataProvider	provider_actionWithValues
-	 */
-	public function test_getName( ReadDefaultsAction $action, array $expectedValues )
+	public function test_getName()
 	{
-		$this->assertEquals( $expectedValues['name'], $action->getName() );
+		$action = $this->getInstance_withKey();
+		$this->assertEquals( $action['values']['name'], $action['action']->getName() );
 	}
 
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
-	public function test_getSubtitle( ReadDefaultsAction $action )
+	public function test_getSubtitle()
 	{
-		$this->assertEquals( 'read', $action->getSubtitle() );
+		$action = $this->getInstance_withoutKey();
+		$this->assertEquals( 'read', $action['action']->getSubtitle() );
+	}
+
+	public function test_getType()
+	{
+		$action = $this->getInstance_withKey();
+		$this->assertEquals( 'Defaults', $action['action']->getType() );
 	}
 }

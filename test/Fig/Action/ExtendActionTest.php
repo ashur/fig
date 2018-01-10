@@ -6,7 +6,7 @@
 namespace Fig\Action;
 
 use Fig\Engine;
-use PHPUnit\Framework\TestCase;
+use FigTest\Action\TestCase;
 
 class ExtendActionTest extends TestCase
 {
@@ -28,6 +28,16 @@ class ExtendActionTest extends TestCase
 		$action = new ExtendAction( $actionName, $profileName );
 
 		$this->assertEquals( $actionName, $action->getName() );
+	}
+
+	public function test_getSubtitle()
+	{
+		$actionName = getUniqueString( 'action ' );
+		$profileName = getUniqueString( 'profile-' );
+
+		$action = new ExtendAction( $actionName, $profileName );
+
+		$this->assertEquals( $profileName, $action->getSubtitle() );
 	}
 
 	public function test_getType()

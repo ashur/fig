@@ -6,7 +6,7 @@
 namespace Fig\Action;
 
 use Fig\Engine;
-use PHPUnit\Framework\TestCase;
+use FigTest\Action\TestCase;
 
 class CommandActionTest extends TestCase
 {
@@ -134,7 +134,23 @@ class CommandActionTest extends TestCase
 		$this->assertEquals( $expectedArguments, $commandAction->getCommandArguments() );
 	}
 
-	public function provider_getSubtitle_returnsCommand() : array
+	public function test_getName()
+	{
+		$actionName = getUniqueString( 'action ' );
+		$action = new CommandAction( $actionName, 'command' );
+
+		$this->assertEquals( $actionName, $action->getName() );
+	}
+
+	public function test_getSubtitle()
+	{
+		$command = getUniqueString( 'command-' );
+		$action = new CommandAction( 'My Command', $command );
+
+		$this->assertEquals( $command, $action->getSubtitle() );
+	}
+
+	public function provider_getSubtitle_withVariableReplacement() : array
 	{
 
 		return [
@@ -144,9 +160,9 @@ class CommandActionTest extends TestCase
 	}
 
 	/**
-	 * @dataProvider	provider_getSubtitle_returnsCommand
+	 * @dataProvider	provider_getSubtitle_withVariableReplacement
 	 */
-	public function test_getSubtitle_returnsCommand( string $command, array $variables, string $expectedSubtitle )
+	public function test_getSubtitle_withVariableReplacement( string $command, array $variables, string $expectedSubtitle )
 	{
 		$commandAction = new CommandAction( 'My Command', $command );
 		$commandAction->setVariables( $variables );

@@ -6,7 +6,7 @@
 namespace Fig\Action;
 
 use Fig\Engine;
-use PHPUnit\Framework\TestCase;
+use FigTest\Action\TestCase;
 
 class BaseActionTest extends TestCase
 {
@@ -55,7 +55,7 @@ class BaseActionTest extends TestCase
 		$this->assertEquals( $didError, $exampleAction->didError() );
 	}
 
-	public function test_getName_returnsString()
+	public function test_getName()
 	{
 		$expectedName = 'action-' . microtime( true );
 		$exampleAction = new ExampleAction( $expectedName );

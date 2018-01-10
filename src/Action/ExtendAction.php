@@ -53,11 +53,12 @@ class ExtendAction extends BaseAction
 	}
 
 	/**
-	 * A stub; will not be called during profile deployment
+	 * Returns extended profile name as subtitle
 	 *
-	 * @param	Fig\Engine	$engine
-	 *
-	 * @return	void
+	 * @return	string
 	 */
-	public function getSubtitle() : string {}
+	public function getSubtitle() : string
+	{
+		return $this->getExtendedProfileName();
+	}
 }

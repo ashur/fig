@@ -6,7 +6,7 @@
 namespace Fig\Action\Defaults;
 
 use Fig\Engine;
-use PHPUnit\Framework\TestCase;
+use FigTest\Action\TestCase;
 
 class BaseDefaultsActionTest extends TestCase
 {
@@ -22,6 +22,14 @@ class BaseDefaultsActionTest extends TestCase
 		$action->setVariables( ['app' => $time] );
 
 		$this->assertEquals( $expectedDomain, $action->getDomain() );
+	}
+
+	public function test_getName()
+	{
+		$actionName = getUniqueString( 'action ' );
+		$action = new ExampleDefaultsAction( $actionName, 'com.example.Newton', 'SerialNumber' );
+
+		$this->assertEquals( $actionName, $action->getName() );
 	}
 
 	public function test_getKey_supportsVariables()
@@ -45,6 +53,13 @@ class BaseDefaultsActionTest extends TestCase
 	{
 		$action = new ExampleDefaultsAction( 'my defaults action', 'com.example.Newton' );
 		$action->getKey();
+	}
+
+	public function test_getSubtitle()
+	{
+		$action = new ExampleDefaultsAction( 'my defaults action', 'com.example.Newton', 'SerialNumber' );
+
+		$this->assertEquals( 'example', $action->getSubtitle() );
 	}
 
 	public function test_getType()
@@ -139,6 +154,11 @@ class BaseDefaultsActionTest extends TestCase
 
 class ExampleDefaultsAction extends BaseDefaultsAction
 {
+	/**
+	 * @var	string
+	 */
+	protected $methodName = 'example';
+
 	/**
 	 * @param	string	$name
 	 *

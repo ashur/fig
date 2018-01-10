@@ -6,7 +6,7 @@
 namespace Fig\Action\File;
 
 use Fig\Engine;
-use PHPUnit\Framework\TestCase;
+use FigTest\Action\TestCase;
 
 class BaseFileActionTest extends TestCase
 {
@@ -24,6 +24,21 @@ class BaseFileActionTest extends TestCase
 		$this->assertEquals( $expectedPath, $action->getTargetPath() );
 	}
 
+	public function test_getName()
+	{
+		$actionName = getUniqueString( 'action ' );
+		$action = new ExampleFileAction( $actionName, '~/Desktop/' );
+
+		$this->assertEquals( $actionName, $action->getName() );
+	}
+
+	public function test_getSubtitle()
+	{
+		$action = new ExampleFileAction( 'My Example Action', '~/Desktop' );
+
+		$this->assertEquals( 'example', $action->getSubtitle() );
+	}
+
 	public function test_getType()
 	{
 		$actionMock = $this->getMockForAbstractClass( BaseFileAction::class );
@@ -34,6 +49,11 @@ class BaseFileActionTest extends TestCase
 
 class ExampleFileAction extends BaseFileAction
 {
+	/**
+	 * @var	string
+	 */
+	protected $subtitle = 'example';
+
 	/**
 	 * @param	string	$name
 	 *

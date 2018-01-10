@@ -7,7 +7,7 @@ namespace Fig\Action\Defaults;
 
 use Fig\Action\BaseAction;
 use Fig\Engine;
-use PHPUnit\Framework\TestCase;
+use FigTest\Action\TestCase;
 
 class DeleteDefaultsActionTest extends TestCase
 {
@@ -207,21 +207,21 @@ class DeleteDefaultsActionTest extends TestCase
 		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
 	}
 
-	/**
-	 * Make sure BaseDefaultsAction subclasses don't omit setting `name`
-	 *
-	 * @dataProvider	provider_actionWithValues
-	 */
-	public function test_getName( DeleteDefaultsAction $action, array $expectedValues )
+	public function test_getName()
 	{
-		$this->assertEquals( $expectedValues['name'], $action->getName() );
+		$action = $this->getInstance_withKey();
+		$this->assertEquals( $action['values']['name'], $action['action']->getName() );
 	}
 
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
-	public function test_getSubtitle( DeleteDefaultsAction $action )
+	public function test_getSubtitle()
 	{
-		$this->assertEquals( 'delete', $action->getSubtitle() );
+		$action = $this->getInstance_withoutKey();
+		$this->assertEquals( 'delete', $action['action']->getSubtitle() );
+	}
+
+	public function test_getType()
+	{
+		$action = $this->getInstance_withKey();
+		$this->assertEquals( 'Defaults', $action['action']->getType() );
 	}
 }
