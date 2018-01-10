@@ -21,7 +21,7 @@ class BaseDefaultsActionTest extends TestCase
 		];
 	}
 
-	public function test_getDomain_supportsVariables()
+	public function test_getDomain_withVariableReplacement()
 	{
 		$time = microtime( true );
 
@@ -43,7 +43,7 @@ class BaseDefaultsActionTest extends TestCase
 		$this->assertEquals( $actionName, $action->getName() );
 	}
 
-	public function test_getKey_supportsVariables()
+	public function test_getKey_withVariableReplacement()
 	{
 		$time = microtime( true );
 
@@ -73,7 +73,7 @@ class BaseDefaultsActionTest extends TestCase
 		$this->assertEquals( 'example', $action->getSubtitle() );
 	}
 
-	public function test_getValue_supportsVariables()
+	public function test_getValue_withVariableReplacement()
 	{
 		$time = microtime( true );
 

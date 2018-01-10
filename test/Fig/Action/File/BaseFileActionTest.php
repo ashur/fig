@@ -21,7 +21,7 @@ class BaseFileActionTest extends TestCase
 		];
 	}
 
-	public function test_getTargetPath_supportsVariables()
+	public function test_getTargetPath_withVariableReplacement()
 	{
 		$filename = microtime( true );
 

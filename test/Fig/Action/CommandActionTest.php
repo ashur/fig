@@ -109,7 +109,7 @@ class CommandActionTest extends TestCase
 		$this->assertEquals( CommandAction::STRING_STATUS_SUCCESS, $commandAction->getOutput() );
 	}
 
-	public function test_getCommand_supportsVariables()
+	public function test_getCommand_withVariableReplacement()
 	{
 		$actionName = 'action' . microtime( true );
 
@@ -126,7 +126,7 @@ class CommandActionTest extends TestCase
 		$this->assertEquals( $expectedCommand, $commandAction->getCommand() );
 	}
 
-	public function test_getCommandArguments_supportsVariables()
+	public function test_getCommandArguments_withVariableReplacement()
 	{
 		$actionName = 'action' . microtime( true );
 

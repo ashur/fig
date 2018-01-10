@@ -325,7 +325,7 @@ class ReplaceFileActionTest extends TestCase
 		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
 	}
 
-	public function test_getSourcePath_supportsVariables()
+	public function test_getSourcePath_withVariableReplacement()
 	{
 		$filename = microtime( true );
 

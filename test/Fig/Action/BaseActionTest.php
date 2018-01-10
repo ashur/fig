@@ -76,7 +76,7 @@ class BaseActionTest extends TestCase
 		$this->assertEquals( $expectedName, $actualName );
 	}
 
-	public function test_getName_supportsVariables()
+	public function test_getName_withVariableReplacement()
 	{
 		$time = microtime( true );
 		$name = 'action-{{ time }}';
