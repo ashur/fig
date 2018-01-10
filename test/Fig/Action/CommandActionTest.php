@@ -18,6 +18,19 @@ class CommandActionTest extends TestCase
 			->getMock();
 	}
 
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$actionName = getUniqueString( 'action ' );
+		$commandName = getUniqueString( 'command' );
+
+		$action = new CommandAction( $actionName, $commandName, [] );
+
+		return [
+			[$action]
+		];
+	}
+
 	public function provider_deploy_callsEngineExecuteCommand() : array
 	{
 		return [
@@ -168,12 +181,6 @@ class CommandActionTest extends TestCase
 		$commandAction->setVariables( $variables );
 
 		$this->assertEquals( $expectedSubtitle, $commandAction->getSubtitle() );
-	}
-
-	public function test_getType()
-	{
-		$action = new CommandAction( 'name', 'command', [] );
-		$this->assertEquals( 'Command', $action->getType() );
 	}
 
 	public function test_invalidCommand_causesError()

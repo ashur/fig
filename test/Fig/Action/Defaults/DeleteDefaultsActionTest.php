@@ -11,6 +11,16 @@ use FigTest\Action\TestCase;
 
 class DeleteDefaultsActionTest extends TestCase
 {
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$action = $this->getInstance_withKey();
+
+		return [
+			[$action['action']]
+		];
+	}
+
 	public function getInstance_withKey() : array
 	{
 		$varTimeValue = microtime( true );
@@ -217,11 +227,5 @@ class DeleteDefaultsActionTest extends TestCase
 	{
 		$action = $this->getInstance_withoutKey();
 		$this->assertEquals( 'delete', $action['action']->getSubtitle() );
-	}
-
-	public function test_getType()
-	{
-		$action = $this->getInstance_withKey();
-		$this->assertEquals( 'Defaults', $action['action']->getType() );
 	}
 }

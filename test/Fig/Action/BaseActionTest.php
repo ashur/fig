@@ -16,6 +16,17 @@ class BaseActionTest extends TestCase
 		return $stub;
 	}
 
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$actionName = getUniqueString( 'action ' );
+		$action = new ExampleAction( $actionName );
+
+		return [
+			[$action]
+		];
+	}
+
 	public function provider_didError() : array
 	{
 		return [
@@ -129,13 +140,6 @@ class BaseActionTest extends TestCase
 		$exampleAction = new ExampleAction( 'name' );
 
 		$this->assertEquals( 'subtitle', $exampleAction->getSubtitle() );
-	}
-
-	public function test_getType()
-	{
-		$exampleAction = new ExampleAction( 'name' );
-
-		$this->assertEquals( 'Example', $exampleAction->getType() );
 	}
 
 	public function provider_ignoreMethods_supportBooleanishValues() : array

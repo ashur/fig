@@ -48,6 +48,11 @@ abstract class BaseAction extends Variablizable
 	protected $profileName;
 
 	/**
+	 * @var	string
+	 */
+	protected $type;
+
+	/**
 	 * Executes action, setting output and error status
 	 *
 	 * @param	Fig\Engine	$engine

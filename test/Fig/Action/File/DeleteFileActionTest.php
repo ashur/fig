@@ -54,6 +54,17 @@ class DeleteFileActionTest extends TestCase
 		return $nodeMock;
 	}
 
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$actionName = getUniqueString( 'action ' );
+		$action = new DeleteFileAction( $actionName, '~/Desktop/hello.txt' );
+
+		return [
+			[$action]
+		];
+	}
+
 	public function provider_nodeClasses() : array
 	{
 		return [

@@ -10,6 +10,17 @@ use FigTest\Action\TestCase;
 
 class BaseFileActionTest extends TestCase
 {
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$actionName = getUniqueString( 'action ' );
+		$action = new ExampleFileAction( $actionName, '~/Desktop/' );
+
+		return [
+			[$action]
+		];
+	}
+
 	public function test_getTargetPath_supportsVariables()
 	{
 		$filename = microtime( true );
@@ -37,13 +48,6 @@ class BaseFileActionTest extends TestCase
 		$action = new ExampleFileAction( 'My Example Action', '~/Desktop' );
 
 		$this->assertEquals( 'example', $action->getSubtitle() );
-	}
-
-	public function test_getType()
-	{
-		$actionMock = $this->getMockForAbstractClass( BaseFileAction::class );
-
-		$this->assertEquals( 'File', $actionMock->getType() );
 	}
 }
 

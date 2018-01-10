@@ -10,6 +10,17 @@ use FigTest\Action\TestCase;
 
 class WriteDefaultsActionTest extends TestCase
 {
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$actionName = getUniqueString( 'action-' );
+		$action = new WriteDefaultsAction( $actionName, 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
+
+		return [
+			[$action]
+		];
+	}
+
 	public function test_deploy_callsEngine_executeCommand()
 	{
 		$appName = 'Newton-' . microtime( true );
@@ -158,11 +169,5 @@ class WriteDefaultsActionTest extends TestCase
 	{
 		$action = new WriteDefaultsAction( 'my defaults write action', 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
 		$this->assertEquals( 'write', $action->getSubtitle() );
-	}
-
-	public function test_getType()
-	{
-		$action = new WriteDefaultsAction( 'my defaults write action', 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
-		$this->assertEquals( 'Defaults', $action->getType() );
 	}
 }

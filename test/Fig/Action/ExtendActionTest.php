@@ -10,6 +10,19 @@ use FigTest\Action\TestCase;
 
 class ExtendActionTest extends TestCase
 {
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$actionName = getUniqueString( 'action ' );
+		$profileName = getUniqueString( 'profile-' );
+
+		$action = new ExtendAction( $actionName, $profileName );
+
+		return [
+			[$action]
+		];
+	}
+
 	public function test_getExtendedProfileName()
 	{
 		$actionName = sprintf( 'action %s', microtime( true ) );
@@ -38,15 +51,5 @@ class ExtendActionTest extends TestCase
 		$action = new ExtendAction( $actionName, $profileName );
 
 		$this->assertEquals( $profileName, $action->getSubtitle() );
-	}
-
-	public function test_getType()
-	{
-		$actionName = sprintf( 'action %s', microtime( true ) );
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
-
-		$action = new ExtendAction( $actionName, $profileName );
-
-		$this->assertEquals( 'Extend', $action->getType() );
 	}
 }

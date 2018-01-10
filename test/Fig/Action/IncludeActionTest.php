@@ -10,6 +10,19 @@ use FigTest\Action\TestCase;
 
 class IncludeActionTest extends TestCase
 {
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$actionName = getUniqueString( 'action ' );
+		$profileName = getUniqueString( 'profile-' );
+
+		$action = new IncludeAction( $actionName, $profileName );
+
+		return [
+			[$action]
+		];
+	}
+
 	public function test_getArguments()
 	{
 		$actionName = sprintf( 'action %s', microtime( true ) );
@@ -49,15 +62,5 @@ class IncludeActionTest extends TestCase
 		$action = new IncludeAction( $actionName, $profileName );
 
 		$this->assertEquals( $profileName, $action->getSubtitle() );
-	}
-
-	public function test_getType()
-	{
-		$actionName = sprintf( 'action %s', microtime( true ) );
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
-
-		$action = new IncludeAction( $actionName, $profileName );
-
-		$this->assertEquals( 'Include', $action->getType() );
 	}
 }

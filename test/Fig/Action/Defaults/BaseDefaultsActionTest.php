@@ -10,6 +10,17 @@ use FigTest\Action\TestCase;
 
 class BaseDefaultsActionTest extends TestCase
 {
+	/* Consumed by FigTest\Action\TestCase::test_getType */
+	public function provider_ActionObject() : array
+	{
+		$actionName = getUniqueString( 'action ' );
+		$action = new ExampleDefaultsAction( $actionName, 'com.example.Newton', 'SerialNumber' );
+
+		return [
+			[$action]
+		];
+	}
+
 	public function test_getDomain_supportsVariables()
 	{
 		$time = microtime( true );
@@ -60,13 +71,6 @@ class BaseDefaultsActionTest extends TestCase
 		$action = new ExampleDefaultsAction( 'my defaults action', 'com.example.Newton', 'SerialNumber' );
 
 		$this->assertEquals( 'example', $action->getSubtitle() );
-	}
-
-	public function test_getType()
-	{
-		$action = new ExampleDefaultsAction( 'my defaults action', 'com.example.Newton', 'SerialNumber' );
-
-		$this->assertEquals( 'Defaults', $action->getType() );
 	}
 
 	public function test_getValue_supportsVariables()
