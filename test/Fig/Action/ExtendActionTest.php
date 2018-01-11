@@ -25,8 +25,8 @@ class ExtendActionTest extends TestCase
 
 	public function test_getExtendedProfileName()
 	{
-		$actionName = sprintf( 'action %s', microtime( true ) );
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
+		$actionName = getUniqueString( 'action ' );
+		$profileName = getUniqueString( 'profile-' );
 
 		$action = new ExtendAction( $actionName, $profileName );
 
@@ -35,8 +35,8 @@ class ExtendActionTest extends TestCase
 
 	public function test_getName()
 	{
-		$actionName = sprintf( 'action %s', microtime( true ) );
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
+		$actionName = getUniqueString( 'action ' );
+		$profileName = getUniqueString( 'profile-' );
 
 		$action = new ExtendAction( $actionName, $profileName );
 

@@ -23,7 +23,7 @@ class BaseFileActionTest extends TestCase
 
 	public function test_getTargetPath_withVariableReplacement()
 	{
-		$filename = microtime( true );
+		$filename = getUniqueString( 'file-' );
 
 		$pattern = '~/Desktop/%s.txt';
 		$targetPath = sprintf( $pattern, '{{ filename }}' );

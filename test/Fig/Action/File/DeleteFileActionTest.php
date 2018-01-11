@@ -79,7 +79,7 @@ class DeleteFileActionTest extends TestCase
 	 */
 	public function test_deploy_callsEngineGetFilesystemNodeFromPath( string $nodeClass )
 	{
-		$targetPath = '~/Desktop/' . microtime( true );
+		$targetPath = getUniqueString( '~/Desktop/' );
 		$action = new DeleteFileAction( 'My File Action', $targetPath );
 
 		$nodeMock = $this->getNodeMock( $nodeClass );
@@ -98,7 +98,7 @@ class DeleteFileActionTest extends TestCase
 	 */
 	public function test_deploy_callsNodeDelete( string $nodeClass )
 	{
-		$targetPath = '~/Desktop/' . microtime( true );
+		$targetPath = getUniqueString( '~/Desktop/' );
 		$action = new DeleteFileAction( 'My File Action', $targetPath );
 
 		$nodeMock = $this->getNodeMock( $nodeClass );
@@ -116,7 +116,7 @@ class DeleteFileActionTest extends TestCase
 	 */
 	public function test_deploy_existingUndeletableNode_causesError( string $nodeClass )
 	{
-		$targetPath = '~/Desktop/' . microtime( true );
+		$targetPath = getUniqueString( '~/Desktop/' );
 		$action = new DeleteFileAction( 'My File Action', $targetPath );
 
 		$nodeMock = $this->getNodeMock( $nodeClass );
@@ -144,7 +144,7 @@ class DeleteFileActionTest extends TestCase
 
 	public function test_nonExistentTargetPath_doesNotCauseError()
 	{
-		$targetPath = '~/Desktop/' . microtime( true );
+		$targetPath = getUniqueString( '~/Desktop/' );
 		$action = new DeleteFileAction( 'My File Action', $targetPath );
 		$engine = $this->getEngineObject();
 
@@ -155,7 +155,7 @@ class DeleteFileActionTest extends TestCase
 
 	public function test_nonExistentTargetPath_outputsOK()
 	{
-		$targetPath = '~/Desktop/' . microtime( true );
+		$targetPath = getUniqueString( '~/Desktop/' );
 		$action = new DeleteFileAction( 'My File Action', $targetPath );
 		$engine = $this->getEngineObject();
 

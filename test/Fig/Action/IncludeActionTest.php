@@ -25,9 +25,9 @@ class IncludeActionTest extends TestCase
 
 	public function test_getArguments()
 	{
-		$actionName = sprintf( 'action %s', microtime( true ) );
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
-		$arguments = [ 'foo' => microtime( true ), 'bar' => microtime( true ) ];
+		$actionName = getUniqueString( 'action ' );
+		$profileName = getUniqueString( 'profile-' );
+		$arguments = [ 'foo' => getUniqueString( 'foo-' ), 'bar' => getUniqueString( 'bar-' ) ];
 
 		$action = new IncludeAction( $actionName, $profileName, $arguments );
 
@@ -36,8 +36,8 @@ class IncludeActionTest extends TestCase
 
 	public function test_getIncludedProfileName()
 	{
-		$actionName = sprintf( 'action %s', microtime( true ) );
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
+		$actionName = getUniqueString( 'action ' );
+		$profileName = getUniqueString( 'profile-' );
 
 		$action = new IncludeAction( $actionName, $profileName );
 
@@ -46,8 +46,8 @@ class IncludeActionTest extends TestCase
 
 	public function test_getName()
 	{
-		$actionName = sprintf( 'action %s', microtime( true ) );
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
+		$actionName = getUniqueString( 'action ' );
+		$profileName = getUniqueString( 'profile-' );
 
 		$action = new IncludeAction( $actionName, $profileName );
 

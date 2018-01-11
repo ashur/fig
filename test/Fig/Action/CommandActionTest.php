@@ -45,9 +45,9 @@ class CommandActionTest extends TestCase
 	 */
 	public function test_deploy_callsEngineExecuteCommand( string $outputString, int $exitCode, bool $shouldError )
 	{
-		$actionName = 'action' . microtime( true );
-		$commandName = 'command-' . time();
-		$commandArgs = [ 'arg1', 'arg2-' . microtime( true ) ];
+		$actionName = getUniqueString( 'action ' );
+		$commandName = getUniqueString( 'command-' );
+		$commandArgs = [ 'arg1', 'arg2-' . time() ];
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
@@ -83,8 +83,8 @@ class CommandActionTest extends TestCase
 
 	public function test_deploy_commandWithoutOutput_outputsOK()
 	{
-		$actionName = 'action' . microtime( true );
-		$commandName = 'command-' . time();
+		$actionName = getUniqueString( 'action ' );
+		$commandName = getUniqueString( 'command-' );
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
@@ -111,9 +111,9 @@ class CommandActionTest extends TestCase
 
 	public function test_getCommand_withVariableReplacement()
 	{
-		$actionName = 'action' . microtime( true );
+		$actionName = getUniqueString( 'action ' );
 
-		$time = microtime( true );
+		$time = time();
 		$variables = ['time' => $time];
 
 		$pattern = 'name-%s';
@@ -128,9 +128,9 @@ class CommandActionTest extends TestCase
 
 	public function test_getCommandArguments_withVariableReplacement()
 	{
-		$actionName = 'action' . microtime( true );
+		$actionName = getUniqueString( 'action ' );
 
-		$time = microtime( true );
+		$time = time();
 		$variables = ['time' => $time];
 
 		$pattern = '%s-%s';
@@ -185,8 +185,8 @@ class CommandActionTest extends TestCase
 
 	public function test_invalidCommand_causesError()
 	{
-		$actionName = 'action' . microtime( true );
-		$commandName = 'command-' . time();
+		$actionName = getUniqueString( 'action ' );
+		$commandName = getUniqueString( 'command-' );
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )

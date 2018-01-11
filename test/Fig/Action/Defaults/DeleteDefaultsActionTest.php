@@ -23,7 +23,7 @@ class DeleteDefaultsActionTest extends TestCase
 
 	public function getInstance_withKey() : array
 	{
-		$varTimeValue = microtime( true );
+		$varTimeValue = time();
 
 		/* Name */
 		$namePattern = 'action %s';
@@ -56,7 +56,7 @@ class DeleteDefaultsActionTest extends TestCase
 
 	public function getInstance_withoutKey() : array
 	{
-		$varTimeValue = microtime( true );
+		$varTimeValue = time();
 
 		/* Name */
 		$namePattern = 'action %s';

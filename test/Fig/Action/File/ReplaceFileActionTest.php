@@ -76,7 +76,7 @@ class ReplaceFileActionTest extends TestCase
 
 	public function test_deploy_calls_assetNodeCopyTo()
 	{
-		$targetPathname = sprintf( '/usr/local/foo/%s', microtime( true ) );
+		$targetPathname = getUniqueString( '/usr/local/foo/' );
 
 		$targetNodeParentMock = $this
 			->getMockBuilder( Filesystem\Directory::class )
@@ -136,9 +136,9 @@ class ReplaceFileActionTest extends TestCase
 	public function provider_deploy_getsFilesystemNodeOfSameTypeAsAssetNode() : array
 	{
 		return [
-			[new Filesystem\Directory( microtime( true ) ), Filesystem\Node::DIRECTORY],
-			[new Filesystem\File( microtime( true ) ),      Filesystem\Node::FILE],
-			[new Filesystem\Link( microtime( true ) ),      Filesystem\Node::LINK],
+			[new Filesystem\Directory( getUniqueString( '/usr/local/foo/' ) ), Filesystem\Node::DIRECTORY],
+			[new Filesystem\File( getUniqueString( '/usr/local/foo/' ) ),      Filesystem\Node::FILE],
+			[new Filesystem\Link( getUniqueString( '/usr/local/foo/' ) ),      Filesystem\Node::LINK],
 		];
 	}
 
@@ -147,7 +147,7 @@ class ReplaceFileActionTest extends TestCase
 	 */
 	public function test_deploy_getsFilesystemNodeOfSameTypeAsAssetNode( Filesystem\Node $assetNode, string $targetNodeClass )
 	{
-		$targetPathname = sprintf( '~/Desktop/%s', microtime( true ) );
+		$targetPathname = getUniqueString( '~/Desktop/' );
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
@@ -200,7 +200,7 @@ class ReplaceFileActionTest extends TestCase
 
 		$action = new ReplaceFileAction( 'My File Action', 'hello.txt', '~/Desktop/hello.txt' );
 
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
+		$profileName = getUniqueString( 'profile-' );
 		$action->setProfileName( $profileName );
 
 		$action->deploy( $engineMock );
@@ -225,7 +225,7 @@ class ReplaceFileActionTest extends TestCase
 
 	public function test_deploy_withUndeletableExistingTargetNode_causesError()
 	{
-		$targetPathname = sprintf( '/usr/local/foo/%s', microtime( true ) );
+		$targetPathname = getUniqueString( '/usr/local/foo/' );
 
 		$targetNodeParentMock = $this
 			->getMockBuilder( Filesystem\Directory::class )
@@ -258,7 +258,7 @@ class ReplaceFileActionTest extends TestCase
 			->getMock();
 		$engineMock
 			->method( 'getProfileAssetNode' )
-			->willReturn( new Filesystem\File( microtime( true ) ) );
+			->willReturn( new Filesystem\File( getUniqueString( 'file-' ) ) );
 		$engineMock
 			->method( 'getFilesystemNodeFromPath' )
 			->willReturn( $targetNodeMock );
@@ -276,7 +276,7 @@ class ReplaceFileActionTest extends TestCase
 
 	public function test_deploy_withUnwritableTargetParent_causesError()
 	{
-		$targetPathname = sprintf( '/usr/local/foo/%s', microtime( true ) );
+		$targetPathname = getUniqueString( '/usr/local/foo/' );
 
 		$targetNodeParentMock = $this
 			->getMockBuilder( Filesystem\Directory::class )
@@ -309,7 +309,7 @@ class ReplaceFileActionTest extends TestCase
 			->getMock();
 		$engineMock
 			->method( 'getProfileAssetNode' )
-			->willReturn( new Filesystem\File( microtime( true ) ) );
+			->willReturn( new Filesystem\File( getUniqueString( 'file-' ) ) );
 		$engineMock
 			->method( 'getFilesystemNodeFromPath' )
 			->willReturn( $targetNodeMock );
@@ -327,7 +327,7 @@ class ReplaceFileActionTest extends TestCase
 
 	public function test_getSourcePath_withVariableReplacement()
 	{
-		$filename = microtime( true );
+		$filename = getUniqueString( 'file-' );
 
 		$pattern = '%s.txt';
 		$sourcePath = sprintf( $pattern, '{{ filename }}' );

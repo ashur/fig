@@ -59,7 +59,7 @@ class EngineTest extends TestCase
 	public function test_getFilesystemNodeFromPath_withDirectory_returnsDirectory()
 	{
 		$tempDirectory = self::getTempDirectory();
-		$targetDirectory = $tempDirectory->getChild( microtime( true ), Filesystem\Node::DIRECTORY );
+		$targetDirectory = $tempDirectory->getChild( getUniqueString( 'dir-' ), Filesystem\Node::DIRECTORY );
 		$targetDirectory->create();
 
 		$targetPath = $targetDirectory->getPathname();
@@ -75,7 +75,7 @@ class EngineTest extends TestCase
 	public function test_getFilesystemNodeFromPath_withFile_returnsFile()
 	{
 		$tempDirectory = self::getTempDirectory();
-		$targetFile = $tempDirectory->getChild( microtime( true ), Filesystem\Node::FILE );
+		$targetFile = $tempDirectory->getChild( getUniqueString( 'file-' ), Filesystem\Node::FILE );
 		$targetFile->create();
 
 		$targetPath = $targetFile->getPathname();
@@ -91,10 +91,10 @@ class EngineTest extends TestCase
 	public function test_getFilesystemNodeFromPath_withLink_returnsLink()
 	{
 		$tempDirectory = self::getTempDirectory();
-		$file = $tempDirectory->getChild( microtime( true ), Filesystem\Node::FILE );
+		$file = $tempDirectory->getChild( getUniqueString( 'file-' ), Filesystem\Node::FILE );
 		$file->create();
 
-		$linkFilename = 'link-' . microtime( true );
+		$linkFilename = getUniqueString( 'link-' );
 		$link = $tempDirectory->getChild( $linkFilename, Filesystem\Node::LINK );
 		symlink( $file, $link );
 
@@ -113,7 +113,7 @@ class EngineTest extends TestCase
 	 */
 	public function test_getFilesystemNodeFromPath_withNonExistentPath_throwsExceptionIfTypeNotSpecified()
 	{
-		$pathname = sprintf( '%s/%s', self::getTempDirectory(), microtime( true ) );
+		$pathname = getUniqueString( self::getTempDirectory() . '/' );
 
 		$engine = $this->getEngineObject();
 
@@ -136,7 +136,7 @@ class EngineTest extends TestCase
 	*/
 	public function test_getFilesystemNodeFromPath_withNonExistentPathAndSpecifiedType_returnsNodeObject( int $nodeType, string $expectedClass )
 	{
-		$pathname = sprintf( '%s/%s', self::getTempDirectory(), microtime( true ) );
+		$pathname = getUniqueString( self::getTempDirectory() . '/' );
 
 		$engine = $this->getEngineObject();
 
@@ -149,8 +149,8 @@ class EngineTest extends TestCase
 
 	public function test_getProfileAssetNode_returnsNode()
 	{
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
-		$assetName = sprintf( 'asset-%s', microtime( true ) );
+		$profileName = getUniqueString( 'profile-' );
+		$assetName = getUniqueString( 'asset-' );
 
 		/*
 		 * Asset file; i.e., `~/.fig/<repo>/assets>/<profile>/<file>`
@@ -211,8 +211,8 @@ class EngineTest extends TestCase
 	 */
 	public function test_getProfileAssetNode_throwsExceptionForNonExistentAsset()
 	{
-		$profileName = sprintf( 'profile-%s', microtime( true ) );
-		$assetName = sprintf( 'asset-%s', microtime( true ) );
+		$profileName = getUniqueString( 'profile-' );
+		$assetName = getUniqueString( 'asset-' );
 
 		/*
 		 * Assets directory for profile; i.e., `~/.fig/<repo>/assets/<profile>`

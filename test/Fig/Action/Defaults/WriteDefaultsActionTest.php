@@ -23,7 +23,7 @@ class WriteDefaultsActionTest extends TestCase
 
 	public function test_deploy_callsEngine_executeCommand()
 	{
-		$appName = 'Newton-' . microtime( true );
+		$appName = getUniqueString( 'Newton-' );
 
 		$domainPattern = 'com.example.%s';
 		$domainString = sprintf( $domainPattern, '{{ app }}' );
@@ -69,9 +69,9 @@ class WriteDefaultsActionTest extends TestCase
 
 	public function test_deploy_commandError_causesError()
 	{
-		$domain = 'com.example.' . microtime( true );
+		$domain = getUniqueString( 'com.example.' );
 		$key = 'SerialNumber';
-		$value = 'SERIAL-' . microtime( true );
+		$value = getUniqueString( 'SERIAL-' );
 
 		$defaultsOutputArray = ["Command line interface to a user's defaults.", "Syntax:"];
 
@@ -101,9 +101,9 @@ class WriteDefaultsActionTest extends TestCase
 
 	public function test_deploy_commandSuccess_outputsValue()
 	{
-		$domain = 'com.example.' . microtime( true );
+		$domain = getUniqueString( 'com.example.' );
 		$key = 'SerialNumber';
-		$value = 'SERIAL-' . microtime( true );
+		$value = getUniqueString( 'SERIAL-' );
 
 		$engineMock = $this
 			->getMockBuilder( Engine::class )
@@ -160,7 +160,7 @@ class WriteDefaultsActionTest extends TestCase
 	 */
 	public function test_getName()
 	{
-		$actionName = 'action ' . microtime( true );
+		$actionName = getUniqueString( 'action ' );
 		$action = new WriteDefaultsAction( $actionName, 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
 		$this->assertEquals( $actionName, $action->getName() );
 	}

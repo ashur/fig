@@ -31,7 +31,7 @@ class VariablizableTest extends TestCase
 
 	public function test_replaceVariablesInString_replacesUndefinedVariables()
 	{
-		$time = microtime( true );
+		$time = time();
 		$variables = [ 'time' => $time ];
 
 		$pattern = 'name-%s-%s';
@@ -61,7 +61,7 @@ class VariablizableTest extends TestCase
 	 */
 	public function test_replaceVariablesInString_supportsVariableWhitespace( $variable )
 	{
-		$time = microtime( true );
+		$time = time();
 		$variables = [ 'time' => $time ];
 
 		$pattern = 'name-%s';

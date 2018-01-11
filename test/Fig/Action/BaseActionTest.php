@@ -68,7 +68,7 @@ class BaseActionTest extends TestCase
 
 	public function test_getName()
 	{
-		$expectedName = 'action-' . microtime( true );
+		$expectedName = getUniqueString( 'action-' );
 		$exampleAction = new ExampleAction( $expectedName );
 
 		$actualName = $exampleAction->getName();
@@ -78,16 +78,18 @@ class BaseActionTest extends TestCase
 
 	public function test_getName_withVariableReplacement()
 	{
-		$time = microtime( true );
-		$name = 'action-{{ time }}';
-		$expectedName = 'action-' . $time;
+		$variableDate = getUniqueString( 'DATE-' );
 
-		$variables = ['time' => $time];
+		$actionNamePattern = getUniqueString( 'my action %s ' );
+		$actionNameOriginal = sprintf( $actionNamePattern, '{{ date }}' );
+		$actionNameExpected = sprintf( $actionNamePattern, $variableDate );
 
-		$exampleAction = new ExampleAction( $name );
-		$exampleAction->setVariables( $variables );
+		$variables = [ 'date' => $variableDate ];
 
-		$this->assertEquals( $expectedName, $exampleAction->getName() );
+		$action = new ExampleAction( $actionNameOriginal );
+		$action->setVariables( $variables );
+
+		$this->assertEquals( $actionNameExpected, $action->getName() );
 	}
 
 	public function test_getOutput_returnsNullBeforeDeployment()
@@ -102,7 +104,7 @@ class BaseActionTest extends TestCase
 
 		$exampleAction->ignoreOutput( true );
 
-		$outputString = (string) microtime( true );
+		$outputString = getUniqueString( 'output-' );
 		$exampleAction->___setOutputString( $outputString );
 
 		$this->assertEquals( BaseAction::STRING_STATUS_SUCCESS, $exampleAction->getOutput() );
@@ -112,7 +114,7 @@ class BaseActionTest extends TestCase
 	{
 		$exampleAction = new ExampleAction( 'name' );
 
-		$outputString = (string) microtime( true );
+		$outputString = getUniqueString( 'output-' );
 		$exampleAction->___setOutputString( $outputString );
 
 		$this->assertEquals( $outputString, $exampleAction->getOutput() );
@@ -129,7 +131,7 @@ class BaseActionTest extends TestCase
 	{
 		$action = new ExampleAction( 'name' );
 
-		$profileName = sprintf( 'profile-', microtime( true ) );
+		$profileName = getUniqueString( 'profile-' );
 		$action->setProfileName( $profileName );
 
 		$this->assertEquals( $profileName, $action->getProfileName() );

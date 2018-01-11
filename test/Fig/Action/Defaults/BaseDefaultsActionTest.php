@@ -23,7 +23,7 @@ class BaseDefaultsActionTest extends TestCase
 
 	public function test_getDomain_withVariableReplacement()
 	{
-		$time = microtime( true );
+		$time = time();
 
 		$pattern = 'com.example.%s';
 		$domainString = sprintf( $pattern, '{{ app }}' );
@@ -45,7 +45,7 @@ class BaseDefaultsActionTest extends TestCase
 
 	public function test_getKey_withVariableReplacement()
 	{
-		$time = microtime( true );
+		$time = time();
 
 		$pattern = 'SerialNumber-';
 		$keyString = sprintf( $pattern, '{{ time }}' );
@@ -75,7 +75,7 @@ class BaseDefaultsActionTest extends TestCase
 
 	public function test_getValue_withVariableReplacement()
 	{
-		$time = microtime( true );
+		$time = time();
 
 		$pattern = 'Foo-Bar-';
 		$valueString = sprintf( $pattern, '{{ time }}' );
