@@ -17,7 +17,7 @@ abstract class TestCase extends \FigTest\TestCase
 	/**
 	 * @dataProvider	provider_ActionObject
 	 */
-	public function test_getType( \Fig\Action\BaseAction $action )
+	public function test_getType( \Fig\Action\Action $action )
 	{
 		$actionType = $action->getType();
 
