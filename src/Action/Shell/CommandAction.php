@@ -3,12 +3,13 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action;
+namespace Fig\Action\Shell;
 
 use Fig\Engine;
 use Fig\Exception;
+use Fig\Shell;
 
-class CommandAction extends BaseAction
+class CommandAction extends ShellAction
 {
 	/**
 	 * @var	string
@@ -45,14 +46,14 @@ class CommandAction extends BaseAction
 	/**
 	 * Attempts to execute command with arguments
 	 *
-	 * @param	Fig\Engine	$engine
+	 * @param	Fig\Shell\Shell	$shell
 	 *
 	 * @return	void
 	 */
-	public function deploy( Engine $engine )
+	public function deploy( Shell\Shell $shell )
 	{
 		/* Make sure the command exists before trying to execute it */
-		if( !$engine->commandExists( $this->command ) )
+		if( !$shell->commandExists( $this->command ) )
 		{
 			$this->didError = true;
 			$this->outputString = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, $this->command );
@@ -61,18 +62,19 @@ class CommandAction extends BaseAction
 		}
 
 		/* Execute command */
-		$result = $engine->executeCommand( $this->getCommand(), $this->getCommandArguments() );
+		$result = $shell->executeCommand( $this->getCommand(), $this->getCommandArguments() );
 
 		/* Populate output, error */
-		$this->didError = $result['exitCode'] !== 0;
+		$this->didError = $result->getExitCode() !== 0;
 
-		if( count( $result['output'] ) == 0 )
+		$output = $result->getOutput();
+		if( count( $output ) == 0 )
 		{
 			$this->outputString = self::STRING_STATUS_SUCCESS;
 		}
 		else
 		{
-			$this->outputString = implode( PHP_EOL, $result['output'] );
+			$this->outputString = implode( PHP_EOL, $output );
 		}
 	}
 

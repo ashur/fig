@@ -3,21 +3,14 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action;
+namespace Fig\Action\Shell;
 
 use Fig\Engine;
+use Fig\Shell;
 use FigTest\Action\TestCase;
 
 class CommandActionTest extends TestCase
 {
-	public function getFigDirectoryMock() : Filesystem\Directory
-	{
-		return $this
-			->getMockBuilder( Filesystem\Directory::class )
-			->disableOriginalConstructor()
-			->getMock();
-	}
-
 	/* Consumed by FigTest\Action\TestCase::test_getType */
 	public function provider_ActionObject() : array
 	{
@@ -40,45 +33,13 @@ class CommandActionTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider	provider_deploy_callsEngineExecuteCommand
-	 */
-	public function test_deploy_callsEngineExecuteCommand( string $outputString, int $exitCode, bool $shouldError )
+	public function provider_getSubtitle_withVariableReplacement() : array
 	{
-		$actionName = getUniqueString( 'action ' );
-		$commandName = getUniqueString( 'command-' );
-		$commandArgs = [ 'arg1', 'arg2-' . time() ];
 
-		$engineMock = $this
-			->getMockBuilder( Engine::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists','executeCommand'] )
-			->getMock();
-
-		$engineMock
-			->method( 'commandExists' )
-			->willReturn( true );
-
-		$engineMock
-			->method( 'executeCommand' )
-			->willReturn([
-				'output' => [$outputString],
-				'exitCode' => $exitCode
-			]);
-
-		$engineMock
-			->expects( $this->once() )
-			->method( 'executeCommand' )
-			->with(
-				$this->equalTo( $commandName ),
-				$this->equalTo( $commandArgs )
-			);
-
-		$commandAction = new CommandAction( $actionName, $commandName, $commandArgs );
-		$commandAction->deploy( $engineMock );
-
-		$this->assertEquals( $shouldError, $commandAction->didError() );
-		$this->assertEquals( $outputString, $commandAction->getOutput() );
+		return [
+			['echo', [], 'echo'],
+			['{{ command }}', ['command'=>'echo'], 'echo'],
+		];
 	}
 
 	public function test_deploy_commandWithoutOutput_outputsOK()
@@ -86,27 +47,55 @@ class CommandActionTest extends TestCase
 		$actionName = getUniqueString( 'action ' );
 		$commandName = getUniqueString( 'command-' );
 
-		$engineMock = $this
-			->getMockBuilder( Engine::class )
+		$shellMock = $this
+			->getMockBuilder( Shell\Shell::class )
 			->disableOriginalConstructor()
 			->setMethods( ['commandExists','executeCommand'] )
 			->getMock();
 
-		$engineMock
+		$shellMock
 			->method( 'commandExists' )
 			->willReturn( true );
 
-		$engineMock
+		$shellMock
 			->method( 'executeCommand' )
-			->willReturn([
-				'output' => [],
-				'exitCode' => 0
-			]);
+			->willReturn( new Shell\Result( [], 0 ) );
 
 		$commandAction = new CommandAction( $actionName, $commandName, [] );
-		$commandAction->deploy( $engineMock );
+		$commandAction->deploy( $shellMock );
 
 		$this->assertEquals( CommandAction::STRING_STATUS_SUCCESS, $commandAction->getOutput() );
+	}
+
+	public function test_deploy_commandWithOutput_outputsString()
+	{
+		$actionName = getUniqueString( 'action ' );
+		$commandName = getUniqueString( 'command-' );
+
+		$shellMock = $this
+			->getMockBuilder( Shell\Shell::class )
+			->disableOriginalConstructor()
+			->setMethods( ['commandExists','executeCommand'] )
+			->getMock();
+
+		$shellMock
+			->method( 'commandExists' )
+			->willReturn( true );
+
+		$output[] = getUniqueString( 'line' );
+		$output[] = getUniqueString( 'line' );
+		$output[] = getUniqueString( 'line' );
+
+		$shellMock
+			->method( 'executeCommand' )
+			->willReturn( new Shell\Result( $output, 0 ) );
+
+		$commandAction = new CommandAction( $actionName, $commandName, [] );
+		$commandAction->deploy( $shellMock );
+
+		$expectedOutput = implode( PHP_EOL, $output );
+
+		$this->assertEquals( $expectedOutput, $commandAction->getOutput() );
 	}
 
 	public function test_getCommand_withVariableReplacement()
@@ -163,15 +152,6 @@ class CommandActionTest extends TestCase
 		$this->assertEquals( $command, $action->getSubtitle() );
 	}
 
-	public function provider_getSubtitle_withVariableReplacement() : array
-	{
-
-		return [
-			['echo', [], 'echo'],
-			['{{ command }}', ['command'=>'echo'], 'echo'],
-		];
-	}
-
 	/**
 	 * @dataProvider	provider_getSubtitle_withVariableReplacement
 	 */
@@ -186,21 +166,12 @@ class CommandActionTest extends TestCase
 	public function test_invalidCommand_causesError()
 	{
 		$actionName = getUniqueString( 'action ' );
-		$commandName = getUniqueString( 'command-' );
+		$commandName = getUniqueString( 'command' );
 
-		$engineMock = $this
-			->getMockBuilder( Engine::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists'] )
-			->getMock();
-
-		$engineMock
-			->expects( $this->once() )
-			->method( 'commandExists' )
-			->with( $this->equalTo( $commandName ) );
+		$shell = new Shell\Shell();
 
 		$commandAction = new CommandAction( $actionName, $commandName );
-		$commandAction->deploy( $engineMock );
+		$commandAction->deploy( $shell );
 
 		$this->assertTrue( $commandAction->didError() );
 
