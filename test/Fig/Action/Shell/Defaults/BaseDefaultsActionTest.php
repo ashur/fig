@@ -3,9 +3,10 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action\Defaults;
+namespace Fig\Action\Shell\Defaults;
 
 use Fig\Engine;
+use Fig\Shell\Shell;
 use FigTest\Action\TestCase;
 
 class BaseDefaultsActionTest extends TestCase
@@ -136,23 +137,18 @@ class BaseDefaultsActionTest extends TestCase
 	 */
 	public function test_preDeploy_invalidCommand_throwsException()
 	{
-		$engineMock = $this
-			->getMockBuilder( Engine::class )
+		$shellMock = $this
+			->getMockBuilder( Shell::class )
 			->disableOriginalConstructor()
 			->setMethods( ['commandExists'] )
 			->getMock();
 
-		$engineMock
+		$shellMock
 			->method( 'commandExists' )
 			->willReturn( false );
 
-		$engineMock
-			->expects( $this->once() )
-			->method( 'commandExists' )
-			->with( $this->equalTo( 'defaults' ) );
-
 		$action = new ExampleDefaultsAction( 'my defaults action', 'com.example.Newton' );
-		$action->preDeploy( $engineMock );
+		$action->preDeploy( $shellMock );
 	}
 }
 
@@ -185,5 +181,5 @@ class ExampleDefaultsAction extends BaseDefaultsAction
 	 *
 	 * @return	void
 	 */
-	public function deploy( Engine $engine ){}
+	public function deploy( Shell $shell ){}
 }
