@@ -7,6 +7,8 @@ namespace Fig\Shell;
 
 class Shell
 {
+	const STRING_ERROR_COMMANDNOTFOUND = 'Command not found: %s';
+
 	/**
 	 * Returns whether a given command exists
 	 *

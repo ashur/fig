@@ -9,8 +9,6 @@ use Cranberry\Filesystem;
 
 class Engine
 {
-	const STRING_ERROR_COMMANDNOTFOUND = 'Command not found: %s';
-
 	/**
 	 * @var	Cranberry\Filesystem\Directory
 	 */

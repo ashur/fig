@@ -120,7 +120,7 @@ abstract class BaseDefaultsAction extends ShellAction
 	{
 		if( !$shell->commandExists( 'defaults' ) )
 		{
-			$exceptionMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
+			$exceptionMessage = sprintf( Shell::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
 			throw new Exception\RuntimeException( $exceptionMessage, Exception\RuntimeException::COMMAND_NOT_FOUND );
 		}
 	}

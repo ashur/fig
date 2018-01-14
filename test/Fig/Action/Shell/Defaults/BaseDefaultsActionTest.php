@@ -5,7 +5,6 @@
  */
 namespace Fig\Action\Shell\Defaults;
 
-use Fig\Engine;
 use Fig\Shell\Shell;
 use FigTest\Action\TestCase;
 

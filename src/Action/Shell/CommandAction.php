@@ -7,7 +7,7 @@ namespace Fig\Action\Shell;
 
 use Fig\Engine;
 use Fig\Exception;
-use Fig\Shell;
+use Fig\Shell\Shell;
 
 class CommandAction extends ShellAction
 {
@@ -50,13 +50,13 @@ class CommandAction extends ShellAction
 	 *
 	 * @return	void
 	 */
-	public function deploy( Shell\Shell $shell )
+	public function deploy( Shell $shell )
 	{
 		/* Make sure the command exists before trying to execute it */
 		if( !$shell->commandExists( $this->command ) )
 		{
 			$this->didError = true;
-			$this->outputString = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, $this->command );
+			$this->outputString = sprintf( Shell::STRING_ERROR_COMMANDNOTFOUND, $this->command );
 
 			return;
 		}

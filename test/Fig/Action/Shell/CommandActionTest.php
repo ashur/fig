@@ -5,7 +5,6 @@
  */
 namespace Fig\Action\Shell;
 
-use Fig\Engine;
 use Fig\Shell;
 use FigTest\Action\TestCase;
 
@@ -175,7 +174,7 @@ class CommandActionTest extends TestCase
 
 		$this->assertTrue( $commandAction->didError() );
 
-		$expectedErrorMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, $commandName );
+		$expectedErrorMessage = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, $commandName );
 		$this->assertEquals( $expectedErrorMessage, $commandAction->getOutput() );
 	}
 }
