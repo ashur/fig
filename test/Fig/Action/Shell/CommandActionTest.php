@@ -23,15 +23,6 @@ class CommandActionTest extends TestCase
 		];
 	}
 
-	public function provider_deploy_callsEngineExecuteCommand() : array
-	{
-		return [
-			[ 'this is command output', 0, false ],
-			[ 'this is error output', 1, true ],
-			[ 'this is different error output', 126, true ],
-		];
-	}
-
 	public function provider_getSubtitle_withVariableReplacement() : array
 	{
 
