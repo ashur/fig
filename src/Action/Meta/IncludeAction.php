@@ -3,11 +3,11 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action;
+namespace Fig\Action\Meta;
 
-use Fig\Engine;
+use Fig\Action\Action;
 
-class IncludeAction extends BaseAction
+class IncludeAction extends Action
 {
 	/**
 	 * @var	array
