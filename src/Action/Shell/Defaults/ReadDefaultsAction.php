@@ -3,10 +3,10 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action\Defaults;
+namespace Fig\Action\Shell\Defaults;
 
-use Fig\Engine;
 use Fig\Exception;
+use Fig\Shell\Shell;
 
 class ReadDefaultsAction extends BaseDefaultsAction
 {
@@ -34,15 +34,15 @@ class ReadDefaultsAction extends BaseDefaultsAction
 	/**
 	 * Attempts to execute `defaults read <domain> [<key>]`
 	 *
-	 * @param	Fig\Engine	$engine
+	 * @param	Fig\Shell\Shell	$shell
 	 *
 	 * @return	void
 	 */
-	public function deploy( Engine $engine )
+	public function deploy( Shell $shell )
 	{
 		try
 		{
-			$this->preDeploy( $engine );
+			$this->preDeploy( $shell );
 		}
 		catch( Exception\Exception $e )
 		{
@@ -62,10 +62,10 @@ class ReadDefaultsAction extends BaseDefaultsAction
 		}
 
 		/* Execute command */
-		$result = $engine->executeCommand( 'defaults', $commandArguments );
+		$result = $shell->executeCommand( 'defaults', $commandArguments );
 
 		/* Populate output, error */
-		$this->didError = $result['exitCode'] !== 0;
-		$this->outputString = implode( PHP_EOL, $result['output'] );
+		$this->didError = $result->getExitCode() !== 0;
+		$this->outputString = implode( PHP_EOL, $result->getOutput() );
 	}
 }
