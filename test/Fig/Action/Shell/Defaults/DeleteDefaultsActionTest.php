@@ -3,10 +3,10 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action\Defaults;
+namespace Fig\Action\Shell\Defaults;
 
-use Fig\Action\BaseAction;
-use Fig\Engine;
+use Fig\Action\Action;
+use Fig\Shell;
 use FigTest\Action\TestCase;
 
 class DeleteDefaultsActionTest extends TestCase
@@ -97,71 +97,29 @@ class DeleteDefaultsActionTest extends TestCase
 	/**
 	 * @dataProvider	provider_actionWithValues
 	 */
-	public function test_deploy_callsEngine_executeCommand( DeleteDefaultsAction $action, array $expectedValues )
-	{
-		/* Build expected command arguments */
-		$expectedCommandArguments = array_values( $expectedValues );
-
-		if( $expectedValues['key'] == null )
-		{
-			array_pop( $expectedCommandArguments );
-		}
-
-		array_shift( $expectedCommandArguments );				// Action name
-		array_unshift( $expectedCommandArguments, 'delete' );	// Subcommand name
-
-		/* Build Engine mock */
-		$engineMock = $this
-			->getMockBuilder( Engine::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists','executeCommand'] )
-			->getMock();
-		$engineMock
-			->method( 'commandExists' )
-			->willReturn( true );
-		$engineMock
-			->method( 'executeCommand' )
-			->willReturn([
-				'output' => [],
-				'exitCode' => 0
-			]);
-		$engineMock
-			->expects( $this->once() )
-			->method( 'executeCommand' )
-			->with(
-				$this->equalTo( 'defaults' ),
-				$this->equalTo( $expectedCommandArguments )
-			);
-
-		$action->deploy( $engineMock );
-	}
-
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
 	public function test_deploy_commandError_causesError( DeleteDefaultsAction $action )
 	{
 		$defaultsOutputArray = ["2017-11-28 08:39:15.657 defaults[58832:3901130]", "Domain (com.example.Foo) not found.", "Defaults have not been changed."];
 
-		$engineMock = $this
-			->getMockBuilder( Engine::class )
+		$shellMock = $this
+			->getMockBuilder( Shell\Shell::class )
 			->disableOriginalConstructor()
 			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
-		$engineMock
+		$shellMock
 			->method( 'commandExists' )
 			->willReturn( true );
-		$engineMock
-			->method( 'executeCommand' )
-			->willReturn([
-				'output' => $defaultsOutputArray,
-				'exitCode' => 1
-			]);
 
-		$action->deploy( $engineMock );
+		$shellMock
+			->method( 'executeCommand' )
+			->willReturn( new Shell\Result( $defaultsOutputArray, 1 ) );
+
+		$action->deploy( $shellMock );
+
+		$expectedOutput = implode( PHP_EOL, $defaultsOutputArray );
 
 		$this->assertTrue( $action->didError() );
-		$this->assertEquals( implode( PHP_EOL, $defaultsOutputArray ), $action->getOutput() );
+		$this->assertEquals( $expectedOutput, $action->getOutput() );
 	}
 
 	/**
@@ -169,26 +127,23 @@ class DeleteDefaultsActionTest extends TestCase
 	 */
 	public function test_deploy_commandSuccess_outputsOK( DeleteDefaultsAction $action, array $expectedValues )
 	{
-		/* Build Engine mock */
-		$engineMock = $this
-			->getMockBuilder( Engine::class )
+		$shellMock = $this
+			->getMockBuilder( Shell\Shell::class )
 			->disableOriginalConstructor()
 			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
-		$engineMock
+		$shellMock
 			->method( 'commandExists' )
 			->willReturn( true );
-		$engineMock
-			->method( 'executeCommand' )
-			->willReturn([
-				'output' => [],
-				'exitCode' => 0
-			]);
 
-		$action->deploy( $engineMock );
+		$shellMock
+			->method( 'executeCommand' )
+			->willReturn( new Shell\Result( [], 0 ) );
+
+		$action->deploy( $shellMock );
 
 		$this->assertFalse( $action->didError() );
-		$this->assertEquals( BaseAction::STRING_STATUS_SUCCESS, $action->getOutput() );
+		$this->assertEquals( Action::STRING_STATUS_SUCCESS, $action->getOutput() );
 	}
 
 	/**
@@ -196,24 +151,24 @@ class DeleteDefaultsActionTest extends TestCase
 	 */
 	public function test_deploy_invalidCommand_causesError( DeleteDefaultsAction $action )
 	{
-		$engineMock = $this
-			->getMockBuilder( Engine::class )
+		$shellMock = $this
+			->getMockBuilder( Shell\Shell::class )
 			->disableOriginalConstructor()
-			->setMethods( ['commandExists'] )
+			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
-		$engineMock
+		$shellMock
 			->method( 'commandExists' )
 			->willReturn( false );
-		$engineMock
-			->expects( $this->once() )
-			->method( 'commandExists' )
-			->with( $this->equalTo( 'defaults' ) );
 
-		$action->deploy( $engineMock );
+		$shellMock
+			->method( 'executeCommand' )
+			->willReturn( new Shell\Result( [], 1 ) );
+
+		$action->deploy( $shellMock );
 
 		$this->assertTrue( $action->didError() );
 
-		$expectedErrorMessage = sprintf( Engine::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
+		$expectedErrorMessage = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
 		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
 	}
 
