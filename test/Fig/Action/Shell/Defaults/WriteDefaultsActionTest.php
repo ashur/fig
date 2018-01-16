@@ -6,11 +6,17 @@
 namespace Fig\Action\Shell\Defaults;
 
 use Fig\Shell;
-use FigTest\Action\TestCase;
+use FigTest\Action\Shell\TestCase;
 
 class WriteDefaultsActionTest extends TestCase
 {
-	/* Consumed by FigTest\Action\TestCase::test_getType */
+	/* Providers */
+
+	/*
+	 * Consumed by:
+	 * - FigTest\Action\TestCase::test_getType
+	 * - FigTest\Action\Shell\TestCase::test_deploy_invalidCommand_causesError
+	 */
 	public function provider_ActionObject() : array
 	{
 		$actionName = getUniqueString( 'action-' );
@@ -20,6 +26,9 @@ class WriteDefaultsActionTest extends TestCase
 			[$action]
 		];
 	}
+
+
+	/* Tests */
 
 	public function test_deploy_commandError_causesError()
 	{
@@ -74,32 +83,6 @@ class WriteDefaultsActionTest extends TestCase
 
 		$this->assertFalse( $action->didError() );
 		$this->assertEquals( $value, $action->getOutput() );
-	}
-
-	public function test_deploy_invalidCommand_causesError()
-	{
-		$shellMock = $this
-			->getMockBuilder( Shell\Shell::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists'] )
-			->getMock();
-
-		$shellMock
-			->method( 'commandExists' )
-			->willReturn( false );
-
-		$shellMock
-			->expects( $this->once() )
-			->method( 'commandExists' )
-			->with( $this->equalTo( 'defaults' ) );
-
-		$action = new WriteDefaultsAction( 'my defaults action', 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
-		$action->deploy( $shellMock );
-
-		$this->assertTrue( $action->didError() );
-
-		$expectedErrorMessage = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
-		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
 	}
 
 	/**

@@ -10,6 +10,8 @@ use FigTest\Action\TestCase;
 
 class BaseDefaultsActionTest extends TestCase
 {
+	/* Providers */
+
 	/* Consumed by FigTest\Action\TestCase::test_getType */
 	public function provider_ActionObject() : array
 	{
@@ -20,6 +22,25 @@ class BaseDefaultsActionTest extends TestCase
 			[$action]
 		];
 	}
+
+	public function provider_hasKey_returnsBool() : array
+	{
+		return [
+			[null, false],
+			['SerialNumber', true]
+		];
+	}
+
+	public function provider_hasValue_returnsBool() : array
+	{
+		return [
+			[null, false],
+			['Foo-Bar', true]
+		];
+	}
+
+
+	/* Tests */
 
 	public function test_getDomain_withVariableReplacement()
 	{
@@ -96,14 +117,6 @@ class BaseDefaultsActionTest extends TestCase
 		$action->getValue();
 	}
 
-	public function provider_hasKey_returnsBool() : array
-	{
-		return [
-			[null, false],
-			['SerialNumber', true]
-		];
-	}
-
 	/**
 	 * @dataProvider	provider_hasKey_returnsBool
 	 */
@@ -111,14 +124,6 @@ class BaseDefaultsActionTest extends TestCase
 	{
 		$action = new ExampleDefaultsAction( 'my defaults action', 'com.example.Newton', $key );
 		$this->assertEquals( $shouldHaveKey, $action->hasKey() );
-	}
-
-	public function provider_hasValue_returnsBool() : array
-	{
-		return [
-			[null, false],
-			['Foo-Bar', true]
-		];
 	}
 
 	/**

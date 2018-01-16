@@ -6,11 +6,17 @@
 namespace Fig\Action\Shell;
 
 use Fig\Shell;
-use FigTest\Action\TestCase;
+use FigTest\Action\Shell\TestCase;
 
 class CommandActionTest extends TestCase
 {
-	/* Consumed by FigTest\Action\TestCase::test_getType */
+	/* Providers */
+
+	/*
+	 * Consumed by:
+	 * - FigTest\Action\TestCase::test_getType
+	 * - FigTest\Action\Shell\TestCase::test_deploy_invalidCommand_causesError
+	 */
 	public function provider_ActionObject() : array
 	{
 		$actionName = getUniqueString( 'action ' );
@@ -31,6 +37,9 @@ class CommandActionTest extends TestCase
 			['{{ command }}', ['command'=>'echo'], 'echo'],
 		];
 	}
+
+
+	/* Tests */
 
 	public function test_deploy_commandWithoutOutput_outputsOK()
 	{
@@ -151,21 +160,5 @@ class CommandActionTest extends TestCase
 		$commandAction->setVariables( $variables );
 
 		$this->assertEquals( $expectedSubtitle, $commandAction->getSubtitle() );
-	}
-
-	public function test_invalidCommand_causesError()
-	{
-		$actionName = getUniqueString( 'action ' );
-		$commandName = getUniqueString( 'command' );
-
-		$shell = new Shell\Shell();
-
-		$commandAction = new CommandAction( $actionName, $commandName );
-		$commandAction->deploy( $shell );
-
-		$this->assertTrue( $commandAction->didError() );
-
-		$expectedErrorMessage = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, $commandName );
-		$this->assertEquals( $expectedErrorMessage, $commandAction->getOutput() );
 	}
 }

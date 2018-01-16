@@ -7,11 +7,17 @@ namespace Fig\Action\Shell\Defaults;
 
 use Fig\Action\Action;
 use Fig\Shell;
-use FigTest\Action\TestCase;
+use FigTest\Action\Shell\TestCase;
 
 class DeleteDefaultsActionTest extends TestCase
 {
-	/* Consumed by FigTest\Action\TestCase::test_getType */
+	/* Providers */
+
+	/*
+	 * Consumed by:
+	 * - FigTest\Action\TestCase::test_getType
+	 * - FigTest\Action\Shell\TestCase::test_deploy_invalidCommand_causesError
+	 */
 	public function provider_ActionObject() : array
 	{
 		$action = $this->getInstance_withKey();
@@ -20,6 +26,20 @@ class DeleteDefaultsActionTest extends TestCase
 			[$action['action']]
 		];
 	}
+
+	public function provider_actionWithValues() : array
+	{
+		$withKey = $this->getInstance_withKey();
+        $withoutKey = $this->getInstance_withoutKey();
+
+		return [
+			[ $withKey['action'], $withKey['values'] ],
+			[ $withoutKey['action'], $withoutKey['values'] ]
+		];
+	}
+
+
+	/* Helpers */
 
 	public function getInstance_withKey() : array
 	{
@@ -83,16 +103,8 @@ class DeleteDefaultsActionTest extends TestCase
 		return $data;
 	}
 
-	public function provider_actionWithValues() : array
-	{
-		$withKey = $this->getInstance_withKey();
-        $withoutKey = $this->getInstance_withoutKey();
 
-		return [
-			[ $withKey['action'], $withKey['values'] ],
-			[ $withoutKey['action'], $withoutKey['values'] ]
-		];
-	}
+	/* Tests */
 
 	/**
 	 * @dataProvider	provider_actionWithValues
@@ -144,32 +156,6 @@ class DeleteDefaultsActionTest extends TestCase
 
 		$this->assertFalse( $action->didError() );
 		$this->assertEquals( Action::STRING_STATUS_SUCCESS, $action->getOutput() );
-	}
-
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
-	public function test_deploy_invalidCommand_causesError( DeleteDefaultsAction $action )
-	{
-		$shellMock = $this
-			->getMockBuilder( Shell\Shell::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists', 'executeCommand'] )
-			->getMock();
-		$shellMock
-			->method( 'commandExists' )
-			->willReturn( false );
-
-		$shellMock
-			->method( 'executeCommand' )
-			->willReturn( new Shell\Result( [], 1 ) );
-
-		$action->deploy( $shellMock );
-
-		$this->assertTrue( $action->didError() );
-
-		$expectedErrorMessage = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
-		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
 	}
 
 	public function test_getName()

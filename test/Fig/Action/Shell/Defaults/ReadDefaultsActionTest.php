@@ -6,11 +6,17 @@
 namespace Fig\Action\Shell\Defaults;
 
 use Fig\Shell;
-use FigTest\Action\TestCase;
+use FigTest\Action\Shell\TestCase;
 
 class ReadDefaultsActionTest extends TestCase
 {
-	/* Consumed by FigTest\Action\TestCase::test_getType */
+	/* Providers */
+
+	/*
+	 * Consumed by:
+	 * - FigTest\Action\TestCase::test_getType
+	 * - FigTest\Action\Shell\TestCase::test_deploy_invalidCommand_causesError
+	 */
 	public function provider_ActionObject() : array
 	{
 		$action = $this->getInstance_withKey();
@@ -19,6 +25,20 @@ class ReadDefaultsActionTest extends TestCase
 			[$action['action']]
 		];
 	}
+
+	public function provider_actionWithValues() : array
+	{
+		$withKey = $this->getInstance_withKey();
+        $withoutKey = $this->getInstance_withoutKey();
+
+		return [
+			[ $withKey['action'], $withKey['values'] ],
+			[ $withoutKey['action'], $withoutKey['values'] ]
+		];
+	}
+
+
+	/* Helpers */
 
 	public function getInstance_withKey() : array
 	{
@@ -82,16 +102,8 @@ class ReadDefaultsActionTest extends TestCase
 		return $data;
 	}
 
-	public function provider_actionWithValues() : array
-	{
-		$withKey = $this->getInstance_withKey();
-        $withoutKey = $this->getInstance_withoutKey();
 
-		return [
-			[ $withKey['action'], $withKey['values'] ],
-			[ $withoutKey['action'], $withoutKey['values'] ]
-		];
-	}
+	/* Tests */
 
 	/**
 	 * @dataProvider	provider_actionWithValues
@@ -151,32 +163,6 @@ class ReadDefaultsActionTest extends TestCase
 
 		$this->assertFalse( $action->didError() );
 		$this->assertEquals( implode( PHP_EOL, $defaultsOutputArray ), $action->getOutput() );
-	}
-
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
-	public function test_deploy_invalidCommand_causesError( ReadDefaultsAction $action )
-	{
-		$shellMock = $this
-			->getMockBuilder( Shell\Shell::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists', 'executeCommand'] )
-			->getMock();
-		$shellMock
-			->method( 'commandExists' )
-			->willReturn( false );
-		$shellMock
-			->expects( $this->once() )
-			->method( 'commandExists' )
-			->with( $this->equalTo( 'defaults' ) );
-
-		$action->deploy( $shellMock );
-
-		$this->assertTrue( $action->didError() );
-
-		$expectedErrorMessage = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
-		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
 	}
 
 	public function test_getName()
