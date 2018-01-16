@@ -156,7 +156,7 @@ class BaseDefaultsActionTest extends TestCase
 	}
 }
 
-class ExampleDefaultsAction extends BaseDefaultsAction
+class ExampleDefaultsAction extends AbstractDefaultsAction
 {
 	/**
 	 * @var	string

@@ -6,9 +6,9 @@
 namespace Fig\Action\Shell\Defaults;
 
 use Fig\Exception;
-use Fig\Shell\Shell;
+use Fig\Shell;
 
-class DeleteDefaultsAction extends BaseDefaultsAction
+class DeleteDefaultsAction extends AbstractDefaultsAction
 {
 	/**
 	 * @var	string
@@ -38,7 +38,7 @@ class DeleteDefaultsAction extends BaseDefaultsAction
 	 *
 	 * @return	void
 	 */
-	public function deploy( Shell $shell )
+	public function deploy( Shell\Shell $shell )
 	{
 		try
 		{

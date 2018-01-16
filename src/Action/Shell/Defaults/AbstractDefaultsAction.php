@@ -5,13 +5,14 @@
  */
 namespace Fig\Action\Shell\Defaults;
 
-use Fig\Action\Shell\ShellAction;
-use Fig\Engine;
+use Fig\Action\AbstractAction;
 use Fig\Exception;
 use Fig\Shell\Shell;
 
-abstract class BaseDefaultsAction extends ShellAction
+abstract class AbstractDefaultsAction extends AbstractAction
 {
+	use \Fig\Action\Shell\DeployTrait;
+
 	/**
 	 * @var	string
 	 */

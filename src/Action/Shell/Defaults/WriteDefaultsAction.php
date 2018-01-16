@@ -8,7 +8,7 @@ namespace Fig\Action\Shell\Defaults;
 use Fig\Exception;
 use Fig\Shell\Shell;
 
-class WriteDefaultsAction extends BaseDefaultsAction
+class WriteDefaultsAction extends AbstractDefaultsAction
 {
 	/**
 	 * @var	string

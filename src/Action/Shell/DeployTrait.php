@@ -5,17 +5,16 @@
  */
 namespace Fig\Action\Shell;
 
-use Fig\Shell\Shell;
-use Fig\Action\Action;
+use Fig\Shell;
 
-abstract class ShellAction extends Action
+trait DeployTrait
 {
 	/**
 	 * Executes action, setting output and error status
 	 *
-	 * @param	Fig\Shell	$shell
+	 * @param	Fig\Shell\Shell	$shell
 	 *
 	 * @return	void
 	 */
-	abstract public function deploy( Shell $shell );
+	abstract public function deploy( Shell\Shell $shell );
 }
