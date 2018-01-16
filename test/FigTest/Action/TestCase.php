@@ -5,6 +5,8 @@
  */
 namespace FigTest\Action;
 
+use Fig\Action\AbstractAction;
+
 abstract class TestCase extends \FigTest\TestCase
 {
 	/* Providers */
@@ -17,7 +19,7 @@ abstract class TestCase extends \FigTest\TestCase
 	/**
 	 * @dataProvider	provider_ActionObject
 	 */
-	public function test_getType( \Fig\Action\Action $action )
+	public function test_getType( AbstractAction $action )
 	{
 		$actionType = $action->getType();
 

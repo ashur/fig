@@ -8,7 +8,7 @@ namespace Fig\Action;
 use Fig\Engine;
 use Fig\Variablizable;
 
-abstract class Action extends Variablizable
+abstract class AbstractAction extends Variablizable
 {
 	const STRING_STATUS_SUCCESS = 'OK';
 

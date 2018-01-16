@@ -5,7 +5,7 @@
  */
 namespace Fig\Action\Shell\Defaults;
 
-use Fig\Action\Action;
+use Fig\Action\AbstractAction;
 use Fig\Shell;
 use FigTest\Action\Shell\TestCase;
 
@@ -155,7 +155,7 @@ class DeleteDefaultsActionTest extends TestCase
 		$action->deploy( $shellMock );
 
 		$this->assertFalse( $action->didError() );
-		$this->assertEquals( Action::STRING_STATUS_SUCCESS, $action->getOutput() );
+		$this->assertEquals( AbstractAction::STRING_STATUS_SUCCESS, $action->getOutput() );
 	}
 
 	public function test_getName()

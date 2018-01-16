@@ -5,7 +5,7 @@
  */
 namespace FigTest\Action\Shell;
 
-use Fig\Action\Shell\ShellAction;
+use Fig\Action\AbstractAction;
 use Fig\Shell;
 
 abstract class TestCase extends \FigTest\Action\TestCase
@@ -13,7 +13,7 @@ abstract class TestCase extends \FigTest\Action\TestCase
 	/**
 	 * @dataProvider	provider_ActionObject
 	 */
-	public function test_deploy_invalidCommand_causesError( ShellAction $action )
+	public function test_deploy_invalidCommand_causesError( AbstractAction $action )
 	{
 		$shellMock = $this
 			->getMockBuilder( Shell\Shell::class )
