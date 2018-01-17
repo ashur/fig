@@ -5,9 +5,9 @@
  */
 namespace Fig\Action\Meta;
 
-use Fig\Action\Action;
+use Fig\Action\AbstractAction;
 
-class IncludeAction extends Action
+class IncludeAction extends AbstractAction
 {
 	/**
 	 * @var	array

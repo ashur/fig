@@ -5,9 +5,9 @@
  */
 namespace Fig\Action\Meta;
 
-use Fig\Action\Action;
+use Fig\Action\AbstractAction;
 
-class ExtendAction extends Action
+class ExtendAction extends AbstractAction
 {
 	/**
 	 * @var	string
