@@ -10,9 +10,9 @@ use FigTest\Action\TestCase;
 
 class BaseActionTest extends TestCase
 {
-	public function getStub() : BaseAction
+	public function getStub() : AbstractAction
 	{
-		$stub = $this->getMockForAbstractClass( BaseAction::class );
+		$stub = $this->getMockForAbstractClass( AbstractAction::class );
 		return $stub;
 	}
 
@@ -107,7 +107,7 @@ class BaseActionTest extends TestCase
 		$outputString = getUniqueString( 'output-' );
 		$exampleAction->___setOutputString( $outputString );
 
-		$this->assertEquals( BaseAction::STRING_STATUS_SUCCESS, $exampleAction->getOutput() );
+		$this->assertEquals( AbstractAction::STRING_STATUS_SUCCESS, $exampleAction->getOutput() );
 	}
 
 	public function test_getOutput_returnsValueByDefault()
@@ -221,7 +221,7 @@ class BaseActionTest extends TestCase
 	}
 }
 
-class ExampleAction extends BaseAction
+class ExampleAction extends AbstractAction
 {
 	/**
 	 * @var	string
