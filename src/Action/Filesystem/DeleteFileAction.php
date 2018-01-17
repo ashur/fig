@@ -3,13 +3,12 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action\File;
+namespace Fig\Action\Filesystem;
 
-use Fig\Action\BaseAction;
-use Fig\Engine;
 use Fig\Exception;
+use Fig\Filesystem;
 
-class DeleteFileAction extends BaseFileAction
+class DeleteFileAction extends AbstractFileAction
 {
 	/**
 	 * @var	string
@@ -32,28 +31,28 @@ class DeleteFileAction extends BaseFileAction
 	/**
 	 * Executes action, setting output and error status
 	 *
-	 * @param	Fig\Engine	$engine
+	 * @param	Fig\Filesystem\Filesystem	$filesystem
 	 *
 	 * @return	void
 	 */
-	public function deploy( Engine $engine )
+	public function deploy( Filesystem\Filesystem $filesystem )
 	{
 		$this->didError = false;
-		$this->outputString = BaseAction::STRING_STATUS_SUCCESS;
+		$this->outputString = self::STRING_STATUS_SUCCESS;
 
 		/* When deleting a node, we don't care what type it is or even whether
 		   it exists... */
 		try
 		{
 			/* ...so we don't try to infer or pass the type. */
-			$targetNode = $engine->getFilesystemNodeFromPath( $this->getTargetPath() );
+			$targetNode = $filesystem->getFilesystemNodeFromPath( $this->getTargetPath() );
 
 			/* If the node does exist, attempt to delete it. */
 			$targetNode->delete();
 		}
 
 		/* If the node doesn't exist, we don't really care; silently ignore the
-		   exception thrown by Fig::Engine */
+		   exception thrown by Fig::Filesystem */
 		catch( Exception\RuntimeException $e ) {}
 
 		/* If the node does exist but is not deletable, it will throw

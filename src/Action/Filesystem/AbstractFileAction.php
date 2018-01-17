@@ -3,12 +3,14 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action\File;
+namespace Fig\Action\Filesystem;
 
-use Fig\Action\BaseAction;
+use Fig\Action\AbstractAction;
 
-abstract class BaseFileAction extends BaseAction
+abstract class AbstractFileAction extends AbstractAction
 {
+	use \Fig\Action\Filesystem\DeployTrait;
+
 	const ERROR_STRING_INVALIDTARGET = 'Invalid target %s: %s.';
 	const ERROR_STRING_UNDELETABLE_NODE = 'Cannot delete %s: %s.';
 	const ERROR_STRING_PERMISSION_DENIED = 'Permission denied';

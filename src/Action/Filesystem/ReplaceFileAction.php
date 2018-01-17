@@ -3,13 +3,13 @@
 /*
  * This file is part of Fig
  */
-namespace Fig\Action\File;
+namespace Fig\Action\Filesystem;
 
-use Cranberry\Filesystem;
-use Fig\Engine;
+use Cranberry\Filesystem as CranberryFilesystem;
 use Fig\Exception;
+use Fig\Filesystem;
 
-class ReplaceFileAction extends BaseFileAction
+class ReplaceFileAction extends AbstractFileAction
 {
 	/**
 	 * @var	string
@@ -40,13 +40,11 @@ class ReplaceFileAction extends BaseFileAction
 	/**
 	 * Executes action, setting output and error status
 	 *
-	 * @param	Fig\Engine	$engine
-	 *
-	 * @throws	LogicException	If parent profile name undefined
+	 * @param	Fig\Filesystem\Filesystem	$filesystem
 	 *
 	 * @return	void
 	 */
-	public function deploy( Engine $engine )
+	public function deploy( Filesystem\Filesystem $filesystem )
 	{
 		/* If the parent profile name hasn't been set, Fig is broken somewhere */
 		if( ($profileName = $this->getProfileName()) == null )
@@ -57,7 +55,7 @@ class ReplaceFileAction extends BaseFileAction
 
 		try
 		{
-			$assetNode = $engine->getProfileAssetNode( $profileName, $this->getSourcePath() );
+			$assetNode = $filesystem->getProfileAssetNode( $profileName, $this->getSourcePath() );
 		}
 		/* If the source asset doesn't exist, Engine will throw. */
 		catch( Exception\RuntimeException $e )
@@ -71,20 +69,20 @@ class ReplaceFileAction extends BaseFileAction
 		/* Get the target node */
 		$targetNodeType = null;
 
-		if( $assetNode instanceof Filesystem\Directory )
+		if( $assetNode instanceof CranberryFilesystem\Directory )
 		{
-			$targetNodeType = Filesystem\Node::DIRECTORY;
+			$targetNodeType = CranberryFilesystem\Node::DIRECTORY;
 		}
-		if( $assetNode instanceof Filesystem\File )
+		if( $assetNode instanceof CranberryFilesystem\File )
 		{
-			$targetNodeType = Filesystem\Node::FILE;
+			$targetNodeType = CranberryFilesystem\Node::FILE;
 		}
-		if( $assetNode instanceof Filesystem\Link )
+		if( $assetNode instanceof CranberryFilesystem\Link )
 		{
-			$targetNodeType = Filesystem\Node::LINK;
+			$targetNodeType = CranberryFilesystem\Node::LINK;
 		}
 
-		$targetNode = $engine->getFilesystemNodeFromPath( $this->getTargetPath(), $targetNodeType );
+		$targetNode = $filesystem->getFilesystemNodeFromPath( $this->getTargetPath(), $targetNodeType );
 
 		/* If the target node's parent isn't writable, we can't proceed. */
 		$targetNodeParent = $targetNode->getParent();
@@ -101,10 +99,10 @@ class ReplaceFileAction extends BaseFileAction
 			$targetNode->delete();
 		}
 		/* The target node is not deletable... */
-		catch( Filesystem\Exception $e )
+		catch( CranberryFilesystem\Exception $e )
 		{
 			/* ...due to permissions; we can't proceed. */
-			if( $e->getCode() == Filesystem\Node::ERROR_CODE_PERMISSIONS )
+			if( $e->getCode() == CranberryFilesystem\Node::ERROR_CODE_PERMISSIONS )
 			{
 				$this->didError = true;
 				$this->outputString = sprintf( self::ERROR_STRING_UNDELETABLE_NODE, $targetNode->getPathname(), self::ERROR_STRING_PERMISSION_DENIED );
