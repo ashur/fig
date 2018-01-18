@@ -27,45 +27,6 @@ class BaseActionTest extends TestCase
 		];
 	}
 
-	public function provider_didError() : array
-	{
-		return [
-			[true],
-			[false],
-		];
-	}
-
-	/**
-	 * @dataProvider	provider_didError
-	 */
-	public function test_didError_alwaysReturnsFalse_whenIgnoringErrors( $didError )
-	{
-		$exampleAction = new ExampleAction( 'name' );
-
-		$exampleAction->ignoreErrors( true );
-		$exampleAction->___setDidError( $didError );
-
-		$this->assertEquals( false, $exampleAction->didError() );
-	}
-
-	public function test_didError_returnsNullBeforeDeployment()
-	{
-		$exampleAction = new ExampleAction( 'name' );
-		$this->assertEquals( null, $exampleAction->didError() );
-	}
-
-	/**
-	 * @dataProvider	provider_didError
-	 */
-	public function test_didError_returnsValueByDefault( $didError )
-	{
-		$exampleAction = new ExampleAction( 'name' );
-
-		$exampleAction->___setDidError( $didError );
-
-		$this->assertEquals( $didError, $exampleAction->didError() );
-	}
-
 	public function test_getName()
 	{
 		$expectedName = getUniqueString( 'action-' );
@@ -90,34 +51,6 @@ class BaseActionTest extends TestCase
 		$action->setVariables( $variables );
 
 		$this->assertEquals( $actionNameExpected, $action->getName() );
-	}
-
-	public function test_getOutput_returnsNullBeforeDeployment()
-	{
-		$exampleAction = new ExampleAction( 'name' );
-		$this->assertEquals( null, $exampleAction->getOutput() );
-	}
-
-	public function test_getOutput_returnsStringOK_whenIgnoringOutput()
-	{
-		$exampleAction = new ExampleAction( 'name' );
-
-		$exampleAction->ignoreOutput( true );
-
-		$outputString = getUniqueString( 'output-' );
-		$exampleAction->___setOutputString( $outputString );
-
-		$this->assertEquals( AbstractAction::STRING_STATUS_SUCCESS, $exampleAction->getOutput() );
-	}
-
-	public function test_getOutput_returnsValueByDefault()
-	{
-		$exampleAction = new ExampleAction( 'name' );
-
-		$outputString = getUniqueString( 'output-' );
-		$exampleAction->___setOutputString( $outputString );
-
-		$this->assertEquals( $outputString, $exampleAction->getOutput() );
 	}
 
 	public function test_getProfileName_returnsNull_whenUndefined()
@@ -164,7 +97,7 @@ class BaseActionTest extends TestCase
 	/**
 	 * @dataProvider	provider_ignoreMethods_supportBooleanishValues
 	 */
-	public function test_ignoreErrors_supportsBooleanishValues( $booleanish, $shouldIgnoreErrors )
+	public function test_ignoreErrors_supportsBooleanishValues( $booleanish, bool $shouldIgnoreErrors )
 	{
 		$stubAction = $this->getStub();
 		$stubAction->ignoreErrors( $booleanish );
@@ -206,18 +139,6 @@ class BaseActionTest extends TestCase
 		$exampleAction = new ExampleAction( 'name' );
 
 		$this->assertFalse( $exampleAction->isDeprecated() );
-	}
-
-	public function test_willNotIgnoreErrorsByDefault()
-	{
-		$stubAction = $this->getStub();
-		$this->assertFalse( $stubAction->willIgnoreErrors() );
-	}
-
-	public function test_willNotIgnoreOutputByDefault()
-	{
-		$stubAction = $this->getStub();
-		$this->assertFalse( $stubAction->willIgnoreOutput() );
 	}
 }
 

@@ -10,13 +10,6 @@ use Fig\Variablizable;
 
 abstract class AbstractAction extends Variablizable
 {
-	const STRING_STATUS_SUCCESS = 'OK';
-
-	/**
-	 * @var	bool
-	 */
-	protected $didError;
-
 	/**
 	 * @var	bool
 	 */
@@ -40,35 +33,12 @@ abstract class AbstractAction extends Variablizable
 	/**
 	 * @var	string
 	 */
-	protected $outputString;
-
-	/**
-	 * @var	string
-	 */
 	protected $profileName;
 
 	/**
 	 * @var	string
 	 */
 	protected $type;
-
-	/**
-	 * Returns whether deployment resulted in an error
-	 *
-	 * Will return NULL if deployment has not occurred. If deployment has occurred
-	 * and errors are ignored, will always return true.
-	 *
-	 * @return	null|bool
-	 */
-	public function didError()
-	{
-		if( $this->ignoreErrors && $this->didError != null )
-		{
-			return false;
-		}
-
-		return $this->didError;
-	}
 
 	/**
 	 * Returns action name string
@@ -78,24 +48,6 @@ abstract class AbstractAction extends Variablizable
 	public function getName() : string
 	{
 		return $this->replaceVariablesInString( $this->name );
-	}
-
-	/**
-	 * Returns output resulting from deployment
-	 *
-	 * Will return NULL if deployment has not occurred. If deployment has occurred
-	 * and output is ignored, will always return 'OK'.
-	 *
-	 * @return	null|string
-	 */
-	public function getOutput()
-	{
-		if( $this->ignoreOutput && $this->outputString != null )
-		{
-			return self::STRING_STATUS_SUCCESS;
-		}
-
-		return $this->outputString;
 	}
 
 	/**
@@ -130,15 +82,15 @@ abstract class AbstractAction extends Variablizable
 	/**
 	 * Specify whether errors should be ignored during deployment
 	 *
-	 * @param	bool	$shouldIgnoreErrors
+	 * @param	mixed	$ignoreErrors
 	 *
 	 * @return	void
 	 */
-	public function ignoreErrors( $shouldIgnoreErrors )
+	public function ignoreErrors( $ignoreErrors )
 	{
 		try
 		{
-			$this->setBooleanishValue( $this->ignoreErrors, $shouldIgnoreErrors );
+			$this->setBooleanishValue( $this->ignoreErrors, $ignoreErrors );
 		}
 		catch( \DomainException $e )
 		{
@@ -150,15 +102,15 @@ abstract class AbstractAction extends Variablizable
 	/**
 	 * Specify whether output should be ignored during deployment
 	 *
-	 * @param	bool	$shouldIgnoreOutput
+	 * @param	mixed	$ignoreOutput
 	 *
 	 * @return	void
 	 */
-	public function ignoreOutput( $shouldIgnoreOutput )
+	public function ignoreOutput( $ignoreOutput )
 	{
 		try
 		{
-			$this->setBooleanishValue( $this->ignoreOutput, $shouldIgnoreOutput );
+			$this->setBooleanishValue( $this->ignoreOutput, $ignoreOutput );
 		}
 		catch( \DomainException $e )
 		{
