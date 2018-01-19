@@ -34,11 +34,6 @@ abstract class AbstractDefaultsAction extends AbstractAction
 	protected $type = 'Defaults';
 
 	/**
-	 * @var	string
-	 */
-	protected $value;
-
-	/**
 	 * Returns domain
 	 *
 	 * @return	string
@@ -50,6 +45,8 @@ abstract class AbstractDefaultsAction extends AbstractAction
 
 	/**
 	 * Returns defaults key
+	 *
+	 * @throws	OutOfBoundsException	If key is undefined
 	 *
 	 * @return	string
 	 */
@@ -74,21 +71,6 @@ abstract class AbstractDefaultsAction extends AbstractAction
 	}
 
 	/**
-	 * Returns value
-	 *
-	 * @return	string
-	 */
-	public function getValue() : string
-	{
-		if( $this->value == null )
-		{
-			throw new \OutOfBoundsException( 'Value is undefined' );
-		}
-
-		return $this->replaceVariablesInString( $this->value );
-	}
-
-	/**
 	 * Returns whether key is defined
 	 *
 	 * @return	bool
@@ -96,15 +78,5 @@ abstract class AbstractDefaultsAction extends AbstractAction
 	public function hasKey() : bool
 	{
 		return $this->key != null;
-	}
-
-	/**
-	 * Returns whether value is defined
-	 *
-	 * @return	bool
-	 */
-	public function hasValue() : bool
-	{
-		return $this->value != null;
 	}
 }

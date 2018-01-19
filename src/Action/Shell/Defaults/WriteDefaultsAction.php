@@ -17,6 +17,11 @@ class WriteDefaultsAction extends AbstractDefaultsAction
 	protected $methodName='write';
 
 	/**
+	 * @var	string
+	 */
+	protected $value;
+
+	/**
 	 * @param	string	$name
 	 *
 	 * @param	string	$domain
@@ -79,5 +84,15 @@ class WriteDefaultsAction extends AbstractDefaultsAction
 		$result->ignoreOutput( $this->ignoreOutput );
 
 		return $result;
+	}
+
+	/**
+	 * Returns value
+	 *
+	 * @return	string
+	 */
+	public function getValue() : string
+	{
+		return $this->replaceVariablesInString( $this->value );
 	}
 }
