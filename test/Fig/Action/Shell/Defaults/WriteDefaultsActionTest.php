@@ -30,34 +30,6 @@ class WriteDefaultsActionTest extends TestCase
 
 	/* Tests */
 
-	public function test_deploy_commandError_causesError()
-	{
-		$domain = getUniqueString( 'com.example.' );
-		$key = 'SerialNumber';
-		$value = getUniqueString( 'SERIAL-' );
-
-		$defaultsOutputArray = ["Command line interface to a user's defaults.", "Syntax:"];
-
-		$shellMock = $this
-			->getMockBuilder( Shell\Shell::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists', 'executeCommand'] )
-			->getMock();
-		$shellMock
-			->method( 'commandExists' )
-			->willReturn( true );
-
-		$shellMock
-			->method( 'executeCommand' )
-			->willReturn( new Shell\Result( $defaultsOutputArray, 1 ) );
-
-		$action = new WriteDefaultsAction( 'my defaults action', $domain, $key, $value );
-		$action->deploy( $shellMock );
-
-		$this->assertTrue( $action->didError() );
-		$this->assertEquals( implode( PHP_EOL, $defaultsOutputArray ), $action->getOutput() );
-	}
-
 	public function test_deploy_commandSuccess_outputsValue()
 	{
 		$domain = getUniqueString( 'com.example.' );
@@ -69,20 +41,18 @@ class WriteDefaultsActionTest extends TestCase
 			->disableOriginalConstructor()
 			->setMethods( ['commandExists', 'executeCommand'] )
 			->getMock();
-
 		$shellMock
 			->method( 'commandExists' )
 			->willReturn( true );
-
 		$shellMock
 			->method( 'executeCommand' )
 			->willReturn( new Shell\Result( [], 0 ) );
 
 		$action = new WriteDefaultsAction( 'my defaults action', $domain, $key, $value );
-		$action->deploy( $shellMock );
+		$result = $action->deploy( $shellMock );
 
-		$this->assertFalse( $action->didError() );
-		$this->assertEquals( $value, $action->getOutput() );
+		$this->assertFalse( $result->didError() );
+		$this->assertEquals( $value, $result->getOutput() );
 	}
 
 	/**

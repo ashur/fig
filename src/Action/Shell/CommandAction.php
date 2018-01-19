@@ -5,6 +5,7 @@
  */
 namespace Fig\Action\Shell;
 
+use Fig\Action;
 use Fig\Action\AbstractAction;
 use Fig\Exception;
 use Fig\Shell;
@@ -50,34 +51,40 @@ class CommandAction extends AbstractAction
 	 *
 	 * @param	Fig\Shell\Shell	$shell
 	 *
-	 * @return	void
+	 * @return	Fig\Action\Result
 	 */
-	public function deploy( Shell\Shell $shell )
+	public function deploy( Shell\Shell $shell ) : Action\Result
 	{
 		/* Make sure the command exists before trying to execute it */
 		if( !$shell->commandExists( $this->command ) )
 		{
-			$this->didError = true;
-			$this->outputString = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, $this->command );
+			$actionOutput = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, $this->command );
 
-			return;
+			$result = new Action\Result( $actionOutput, true );
+			return $result;
 		}
 
 		/* Execute command */
-		$result = $shell->executeCommand( $this->getCommand(), $this->getCommandArguments() );
+		$shellResult = $shell->executeCommand( $this->getCommand(), $this->getCommandArguments() );
+		$shellOutput = $shellResult->getOutput();
 
-		/* Populate output, error */
-		$this->didError = $result->getExitCode() !== 0;
-
-		$output = $result->getOutput();
-		if( count( $output ) == 0 )
+		/* Populate output and error using shell results */
+		if( count( $shellOutput ) == 0 )
 		{
-			$this->outputString = self::STRING_STATUS_SUCCESS;
+			$actionOutput = Action\Result::STRING_STATUS_SUCCESS;
 		}
 		else
 		{
-			$this->outputString = implode( PHP_EOL, $output );
+			$actionOutput = implode( PHP_EOL, $shellOutput );
 		}
+
+		$didError = $shellResult->getExitCode() !== 0;
+
+		$result = new Action\Result( $actionOutput, $didError );
+		$result->ignoreErrors( $this->ignoreErrors );
+		$result->ignoreOutput( $this->ignoreOutput );
+
+		return $result;
 	}
 
 	/**

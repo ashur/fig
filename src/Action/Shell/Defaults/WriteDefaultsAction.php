@@ -5,8 +5,9 @@
  */
 namespace Fig\Action\Shell\Defaults;
 
+use Fig\Action;
 use Fig\Exception;
-use Fig\Shell\Shell;
+use Fig\Shell;
 
 class WriteDefaultsAction extends AbstractDefaultsAction
 {
@@ -39,20 +40,17 @@ class WriteDefaultsAction extends AbstractDefaultsAction
 	 *
 	 * @param	Fig\Shell\Shell	$shell
 	 *
-	 * @return	void
+	 * @return	Fig\Action\Result
 	 */
-	public function deploy( Shell $shell )
+	public function deploy( Shell\Shell $shell ) : Action\Result
 	{
-		try
+		/* Make sure the command exists before trying to execute it */
+		if( !$shell->commandExists( 'defaults' ) )
 		{
-			$this->preDeploy( $shell );
-		}
-		catch( Exception\Exception $e )
-		{
-			$this->didError = true;
-			$this->outputString = $e->getMessage();
+			$actionOutput = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
 
-			return;
+			$result = new Action\Result( $actionOutput, true );
+			return $result;
 		}
 
 		/* Build command */
@@ -62,18 +60,24 @@ class WriteDefaultsAction extends AbstractDefaultsAction
 		$commandArguments[] = $this->getValue();
 
 		/* Execute command */
-		$result = $shell->executeCommand( 'defaults', $commandArguments );
+		$shellResult = $shell->executeCommand( 'defaults', $commandArguments );
 
-		/* Populate output, error */
-		$this->didError = $result->getExitCode() !== 0;
+		/* Populate output and error using shell results */
+		$didError = $shellResult->getExitCode() !== 0;
 
-		if( $this->didError )
+		if( $didError )
 		{
-			$this->outputString = implode( PHP_EOL, $result->getOutput() );
+			$actionOutput = implode( PHP_EOL, $shellResult->getOutput() );
 		}
 		else
 		{
-			$this->outputString = $this->getValue();
+			$actionOutput = $this->getValue();
 		}
+
+		$result = new Action\Result( $actionOutput, $didError );
+		$result->ignoreErrors( $this->ignoreErrors );
+		$result->ignoreOutput( $this->ignoreOutput );
+
+		return $result;
 	}
 }

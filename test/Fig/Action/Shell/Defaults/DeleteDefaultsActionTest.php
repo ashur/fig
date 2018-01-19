@@ -5,6 +5,7 @@
  */
 namespace Fig\Action\Shell\Defaults;
 
+use Fig\Action;
 use Fig\Action\AbstractAction;
 use Fig\Shell;
 use FigTest\Action\Shell\TestCase;
@@ -109,34 +110,6 @@ class DeleteDefaultsActionTest extends TestCase
 	/**
 	 * @dataProvider	provider_actionWithValues
 	 */
-	public function test_deploy_commandError_causesError( DeleteDefaultsAction $action )
-	{
-		$defaultsOutputArray = ["2017-11-28 08:39:15.657 defaults[58832:3901130]", "Domain (com.example.Foo) not found.", "Defaults have not been changed."];
-
-		$shellMock = $this
-			->getMockBuilder( Shell\Shell::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists', 'executeCommand'] )
-			->getMock();
-		$shellMock
-			->method( 'commandExists' )
-			->willReturn( true );
-
-		$shellMock
-			->method( 'executeCommand' )
-			->willReturn( new Shell\Result( $defaultsOutputArray, 1 ) );
-
-		$action->deploy( $shellMock );
-
-		$expectedOutput = implode( PHP_EOL, $defaultsOutputArray );
-
-		$this->assertTrue( $action->didError() );
-		$this->assertEquals( $expectedOutput, $action->getOutput() );
-	}
-
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
 	public function test_deploy_commandSuccess_outputsOK( DeleteDefaultsAction $action, array $expectedValues )
 	{
 		$shellMock = $this
@@ -152,10 +125,10 @@ class DeleteDefaultsActionTest extends TestCase
 			->method( 'executeCommand' )
 			->willReturn( new Shell\Result( [], 0 ) );
 
-		$action->deploy( $shellMock );
+		$result = $action->deploy( $shellMock );
 
-		$this->assertFalse( $action->didError() );
-		$this->assertEquals( AbstractAction::STRING_STATUS_SUCCESS, $action->getOutput() );
+		$this->assertFalse( $result->didError() );
+		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
 
 	public function test_getName()

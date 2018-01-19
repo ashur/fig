@@ -107,22 +107,4 @@ abstract class AbstractDefaultsAction extends AbstractAction
 	{
 		return $this->value != null;
 	}
-
-	/**
-	 * Runs pre-deployment tasks
-	 *
-	 * @param	Fig\Shell\Shell	$shell
-	 *
-	 * @throws	Fig\Exception\RuntimeException	If 'defaults' command not found
-	 *
-	 * @return	void
-	 */
-	public function preDeploy( Shell $shell )
-	{
-		if( !$shell->commandExists( 'defaults' ) )
-		{
-			$exceptionMessage = sprintf( Shell::STRING_ERROR_COMMANDNOTFOUND, 'defaults' );
-			throw new Exception\RuntimeException( $exceptionMessage, Exception\RuntimeException::COMMAND_NOT_FOUND );
-		}
-	}
 }

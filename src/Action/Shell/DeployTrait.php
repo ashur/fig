@@ -5,16 +5,17 @@
  */
 namespace Fig\Action\Shell;
 
+use Fig\Action;
 use Fig\Shell;
 
 trait DeployTrait
 {
 	/**
-	 * Executes action, setting output and error status
+	 * Executes action and returns Result object
 	 *
 	 * @param	Fig\Shell\Shell	$shell
 	 *
-	 * @return	void
+	 * @return	Fig\Action\Result
 	 */
-	abstract public function deploy( Shell\Shell $shell );
+	abstract public function deploy( Shell\Shell $shell ) : Action\Result;
 }

@@ -5,6 +5,7 @@
  */
 namespace Fig\Action\Shell;
 
+use Fig\Action;
 use Fig\Shell;
 use FigTest\Action\Shell\TestCase;
 
@@ -61,9 +62,9 @@ class CommandActionTest extends TestCase
 			->willReturn( new Shell\Result( [], 0 ) );
 
 		$commandAction = new CommandAction( $actionName, $commandName, [] );
-		$commandAction->deploy( $shellMock );
+		$result = $commandAction->deploy( $shellMock );
 
-		$this->assertEquals( CommandAction::STRING_STATUS_SUCCESS, $commandAction->getOutput() );
+		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
 
 	public function test_deploy_commandWithOutput_outputsString()
@@ -90,11 +91,11 @@ class CommandActionTest extends TestCase
 			->willReturn( new Shell\Result( $output, 0 ) );
 
 		$commandAction = new CommandAction( $actionName, $commandName, [] );
-		$commandAction->deploy( $shellMock );
+		$result = $commandAction->deploy( $shellMock );
 
 		$expectedOutput = implode( PHP_EOL, $output );
 
-		$this->assertEquals( $expectedOutput, $commandAction->getOutput() );
+		$this->assertEquals( $expectedOutput, $result->getOutput() );
 	}
 
 	public function test_getCommand_withVariableReplacement()

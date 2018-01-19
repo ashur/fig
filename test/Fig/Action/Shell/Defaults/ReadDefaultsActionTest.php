@@ -108,32 +108,6 @@ class ReadDefaultsActionTest extends TestCase
 	/**
 	 * @dataProvider	provider_actionWithValues
 	 */
-	public function test_deploy_commandError_causesError( ReadDefaultsAction $action )
-	{
-		$defaultsOutputArray = ["Command line interface to a user's defaults.", "Syntax:"];
-
-		$shellMock = $this
-			->getMockBuilder( Shell\Shell::class )
-			->disableOriginalConstructor()
-			->setMethods( ['commandExists', 'executeCommand'] )
-			->getMock();
-		$shellMock
-			->method( 'commandExists' )
-			->willReturn( true );
-
-		$shellMock
-			->method( 'executeCommand' )
-			->willReturn( new Shell\Result( $defaultsOutputArray, 1 ) );
-
-		$action->deploy( $shellMock );
-
-		$this->assertTrue( $action->didError() );
-		$this->assertEquals( implode( PHP_EOL, $defaultsOutputArray ), $action->getOutput() );
-	}
-
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
 	public function test_deploy_commandSuccess_outputsCommandOutput(  ReadDefaultsAction $action, array $expectedValues )
 	{
 		/* Build defaults command output */
@@ -154,15 +128,14 @@ class ReadDefaultsActionTest extends TestCase
 		$shellMock
 			->method( 'commandExists' )
 			->willReturn( true );
-
 		$shellMock
 			->method( 'executeCommand' )
 			->willReturn( new Shell\Result( $defaultsOutputArray, 0 ) );
 
-		$action->deploy( $shellMock );
+		$result = $action->deploy( $shellMock );
 
-		$this->assertFalse( $action->didError() );
-		$this->assertEquals( implode( PHP_EOL, $defaultsOutputArray ), $action->getOutput() );
+		$this->assertFalse( $result->didError() );
+		$this->assertEquals( implode( PHP_EOL, $defaultsOutputArray ), $result->getOutput() );
 	}
 
 	public function test_getName()
