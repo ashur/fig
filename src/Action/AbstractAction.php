@@ -5,7 +5,6 @@
  */
 namespace Fig\Action;
 
-use Fig\Engine;
 use Fig\Variablizable;
 
 abstract class AbstractAction extends Variablizable
