@@ -5,11 +5,55 @@
  */
 namespace Fig\Action\Shell\Defaults;
 
+use Fig\Action\AbstractAction;
 use Fig\Shell;
-use FigTest\Action\Shell\TestCase;
+use FigTest\Action\Shell\Defaults\TestCase;
 
 class WriteDefaultsActionTest extends TestCase
 {
+	/* Helpers */
+
+	public function createObject_fromDomain( string $domain ) : AbstractAction
+	{
+		$name = getUniqueString( 'my defaults action ' );
+		$key = getUniqueString( 'SerialNumber-' );
+		$value = getUniqueString( 'value-' );
+
+		$action = new WriteDefaultsAction( $name, $domain, $key, $value );
+		return $action;
+	}
+
+	public function createObject_fromKey( string $key ) : AbstractAction
+	{
+		$name = getUniqueString( 'my defaults action ' );
+		$domain = getUniqueString( 'com.example.Newton' );
+		$value = getUniqueString( 'value-' );
+
+		$action = new WriteDefaultsAction( $name, $domain, $key, $value );
+		return $action;
+	}
+
+	public function createObject_fromName( string $name ) : AbstractAction
+	{
+		$domain = getUniqueString( 'com.example.Newton' );
+		$key = getUniqueString( 'SerialNumber-' );
+		$value = getUniqueString( 'value-' );
+
+		$action = new WriteDefaultsAction( $name, $domain, $key, $value );
+		return $action;
+	}
+
+	public function createObject_fromValue( string $value ) : AbstractAction
+	{
+		$name = getUniqueString( 'my defaults action ' );
+		$domain = getUniqueString( 'com.example.Newton' );
+		$key = getUniqueString( 'SerialNumber-' );
+
+		$action = new WriteDefaultsAction( $name, $domain, $key, $value );
+		return $action;
+	}
+
+
 	/* Providers */
 
 	/*
@@ -19,11 +63,10 @@ class WriteDefaultsActionTest extends TestCase
 	 */
 	public function provider_ActionObject() : array
 	{
-		$actionName = getUniqueString( 'action-' );
-		$action = new WriteDefaultsAction( $actionName, 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
-
 		return [
-			[$action]
+			[$this->createObject_fromDomain( 'com.example.Newton' )],
+			[$this->createObject_fromKey( 'SerialNumber-' )],
+			[$this->createObject_fromValue( 'value-' )],
 		];
 	}
 
@@ -32,8 +75,6 @@ class WriteDefaultsActionTest extends TestCase
 
 	public function test_deploy_commandSuccess_outputsValue()
 	{
-		$domain = getUniqueString( 'com.example.' );
-		$key = 'SerialNumber';
 		$value = getUniqueString( 'SERIAL-' );
 
 		$shellMock = $this
@@ -48,26 +89,36 @@ class WriteDefaultsActionTest extends TestCase
 			->method( 'executeCommand' )
 			->willReturn( new Shell\Result( [], 0 ) );
 
-		$action = new WriteDefaultsAction( 'my defaults action', $domain, $key, $value );
+		$action = $this->createObject_fromValue( $value );
 		$result = $action->deploy( $shellMock );
 
 		$this->assertFalse( $result->didError() );
 		$this->assertEquals( $value, $result->getOutput() );
 	}
 
-	/**
-	 * Make sure BaseDefaultsAction subclasses don't omit setting `name`
-	 */
-	public function test_getName()
+	public function test_hasKey_returnsBool()
 	{
-		$actionName = getUniqueString( 'action ' );
-		$action = new WriteDefaultsAction( $actionName, 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
-		$this->assertEquals( $actionName, $action->getName() );
+		$action = $this->createObject_fromDomain( 'com.example.Newton' );
+		$this->assertTrue( $action->hasKey() );
 	}
 
 	public function test_getSubtitle()
 	{
-		$action = new WriteDefaultsAction( 'my defaults write action', 'com.example.Newton', 'SerialNumber', 'SERIAL-NUMBER' );
+		$action = $this->createObject_fromName( 'action' );
 		$this->assertEquals( 'write', $action->getSubtitle() );
+	}
+
+	public function test_getValue_withVariableReplacement()
+	{
+		$time = time();
+
+		$pattern = 'Foo-Bar-';
+		$valueString = sprintf( $pattern, '{{ time }}' );
+		$expectedValue = sprintf( $pattern, $time );
+
+		$action = $this->createObject_fromValue( $valueString );
+		$action->setVariables( ['time' => $time] );
+
+		$this->assertEquals( $expectedValue, $action->getValue() );
 	}
 }

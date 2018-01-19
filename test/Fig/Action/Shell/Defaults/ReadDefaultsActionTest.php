@@ -5,11 +5,40 @@
  */
 namespace Fig\Action\Shell\Defaults;
 
+use Fig\Action\AbstractAction;
 use Fig\Shell;
-use FigTest\Action\Shell\TestCase;
+use FigTest\Action\Shell\Defaults\TestCase;
 
 class ReadDefaultsActionTest extends TestCase
 {
+	/* Helpers */
+
+	public function createObject_fromDomain( string $domain ) : AbstractAction
+	{
+		$name = getUniqueString( 'my defaults action ' );
+
+		$action = new ReadDefaultsAction( $name, $domain );
+		return $action;
+	}
+
+	public function createObject_fromKey( string $key ) : AbstractAction
+	{
+		$name = getUniqueString( 'my defaults action ' );
+		$domain = getUniqueString( 'com.example.Newton' );
+
+		$action = new ReadDefaultsAction( $name, $domain, $key );
+		return $action;
+	}
+
+	public function createObject_fromName( string $name ) : AbstractAction
+	{
+		$domain = getUniqueString( 'com.example.Newton' );
+
+		$action = new ReadDefaultsAction( $name, $domain );
+		return $action;
+	}
+
+
 	/* Providers */
 
 	/*
@@ -19,106 +48,19 @@ class ReadDefaultsActionTest extends TestCase
 	 */
 	public function provider_ActionObject() : array
 	{
-		$action = $this->getInstance_withKey();
-
 		return [
-			[$action['action']]
+			[$this->createObject_fromDomain( 'com.example.Newton' )],
+			[$this->createObject_fromKey( 'SerialNumber' )],
 		];
-	}
-
-	public function provider_actionWithValues() : array
-	{
-		$withKey = $this->getInstance_withKey();
-        $withoutKey = $this->getInstance_withoutKey();
-
-		return [
-			[ $withKey['action'], $withKey['values'] ],
-			[ $withoutKey['action'], $withoutKey['values'] ]
-		];
-	}
-
-
-	/* Helpers */
-
-	public function getInstance_withKey() : array
-	{
-		$varTimeValue = time();
-
-		/* Name */
-		$namePattern = 'action %s';
-		$nameOriginalValue = sprintf( $namePattern, '{{  time  }}' );
-		$nameExpectedValue = sprintf( $namePattern, $varTimeValue );
-
-		$values['name'] = $nameExpectedValue;
-
-		/* Domain */
-		$domainPattern = 'com.example.Foo.%s';
-		$domainOriginalValue = sprintf( $domainPattern, '{{ time }}' );
-		$domainExpectedValue = sprintf( $domainPattern, $varTimeValue );
-
-		$values['domain'] = $domainExpectedValue;
-
-		/* Key */
-		$keyPattern = 'DefaultsKey%s';
-		$keyOriginalValue = sprintf( $keyPattern, '{{time}}' );
-		$keyExpectedValue = sprintf( $keyPattern, $varTimeValue );
-
-		$values['key'] = $keyExpectedValue;
-
-		$action = new ReadDefaultsAction( $nameOriginalValue, $domainOriginalValue, $keyOriginalValue );
-		$action->setVariables( ['time' => $varTimeValue] );
-
-		$data = [ 'action' => $action, 'values' => $values ];
-
-		return $data;
-	}
-
-	public function getInstance_withoutKey() : array
-	{
-		$varTimeValue = time();
-
-		/* Name */
-		$namePattern = 'action %s';
-		$nameOriginalValue = sprintf( $namePattern, '{{  time  }}' );
-		$nameExpectedValue = sprintf( $namePattern, $varTimeValue );
-
-		$values['name'] = $nameExpectedValue;
-
-		/* Domain */
-		$domainPattern = 'com.example.Foo.%s';
-		$domainOriginalValue = sprintf( $domainPattern, '{{ time }}' );
-		$domainExpectedValue = sprintf( $domainPattern, $varTimeValue );
-
-		$values['domain'] = $domainExpectedValue;
-
-		/* Key */
-		$values['key'] = null;
-
-		$action = new ReadDefaultsAction( $nameOriginalValue, $domainOriginalValue, null );
-		$action->setVariables( ['time' => $varTimeValue] );
-
-		$data = [ 'action' => $action, 'values' => $values ];
-
-		return $data;
 	}
 
 
 	/* Tests */
 
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
-	public function test_deploy_commandSuccess_outputsCommandOutput(  ReadDefaultsAction $action, array $expectedValues )
+	public function test_deploy_commandSuccess_outputsCommandOutput()
 	{
-		/* Build defaults command output */
-		if( $expectedValues['key'] == null )
-		{
-			$defaultsOutputArray = ["{", "    DefaultsKey = \"Defaults Value\";", "}"];
-		}
-		else
-		{
-			$defaultsOutputArray = ["Defaults Value"];
-		}
+		$defaultsOutput[] = getUniqueString( 'line 1: ' );
+		$defaultsOutput[] = getUniqueString( 'line 2: ' );
 
 		$shellMock = $this
 			->getMockBuilder( Shell\Shell::class )
@@ -130,23 +72,27 @@ class ReadDefaultsActionTest extends TestCase
 			->willReturn( true );
 		$shellMock
 			->method( 'executeCommand' )
-			->willReturn( new Shell\Result( $defaultsOutputArray, 0 ) );
+			->willReturn( new Shell\Result( $defaultsOutput, 0 ) );
 
+		$action = $this->createObject_fromKey( 'SerialNumber' );
 		$result = $action->deploy( $shellMock );
 
 		$this->assertFalse( $result->didError() );
-		$this->assertEquals( implode( PHP_EOL, $defaultsOutputArray ), $result->getOutput() );
+		$this->assertEquals( implode( PHP_EOL, $defaultsOutput ), $result->getOutput() );
 	}
 
-	public function test_getName()
+	/**
+	 * @expectedException	OutOfBoundsException
+	 */
+	public function test_getKey_throwsException_whenKeyUndefined()
 	{
-		$action = $this->getInstance_withKey();
-		$this->assertEquals( $action['values']['name'], $action['action']->getName() );
+		$action = $this->createObject_fromDomain( 'com.example.Newton' );
+		$action->getKey();
 	}
 
 	public function test_getSubtitle()
 	{
-		$action = $this->getInstance_withoutKey();
-		$this->assertEquals( 'read', $action['action']->getSubtitle() );
+		$action = $this->createObject_fromName( 'action' );
+		$this->assertEquals( 'read', $action->getSubtitle() );
 	}
 }

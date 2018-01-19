@@ -8,109 +8,53 @@ namespace Fig\Action\Shell\Defaults;
 use Fig\Action;
 use Fig\Action\AbstractAction;
 use Fig\Shell;
-use FigTest\Action\Shell\TestCase;
+use FigTest\Action\Shell\Defaults\TestCase;
 
 class DeleteDefaultsActionTest extends TestCase
 {
-	/* Providers */
-
-	/*
-	 * Consumed by:
-	 * - FigTest\Action\TestCase::test_getType
-	 * - FigTest\Action\Shell\TestCase::test_deploy_invalidCommand_causesError
-	 */
-	public function provider_ActionObject() : array
-	{
-		$action = $this->getInstance_withKey();
-
-		return [
-			[$action['action']]
-		];
-	}
-
-	public function provider_actionWithValues() : array
-	{
-		$withKey = $this->getInstance_withKey();
-        $withoutKey = $this->getInstance_withoutKey();
-
-		return [
-			[ $withKey['action'], $withKey['values'] ],
-			[ $withoutKey['action'], $withoutKey['values'] ]
-		];
-	}
-
-
 	/* Helpers */
 
-	public function getInstance_withKey() : array
+	public function createObject_fromDomain( string $domain ) : AbstractAction
 	{
-		$varTimeValue = time();
+		$name = getUniqueString( 'my defaults action ' );
 
-		/* Name */
-		$namePattern = 'action %s';
-		$nameOriginalValue = sprintf( $namePattern, '{{  time  }}' );
-		$nameExpectedValue = sprintf( $namePattern, $varTimeValue );
-
-		$values['name'] = $nameExpectedValue;
-
-		/* Domain */
-		$domainPattern = 'com.example.Foo.%s';
-		$domainOriginalValue = sprintf( $domainPattern, '{{ time }}' );
-		$domainExpectedValue = sprintf( $domainPattern, $varTimeValue );
-
-		$values['domain'] = $domainExpectedValue;
-
-		/* Key */
-		$keyPattern = 'DefaultsKey%s';
-		$keyOriginalValue = sprintf( $keyPattern, '{{time}}' );
-		$keyExpectedValue = sprintf( $keyPattern, $varTimeValue );
-
-		$values['key'] = $keyExpectedValue;
-
-		$action = new DeleteDefaultsAction( $nameOriginalValue, $domainOriginalValue, $keyOriginalValue );
-		$action->setVariables( ['time' => $varTimeValue] );
-
-		$data = [ 'action' => $action, 'values' => $values ];
-
-		return $data;
+		$action = new DeleteDefaultsAction( $name, $domain );
+		return $action;
 	}
 
-	public function getInstance_withoutKey() : array
+	public function createObject_fromKey( string $key ) : AbstractAction
 	{
-		$varTimeValue = time();
+		$name = getUniqueString( 'my defaults action ' );
+		$domain = getUniqueString( 'com.example.Newton' );
 
-		/* Name */
-		$namePattern = 'action %s';
-		$nameOriginalValue = sprintf( $namePattern, '{{  time  }}' );
-		$nameExpectedValue = sprintf( $namePattern, $varTimeValue );
+		$action = new DeleteDefaultsAction( $name, $domain, $key );
+		return $action;
+	}
 
-		$values['name'] = $nameExpectedValue;
+	public function createObject_fromName( string $name ) : AbstractAction
+	{
+		$domain = getUniqueString( 'com.example.Newton' );
 
-		/* Domain */
-		$domainPattern = 'com.example.Foo.%s';
-		$domainOriginalValue = sprintf( $domainPattern, '{{ time }}' );
-		$domainExpectedValue = sprintf( $domainPattern, $varTimeValue );
+		$action = new DeleteDefaultsAction( $name, $domain );
+		return $action;
+	}
 
-		$values['domain'] = $domainExpectedValue;
 
-		/* Key */
-		$values['key'] = null;
+	/* Providers */
 
-		$action = new DeleteDefaultsAction( $nameOriginalValue, $domainOriginalValue, null );
-		$action->setVariables( ['time' => $varTimeValue] );
-
-		$data = [ 'action' => $action, 'values' => $values ];
-
-		return $data;
+	/* Consumed by tests in parent TestCase definitions */
+	public function provider_ActionObject() : array
+	{
+		return [
+			[$this->createObject_fromDomain( 'com.example.Newton' )],
+			[$this->createObject_fromKey( 'SerialNumber' )],
+		];
 	}
 
 
 	/* Tests */
 
-	/**
-	 * @dataProvider	provider_actionWithValues
-	 */
-	public function test_deploy_commandSuccess_outputsOK( DeleteDefaultsAction $action, array $expectedValues )
+	public function test_deploy_commandSuccess_outputsOK()
 	{
 		$shellMock = $this
 			->getMockBuilder( Shell\Shell::class )
@@ -120,26 +64,29 @@ class DeleteDefaultsActionTest extends TestCase
 		$shellMock
 			->method( 'commandExists' )
 			->willReturn( true );
-
 		$shellMock
 			->method( 'executeCommand' )
 			->willReturn( new Shell\Result( [], 0 ) );
 
+		$action = $this->createObject_fromKey( 'SerialNumber' );
 		$result = $action->deploy( $shellMock );
 
 		$this->assertFalse( $result->didError() );
 		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
 
-	public function test_getName()
+	/**
+	 * @expectedException	OutOfBoundsException
+	 */
+	public function test_getKey_throwsException_whenKeyUndefined()
 	{
-		$action = $this->getInstance_withKey();
-		$this->assertEquals( $action['values']['name'], $action['action']->getName() );
+		$action = $this->createObject_fromDomain( 'com.example.Newton' );
+		$action->getKey();
 	}
 
 	public function test_getSubtitle()
 	{
-		$action = $this->getInstance_withoutKey();
-		$this->assertEquals( 'delete', $action['action']->getSubtitle() );
+		$action = $this->createObject_fromName( 'action' );
+		$this->assertEquals( 'delete', $action->getSubtitle() );
 	}
 }
