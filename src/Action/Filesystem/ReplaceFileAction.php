@@ -6,6 +6,7 @@
 namespace Fig\Action\Filesystem;
 
 use Cranberry\Filesystem as CranberryFilesystem;
+use Fig\Action;
 use Fig\Exception;
 use Fig\Filesystem;
 
@@ -42,10 +43,13 @@ class ReplaceFileAction extends AbstractFileAction
 	 *
 	 * @param	Fig\Filesystem\Filesystem	$filesystem
 	 *
-	 * @return	void
+	 * @return	Fig\Action\Result
 	 */
-	public function deploy( Filesystem\Filesystem $filesystem )
+	public function deploy( Filesystem\Filesystem $filesystem ) : Action\Result
 	{
+		$didError = false;
+		$actionOutput = Action\Result::STRING_STATUS_SUCCESS;
+
 		/* If the parent profile name hasn't been set, Fig is broken somewhere */
 		if( ($profileName = $this->getProfileName()) == null )
 		{
@@ -57,13 +61,16 @@ class ReplaceFileAction extends AbstractFileAction
 		{
 			$assetNode = $filesystem->getProfileAssetNode( $profileName, $this->getSourcePath() );
 		}
-		/* If the source asset doesn't exist, Engine will throw. */
+		/* If the source asset doesn't exist, Filesystem will throw. */
 		catch( Exception\RuntimeException $e )
 		{
-			$this->didError = true;
-			$this->outputString = sprintf( 'Invalid asset definition: %s', $e->getMessage() );
+			$actionOutput = sprintf( 'Invalid asset definition: %s', $e->getMessage() );
 
-			return;
+			/* Attempting to deploy a missing asset is different from other
+			   runtime issues and should not be ignorable. Instead of continuing
+			   and setting `ignoreErrors` and `ignoreOutput`, stop here. */
+			$result = new Action\Result( $actionOutput, true );
+			return $result;
 		}
 
 		/* Get the target node */
@@ -88,37 +95,35 @@ class ReplaceFileAction extends AbstractFileAction
 		$targetNodeParent = $targetNode->getParent();
 		if( !$targetNodeParent->isWritable() )
 		{
-			$this->didError = true;
-			$this->outputString = sprintf( self::ERROR_STRING_INVALIDTARGET, $targetNodeParent->getPathname(), self::ERROR_STRING_PERMISSION_DENIED );
-
-			return;
+			$didError = true;
+			$actionOutput = sprintf( self::ERROR_STRING_INVALIDTARGET, $targetNodeParent->getPathname(), self::ERROR_STRING_PERMISSION_DENIED );
 		}
-
-		try
+		else
 		{
-			$targetNode->delete();
-		}
-		/* The target node is not deletable... */
-		catch( CranberryFilesystem\Exception $e )
-		{
-			/* ...due to permissions; we can't proceed. */
-			if( $e->getCode() == CranberryFilesystem\Node::ERROR_CODE_PERMISSIONS )
+			try
 			{
-				$this->didError = true;
-				$this->outputString = sprintf( self::ERROR_STRING_UNDELETABLE_NODE, $targetNode->getPathname(), self::ERROR_STRING_PERMISSION_DENIED );
+				$targetNode->delete();
 
-				return;
+				/* Copy the source into place */
+				$assetNode->copyTo( $targetNode );
 			}
-
-			/* ...because it doesn't exist; that's OK, let's keep going! */
+			/* The target node is not deletable... */
+			catch( CranberryFilesystem\Exception $e )
+			{
+				/* ...due to permissions; we can't proceed. */
+				if( $e->getCode() == CranberryFilesystem\Node::ERROR_CODE_PERMISSIONS )
+				{
+					$didError = true;
+					$actionOutput = sprintf( self::ERROR_STRING_UNDELETABLE_NODE, $targetNode->getPathname(), self::ERROR_STRING_PERMISSION_DENIED );
+				}
+			}
 		}
 
-		/* Copy the source into place */
-		$assetNode->copyTo( $targetNode );
+		$result = new Action\Result( $actionOutput, $didError );
+		$result->ignoreErrors( $this->ignoreErrors );
+		$result->ignoreOutput( $this->ignoreOutput );
 
-		/* Holy cats, we made it. */
-		$this->didError = false;
-		$this->outputString = self::STRING_STATUS_SUCCESS;
+		return $result;
 	}
 
 	/**

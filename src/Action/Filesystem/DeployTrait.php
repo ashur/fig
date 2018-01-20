@@ -5,6 +5,7 @@
  */
 namespace Fig\Action\Filesystem;
 
+use Fig\Action;
 use Fig\Filesystem;
 
 trait DeployTrait
@@ -16,5 +17,5 @@ trait DeployTrait
 	 *
 	 * @return	void
 	 */
-	abstract public function deploy( Filesystem\Filesystem $filesystem );
+	abstract public function deploy( Filesystem\Filesystem $filesystem ) : Action\Result;
 }

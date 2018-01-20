@@ -6,14 +6,16 @@
 namespace FigTest\Action\Filesystem;
 
 use Cranberry\Filesystem as CranberryFilesystem;
+use Fig\Action;
+use Fig\Action\AbstractAction;
 use Fig\Action\Filesystem\AbstractFileAction;
 use Fig\Filesystem;
 
 abstract class TestCase extends \FigTest\Action\TestCase
 {
 	/* Helpers */
-	abstract public function createActionObject_fromActionName( string $actionName ) : AbstractFileAction;
-	abstract public function createActionObject_fromTargetPath( string $targetPath ) : AbstractFileAction;
+
+	abstract public function createObject_fromTargetPath( string $targetPath ) : AbstractFileAction;
 
 	/**
 	 * Creates mock of given Node subclass
@@ -35,6 +37,7 @@ abstract class TestCase extends \FigTest\Action\TestCase
 
 
 	/* Providers */
+
 	public function provider_NodeClasses() : array
 	{
 		return [
@@ -62,7 +65,7 @@ abstract class TestCase extends \FigTest\Action\TestCase
 		$targetPath = sprintf( $pattern, '{{ filename }}' );
 		$expectedPath = sprintf( $pattern, $filename );
 
-		$action = $this->createActionObject_fromTargetPath( $targetPath );
+		$action = $this->createObject_fromTargetPath( $targetPath );
 		$action->setVariables( ['filename' => $filename ] );
 
 		$this->assertEquals( $expectedPath, $action->getTargetPath() );

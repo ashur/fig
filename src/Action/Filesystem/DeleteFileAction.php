@@ -5,6 +5,7 @@
  */
 namespace Fig\Action\Filesystem;
 
+use Fig\Action;
 use Fig\Exception;
 use Fig\Filesystem;
 
@@ -33,12 +34,12 @@ class DeleteFileAction extends AbstractFileAction
 	 *
 	 * @param	Fig\Filesystem\Filesystem	$filesystem
 	 *
-	 * @return	void
+	 * @return	Fig\Action\Result
 	 */
-	public function deploy( Filesystem\Filesystem $filesystem )
+	public function deploy( Filesystem\Filesystem $filesystem ) : Action\Result
 	{
-		$this->didError = false;
-		$this->outputString = self::STRING_STATUS_SUCCESS;
+		$didError = false;
+		$actionOutput = Action\Result::STRING_STATUS_SUCCESS;
 
 		/* When deleting a node, we don't care what type it is or even whether
 		   it exists... */
@@ -60,8 +61,14 @@ class DeleteFileAction extends AbstractFileAction
 		catch( \Cranberry\Filesystem\Exception $e )
 		{
             /* Action deployment has failed with an error */
-			$this->didError = true;
-			$this->outputString = $e->getMessage();
+			$didError = true;
+			$actionOutput = $e->getMessage();
 		}
+
+		$result = new Action\Result( $actionOutput, $didError );
+		$result->ignoreErrors( $this->ignoreErrors );
+		$result->ignoreOutput( $this->ignoreOutput );
+
+		return $result;
 	}
 }

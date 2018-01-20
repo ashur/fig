@@ -6,6 +6,8 @@
 namespace Fig\Action\Filesystem;
 
 use Cranberry\Filesystem as CranberryFilesystem;
+use Fig\Action;
+use Fig\Action\AbstractAction;
 use Fig\Exception;
 use Fig\Filesystem;
 use FigTest\Action\Filesystem\TestCase;
@@ -19,7 +21,7 @@ class ReplaceFileActionTest extends TestCase
 	 *
 	 * @return	Fig\Action\Filesystem\ReplaceFileAction
 	 */
-	public function createActionObject() : AbstractFileAction
+	public function createObject() : AbstractFileAction
 	{
 		$actionName = getUniqueString( 'my action ' );
 		$sourcePath = getUniqueString( 'file-' );
@@ -37,12 +39,12 @@ class ReplaceFileActionTest extends TestCase
 	 *
 	 * @return	Fig\Action\Filesystem\ReplaceFileAction
 	 */
-	public function createActionObject_fromActionName( string $actionName ) : AbstractFileAction
+	public function createObject_fromName( string $name ) : AbstractAction
 	{
 		$sourcePath = getUniqueString( 'file-' );
 		$targetPath = getUniqueString( '/usr/local/foo/file-' );
 
-		$action = new ReplaceFileAction( $actionName, $sourcePath, $targetPath );
+		$action = new ReplaceFileAction( $name, $sourcePath, $targetPath );
 
 		return $action;
 	}
@@ -54,12 +56,12 @@ class ReplaceFileActionTest extends TestCase
 	 *
 	 * @return	Fig\Action\Filesystem\ReplaceFileAction
 	 */
-	public function createActionObject_fromSourcePath( string $sourcePath ) : AbstractFileAction
+	public function createObject_fromSourcePath( string $sourcePath ) : AbstractFileAction
 	{
-		$actionName = getUniqueString( 'my action ' );
+		$name = getUniqueString( 'my action ' );
 		$targetPath = getUniqueString( '/usr/local/foo/file-' );
 
-		$action = new ReplaceFileAction( $actionName, $sourcePath, $targetPath );
+		$action = new ReplaceFileAction( $name, $sourcePath, $targetPath );
 
 		return $action;
 	}
@@ -71,12 +73,12 @@ class ReplaceFileActionTest extends TestCase
 	 *
 	 * @return	Fig\Action\Filesystem\ReplaceFileAction
 	 */
-	public function createActionObject_fromTargetPath( string $targetPath ) : AbstractFileAction
+	public function createObject_fromTargetPath( string $targetPath ) : AbstractFileAction
 	{
-		$actionName = getUniqueString( 'my action ' );
+		$name = getUniqueString( 'my action ' );
 		$sourcePath = getUniqueString( 'file-' );
 
-		$action = new ReplaceFileAction( $actionName, $sourcePath, $targetPath );
+		$action = new ReplaceFileAction( $name, $sourcePath, $targetPath );
 
 		return $action;
 	}
@@ -86,7 +88,7 @@ class ReplaceFileActionTest extends TestCase
 
 	public function provider_ActionObject() : array
 	{
-		$action = $this->createActionObject();
+		$action = $this->createObject();
 
 		return [
 			[$action]
@@ -155,13 +157,13 @@ class ReplaceFileActionTest extends TestCase
 			->method( 'getFilesystemNodeFromPath' )
 			->willReturn( $targetNodeMock );
 
-		$action = $this->createActionObject_fromTargetPath( $targetPath );
+		$action = $this->createObject_fromTargetPath( $targetPath );
 		$action->setProfileName( 'profile_name' );
 
-		$action->deploy( $filesystemMock );
+		$result = $action->deploy( $filesystemMock );
 
-		$this->assertFalse( $action->didError() );
-		$this->assertEquals( ReplaceFileAction::STRING_STATUS_SUCCESS, $action->getOutput() );
+		$this->assertFalse( $result->didError() );
+		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
 
 	/**
@@ -194,7 +196,7 @@ class ReplaceFileActionTest extends TestCase
 			->method( 'getFilesystemNodeFromPath' )
 			->will( $this->throwException( new \Exception( 'End of test', 1024 ) ) );
 
-		$action = $this->createActionObject_fromTargetPath( $targetPath );
+		$action = $this->createObject_fromTargetPath( $targetPath );
 		$action->setProfileName( 'profile_name' );
 
 		try
@@ -207,6 +209,114 @@ class ReplaceFileActionTest extends TestCase
 			   just catch the fake exception and stop. This is weird and
 			   should be improved :( */
 		}
+	}
+
+	/**
+	 * @dataProvider	provider_ActionObject
+	 */
+	public function test_deploy_ignoringErrors( AbstractAction $action )
+	{
+		$targetPath = getUniqueString( '/usr/local/foo/' );
+
+		$targetNodeParentMock = $this
+			->getMockBuilder( CranberryFilesystem\Directory::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getPathname','isWritable'] )
+			->getMock();
+		$targetNodeParentMock
+			->method( 'getPathname' )
+			->willReturn( dirname( $targetPath ) );
+		$targetNodeParentMock
+			->method( 'isWritable' )
+			->willReturn( false );
+		$targetNodeParentMock
+			->expects( $this->once() )
+			->method( 'isWritable' );
+
+		$targetNodeMock = $this
+			->getMockBuilder( CranberryFilesystem\File::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getParent'] )
+			->getMock();
+		$targetNodeMock
+			->method( 'getParent' )
+			->willReturn( $targetNodeParentMock );
+
+		$filesystemMock = $this
+			->getMockBuilder( Filesystem\Filesystem::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getFilesystemNodeFromPath','getProfileAssetNode'] )
+			->getMock();
+		$filesystemMock
+			->method( 'getProfileAssetNode' )
+			->willReturn( new CranberryFilesystem\File( getUniqueString( 'file-' ) ) );
+		$filesystemMock
+			->method( 'getFilesystemNodeFromPath' )
+			->willReturn( $targetNodeMock );
+
+		$action = $this->createObject_fromTargetPath( $targetPath );
+		$action->setProfileName( 'profile_name' );
+		$action->ignoreErrors( true );
+
+		$result = $action->deploy( $filesystemMock );
+
+		$this->assertFalse( $result->didError() );
+
+		$expectedErrorMessage = sprintf( ReplaceFileAction::ERROR_STRING_INVALIDTARGET, dirname( $targetPath ), ReplaceFileAction::ERROR_STRING_PERMISSION_DENIED );
+		$this->assertEquals( $expectedErrorMessage, $result->getOutput() );
+	}
+
+	/**
+	 * @dataProvider	provider_ActionObject
+	 */
+	public function test_deploy_ignoringOutput( AbstractAction $action )
+	{
+		$targetPath = getUniqueString( '/usr/local/foo/' );
+
+		$targetNodeParentMock = $this
+			->getMockBuilder( CranberryFilesystem\Directory::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getPathname','isWritable'] )
+			->getMock();
+		$targetNodeParentMock
+			->method( 'getPathname' )
+			->willReturn( dirname( $targetPath ) );
+		$targetNodeParentMock
+			->method( 'isWritable' )
+			->willReturn( false );
+		$targetNodeParentMock
+			->expects( $this->once() )
+			->method( 'isWritable' );
+
+		$targetNodeMock = $this
+			->getMockBuilder( CranberryFilesystem\File::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getParent'] )
+			->getMock();
+		$targetNodeMock
+			->method( 'getParent' )
+			->willReturn( $targetNodeParentMock );
+
+		$filesystemMock = $this
+			->getMockBuilder( Filesystem\Filesystem::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getFilesystemNodeFromPath','getProfileAssetNode'] )
+			->getMock();
+		$filesystemMock
+			->method( 'getProfileAssetNode' )
+			->willReturn( new CranberryFilesystem\File( getUniqueString( 'file-' ) ) );
+		$filesystemMock
+			->method( 'getFilesystemNodeFromPath' )
+			->willReturn( $targetNodeMock );
+
+		$action = $this->createObject_fromTargetPath( $targetPath );
+		$action->setProfileName( 'profile_name' );
+		$action->ignoreOutput( true );
+
+		$result = $action->deploy( $filesystemMock );
+
+		$this->assertTrue( $result->didError() );
+		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
 
 	public function test_deploy_withNonexistentAsset_causesError()
@@ -222,12 +332,12 @@ class ReplaceFileActionTest extends TestCase
 
 		$profileName = getUniqueString( 'profile-' );
 
-		$action = $this->createActionObject();
+		$action = $this->createObject();
 		$action->setProfileName( $profileName );
 
-		$action->deploy( $filesystemMock );
+		$result = $action->deploy( $filesystemMock );
 
-		$this->assertTrue( $action->didError() );
+		$this->assertTrue( $result->didError() );
 	}
 
 	/**
@@ -241,7 +351,7 @@ class ReplaceFileActionTest extends TestCase
 			->setMethods()
 			->getMock();
 
-		$action = $this->createActionObject();
+		$action = $this->createObject();
 		$action->deploy( $filesystemMock );
 	}
 
@@ -285,15 +395,15 @@ class ReplaceFileActionTest extends TestCase
 			->method( 'getFilesystemNodeFromPath' )
 			->willReturn( $targetNodeMock );
 
-		$action = $this->createActionObject_fromTargetPath( $targetPath );
+		$action = $this->createObject_fromTargetPath( $targetPath );
 		$action->setProfileName( 'profile_name' );
 
-		$action->deploy( $filesystemMock );
+		$result = $action->deploy( $filesystemMock );
 
-		$this->assertTrue( $action->didError() );
+		$this->assertTrue( $result->didError() );
 
 		$expectedErrorMessage = sprintf( ReplaceFileAction::ERROR_STRING_UNDELETABLE_NODE, $targetPath, ReplaceFileAction::ERROR_STRING_PERMISSION_DENIED );
-		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
+		$this->assertEquals( $expectedErrorMessage, $result->getOutput() );
 	}
 
 	public function test_deploy_withUnwritableTargetParent_causesError()
@@ -336,15 +446,15 @@ class ReplaceFileActionTest extends TestCase
 			->method( 'getFilesystemNodeFromPath' )
 			->willReturn( $targetNodeMock );
 
-		$action = $this->createActionObject_fromTargetPath( $targetPath );
+		$action = $this->createObject_fromTargetPath( $targetPath );
 		$action->setProfileName( 'profile_name' );
 
-		$action->deploy( $filesystemMock );
+		$result = $action->deploy( $filesystemMock );
 
-		$this->assertTrue( $action->didError() );
+		$this->assertTrue( $result->didError() );
 
 		$expectedErrorMessage = sprintf( ReplaceFileAction::ERROR_STRING_INVALIDTARGET, dirname( $targetPath ), ReplaceFileAction::ERROR_STRING_PERMISSION_DENIED );
-		$this->assertEquals( $expectedErrorMessage, $action->getOutput() );
+		$this->assertEquals( $expectedErrorMessage, $result->getOutput() );
 	}
 
 	public function test_getSourcePath_withVariableReplacement()
@@ -355,16 +465,15 @@ class ReplaceFileActionTest extends TestCase
 		$sourcePath = sprintf( $pattern, '{{ filename }}' );
 		$expectedPath = sprintf( $pattern, $filename );
 
-		$action = $this->createActionObject_fromSourcePath( $sourcePath );
+		$action = $this->createObject_fromSourcePath( $sourcePath );
 		$action->setVariables( ['filename' => $filename ] );
 
 		$this->assertEquals( $expectedPath, $action->getSourcePath() );
 	}
 
-
 	public function test_getSubtitle()
 	{
-		$action = $this->createActionObject();
+		$action = $this->createObject();
 		$this->assertEquals( 'replace', $action->getSubtitle() );
 	}
 }

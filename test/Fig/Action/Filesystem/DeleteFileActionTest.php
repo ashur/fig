@@ -6,6 +6,8 @@
 namespace Fig\Action\Filesystem;
 
 use Cranberry\Filesystem as CranberryFilesystem;
+use Fig\Action;
+use Fig\Action\AbstractAction;
 use Fig\Filesystem;
 use FigTest\Action\Filesystem\TestCase;
 
@@ -18,27 +20,20 @@ class DeleteFileActionTest extends TestCase
 	 *
 	 * @return	Fig\Action\Filesystem\DeleteFileAction
 	 */
-	public function createActionObject() : AbstractFileAction
+	public function createObject() : AbstractFileAction
 	{
-		$actionName = getUniqueString( 'my action ' );
+		$name = getUniqueString( 'my action ' );
 		$targetPath = getUniqueString( '/usr/local/foo/' );
 
-		$action = new DeleteFileAction( $actionName, $targetPath );
+		$action = new DeleteFileAction( $name, $targetPath );
 
 		return $action;
 	}
 
-	/**
-	 * Creates and returns an instance of DeleteFileAction using the given action name
-	 *
-	 * @param	string	$actionName
-	 *
-	 * @return	Fig\Action\Filesystem\DeleteFileAction
-	 */
-	public function createActionObject_fromActionName( string $actionName ) : AbstractFileAction
+	public function createObject_fromName( string $name ) : AbstractAction
 	{
 		$targetPath = getUniqueString( '/usr/local/foo/' );
-		$action = new DeleteFileAction( $actionName, $targetPath );
+		$action = new DeleteFileAction( $name, $targetPath );
 
 		return $action;
 	}
@@ -50,10 +45,10 @@ class DeleteFileActionTest extends TestCase
 	 *
 	 * @return	Fig\Action\Filesystem\DeleteFileAction
 	 */
-	public function createActionObject_fromTargetPath( string $targetPath ) : AbstractFileAction
+	public function createObject_fromTargetPath( string $targetPath ) : AbstractFileAction
 	{
-		$actionName = getUniqueString( 'my action ' );
-		$action = new DeleteFileAction( $actionName, $targetPath );
+		$name = getUniqueString( 'my action ' );
+		$action = new DeleteFileAction( $name, $targetPath );
 
 		return $action;
 	}
@@ -63,7 +58,7 @@ class DeleteFileActionTest extends TestCase
 
 	public function provider_ActionObject() : array
 	{
-		$action = $this->createActionObject();
+		$action = $this->createObject();
 
 		return [
 			[$action]
@@ -79,7 +74,7 @@ class DeleteFileActionTest extends TestCase
 	public function test_deploy_calls_getFilesystemNodeFromPath( string $nodeClass )
 	{
 		$targetPath = getUniqueString( '/usr/local/foo/' );
-		$action = $this->createActionObject_fromTargetPath( $targetPath );
+		$action = $this->createObject_fromTargetPath( $targetPath );
 
 		$nodeMock = $this->getNodeMock( $nodeClass );
 
@@ -104,7 +99,7 @@ class DeleteFileActionTest extends TestCase
 	 */
 	public function test_deploy_calls_NodeDelete( string $nodeClass )
 	{
-		$action = $this->createActionObject();
+		$action = $this->createObject();
 
 		$nodeMock = $this->getNodeMock( $nodeClass );
 		$nodeMock
@@ -124,12 +119,76 @@ class DeleteFileActionTest extends TestCase
 	}
 
 	/**
+	 * @dataProvider	provider_ActionObject
+	 */
+	public function test_deploy_ignoringErrors( AbstractAction $action )
+	{
+		$targetPath = getUniqueString( '/usr/local/foo/' );
+
+		$nodeMock = $this->getNodeMock( CranberryFilesystem\File::class );
+
+		/* Simulate exception thrown when attempting to delete undeletable
+		   Cranberry\Filesystem\Node objects */
+		$exceptionMessage = sprintf( CranberryFilesystem\Node::ERROR_STRING_DELETE, $targetPath, 'Permission denied' );
+		$nodeMock
+			->method( 'delete' )
+			->will( $this->throwException( new CranberryFilesystem\Exception( $exceptionMessage ) ) );
+
+		$filesystemMock = $this
+			->getMockBuilder( Filesystem\Filesystem::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getFilesystemNodeFromPath'] )
+			->getMock();
+		$filesystemMock
+			->method( 'getFilesystemNodeFromPath' )
+			->willReturn( $nodeMock );
+
+		$action->ignoreErrors( true );
+		$result = $action->deploy( $filesystemMock );
+
+		$this->assertFalse( $result->didError() );
+		$this->assertEquals( $exceptionMessage, $result->getOutput() );
+	}
+
+	/**
+	 * @dataProvider	provider_ActionObject
+	 */
+	public function test_deploy_ignoringOutput( AbstractAction $action )
+	{
+		$targetPath = getUniqueString( '/usr/local/foo/' );
+
+		$nodeMock = $this->getNodeMock( CranberryFilesystem\File::class );
+
+		/* Simulate exception thrown when attempting to delete undeletable
+		   Cranberry\Filesystem\Node objects */
+		$exceptionMessage = sprintf( CranberryFilesystem\Node::ERROR_STRING_DELETE, $targetPath, 'Permission denied' );
+		$nodeMock
+			->method( 'delete' )
+			->will( $this->throwException( new CranberryFilesystem\Exception( $exceptionMessage ) ) );
+
+		$filesystemMock = $this
+			->getMockBuilder( Filesystem\Filesystem::class )
+			->disableOriginalConstructor()
+			->setMethods( ['getFilesystemNodeFromPath'] )
+			->getMock();
+		$filesystemMock
+			->method( 'getFilesystemNodeFromPath' )
+			->willReturn( $nodeMock );
+
+		$action->ignoreOutput( true );
+		$result = $action->deploy( $filesystemMock );
+
+		$this->assertTrue( $result->didError() );
+		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
+	}
+
+	/**
 	 * @dataProvider	provider_NodeClasses
 	 */
 	public function test_existingUndeletableNode_causesError( string $nodeClass )
 	{
 		$targetPath = getUniqueString( '/usr/local/foo/' );
-		$action = $this->createActionObject_fromTargetPath( $targetPath );
+		$action = $this->createObject_fromTargetPath( $targetPath );
 
 		$nodeMock = $this->getNodeMock( $nodeClass );
 
@@ -149,34 +208,34 @@ class DeleteFileActionTest extends TestCase
 			->method( 'getFilesystemNodeFromPath' )
 			->willReturn( $nodeMock );
 
-		$action->deploy( $filesystemMock );
+		$result = $action->deploy( $filesystemMock );
 
-		$this->assertTrue( $action->didError() );
-		$this->assertEquals( $exceptionMessage, $action->getOutput() );
+		$this->assertTrue( $result->didError() );
+		$this->assertEquals( $exceptionMessage, $result->getOutput() );
 	}
 
 	public function test_nonExistentTargetPath_doesNotCauseError()
 	{
-		$action = $this->createActionObject();
+		$action = $this->createObject();
 
 		$figDirectoryMock = $this->getNodeMock( CranberryFilesystem\Directory::class );
 		$filesystem = new Filesystem\Filesystem( $figDirectoryMock );
 
-		$action->deploy( $filesystem );
+		$result = $action->deploy( $filesystem );
 
-		$this->assertFalse( $action->didError() );
+		$this->assertFalse( $result->didError() );
 	}
 
 	public function test_nonExistentTargetPath_outputsOK()
 	{
-		$action = $this->createActionObject();
+		$action = $this->createObject();
 
 		$figDirectoryMock = $this->getNodeMock( CranberryFilesystem\Directory::class );
 		$filesystem = new Filesystem\Filesystem( $figDirectoryMock );
 
-		$action->deploy( $filesystem );
+		$result = $action->deploy( $filesystem );
 
-		$this->assertEquals( DeleteFileAction::STRING_STATUS_SUCCESS, $action->getOutput() );
+		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
 
 	public function test_getSubtitle()
