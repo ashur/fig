@@ -5,50 +5,70 @@
  */
 namespace Fig\Action\Meta;
 
+use Fig\Action\AbstractAction;
 use FigTest\Action\TestCase;
 
 class ExtendActionTest extends TestCase
 {
-	/* Consumed by FigTest\Action\TestCase::test_getType */
+	/* Helpers */
+
+	public function createObject() : AbstractAction
+	{
+		$name = getUniqueString( 'my extend action ' );
+		$extendedProfileName = getUniqueString( 'profile-' );
+
+		$result = new ExtendAction( $name, $extendedProfileName );
+		return $result;
+	}
+
+	public function createObject_fromName( string $name ) : AbstractAction
+	{
+		$extendedProfileName = getUniqueString( 'profile-' );
+
+		$result = new ExtendAction( $name, $extendedProfileName );
+		return $result;
+	}
+
+
+	/* Providers */
+
 	public function provider_ActionObject() : array
 	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
-
-		$action = new ExtendAction( $actionName, $profileName );
-
 		return [
-			[$action]
+			[$this->createObject()]
 		];
 	}
 
+
+	/* Tests */
+
 	public function test_getExtendedProfileName()
 	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
+		$name = getUniqueString( 'action ' );
+		$extendedProfileName = getUniqueString( 'profile-' );
 
-		$action = new ExtendAction( $actionName, $profileName );
+		$action = new ExtendAction( $name, $extendedProfileName );
 
-		$this->assertEquals( $profileName, $action->getExtendedProfileName() );
+		$this->assertEquals( $extendedProfileName, $action->getExtendedProfileName() );
 	}
 
 	public function test_getName()
 	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
+		$name = getUniqueString( 'action ' );
+		$extendedProfileName = getUniqueString( 'profile-' );
 
-		$action = new ExtendAction( $actionName, $profileName );
+		$action = new ExtendAction( $name, $extendedProfileName );
 
-		$this->assertEquals( $actionName, $action->getName() );
+		$this->assertEquals( $name, $action->getName() );
 	}
 
 	public function test_getSubtitle()
 	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
+		$name = getUniqueString( 'action ' );
+		$extendedProfileName = getUniqueString( 'profile-' );
 
-		$action = new ExtendAction( $actionName, $profileName );
+		$action = new ExtendAction( $name, $extendedProfileName );
 
-		$this->assertEquals( $profileName, $action->getSubtitle() );
+		$this->assertEquals( $extendedProfileName, $action->getSubtitle() );
 	}
 }

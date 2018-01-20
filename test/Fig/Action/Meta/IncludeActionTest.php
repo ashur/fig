@@ -5,11 +5,33 @@
  */
 namespace Fig\Action\Meta;
 
+use Fig\Action\AbstractAction;
 use FigTest\Action\TestCase;
 
 class IncludeActionTest extends TestCase
 {
-	/* Consumed by FigTest\Action\TestCase::test_getType */
+	/* Helpers */
+
+	public function createObject() : AbstractAction
+	{
+		$name = getUniqueString( 'my include action ' );
+		$includedProfileName = getUniqueString( 'profile-' );
+
+		$result = new IncludeAction( $name, $includedProfileName );
+		return $result;
+	}
+
+	public function createObject_fromName( string $name ) : AbstractAction
+	{
+		$includedProfileName = getUniqueString( 'profile-' );
+
+		$result = new IncludeAction( $name, $includedProfileName );
+		return $result;
+	}
+
+
+	/* Providers */
+
 	public function provider_ActionObject() : array
 	{
 		$actionName = getUniqueString( 'action ' );
@@ -21,6 +43,9 @@ class IncludeActionTest extends TestCase
 			[$action]
 		];
 	}
+
+
+	/* Tests */
 
 	public function test_getArguments()
 	{
@@ -41,16 +66,6 @@ class IncludeActionTest extends TestCase
 		$action = new IncludeAction( $actionName, $profileName );
 
 		$this->assertEquals( $profileName, $action->getIncludedProfileName() );
-	}
-
-	public function test_getName()
-	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
-
-		$action = new IncludeAction( $actionName, $profileName );
-
-		$this->assertEquals( $actionName, $action->getName() );
 	}
 
 	public function test_getSubtitle()

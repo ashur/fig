@@ -49,13 +49,6 @@ abstract class TestCase extends \FigTest\Action\TestCase
 
 
 	/* Tests */
-	public function test_getName()
-	{
-		$actionName = getUniqueString( 'action ' );
-		$action = $this->createActionObject_fromActionName( $actionName );
-
-		$this->assertEquals( $actionName, $action->getName() );
-	}
 
 	public function test_getTargetPath_withVariableReplacement()
 	{
