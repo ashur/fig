@@ -6,11 +6,49 @@
 namespace Fig\Action\Shell;
 
 use Fig\Action;
+use Fig\Action\AbstractAction;
 use Fig\Shell;
 use FigTest\Action\Shell\TestCase;
 
 class CommandActionTest extends TestCase
 {
+	/* Helpers */
+
+	public function createObject() : AbstractAction
+	{
+		$name = getUniqueString( 'my command action ' );
+		$command = getUniqueString( 'command' );
+
+		$action = new CommandAction( $name, $command, [] );
+		return $action;
+	}
+
+	public function createObject_fromArguments( array $arguments ) : AbstractAction
+	{
+		$name = getUniqueString( 'my command action ' );
+		$command = getUniqueString( 'command' );
+
+		$action = new CommandAction( $name, $command, $arguments );
+		return $action;
+	}
+
+	public function createObject_fromCommand( string $command ) : AbstractAction
+	{
+		$name = getUniqueString( 'my command action ' );
+
+		$action = new CommandAction( $name, $command, [] );
+		return $action;
+	}
+
+	public function createObject_fromName( string $name ) : AbstractAction
+	{
+		$command = getUniqueString( 'command' );
+
+		$action = new CommandAction( $name, $command, [] );
+		return $action;
+	}
+
+
 	/* Providers */
 
 	/*
@@ -20,13 +58,8 @@ class CommandActionTest extends TestCase
 	 */
 	public function provider_ActionObject() : array
 	{
-		$actionName = getUniqueString( 'action ' );
-		$commandName = getUniqueString( 'command' );
-
-		$action = new CommandAction( $actionName, $commandName, [] );
-
 		return [
-			[$action]
+			[$this->createObject_fromName( 'my command action' )]
 		];
 	}
 
@@ -44,9 +77,6 @@ class CommandActionTest extends TestCase
 
 	public function test_deploy_commandWithoutOutput_outputsOK()
 	{
-		$actionName = getUniqueString( 'action ' );
-		$commandName = getUniqueString( 'command-' );
-
 		$shellMock = $this
 			->getMockBuilder( Shell\Shell::class )
 			->disableOriginalConstructor()
@@ -61,17 +91,14 @@ class CommandActionTest extends TestCase
 			->method( 'executeCommand' )
 			->willReturn( new Shell\Result( [], 0 ) );
 
-		$commandAction = new CommandAction( $actionName, $commandName, [] );
-		$result = $commandAction->deploy( $shellMock );
+		$action = $this->createObject();
+		$result = $action->deploy( $shellMock );
 
 		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
 
 	public function test_deploy_commandWithOutput_outputsString()
 	{
-		$actionName = getUniqueString( 'action ' );
-		$commandName = getUniqueString( 'command-' );
-
 		$shellMock = $this
 			->getMockBuilder( Shell\Shell::class )
 			->disableOriginalConstructor()
@@ -90,8 +117,8 @@ class CommandActionTest extends TestCase
 			->method( 'executeCommand' )
 			->willReturn( new Shell\Result( $output, 0 ) );
 
-		$commandAction = new CommandAction( $actionName, $commandName, [] );
-		$result = $commandAction->deploy( $shellMock );
+		$action = $this->createObject();
+		$result = $action->deploy( $shellMock );
 
 		$expectedOutput = implode( PHP_EOL, $output );
 
@@ -100,8 +127,6 @@ class CommandActionTest extends TestCase
 
 	public function test_getCommand_withVariableReplacement()
 	{
-		$actionName = getUniqueString( 'action ' );
-
 		$time = time();
 		$variables = ['time' => $time];
 
@@ -109,10 +134,10 @@ class CommandActionTest extends TestCase
 		$commandString = sprintf( $pattern, '{{ time }}' );
 		$expectedCommand = sprintf( $pattern, $time );
 
-		$commandAction = new CommandAction( $actionName, $commandString );
-		$commandAction->setVariables( $variables );
+		$action = $this->createObject_fromCommand( $commandString );
+		$action->setVariables( $variables );
 
-		$this->assertEquals( $expectedCommand, $commandAction->getCommand() );
+		$this->assertEquals( $expectedCommand, $action->getCommand() );
 	}
 
 	public function test_getCommandArguments_withVariableReplacement()
@@ -130,18 +155,10 @@ class CommandActionTest extends TestCase
 		$expectedArguments[] = sprintf( $pattern, 'arg1', $time );
 		$expectedArguments[] = sprintf( $pattern, 'arg2', $time );
 
-		$commandAction = new CommandAction( $actionName, 'command', $commandArguments );
-		$commandAction->setVariables( $variables );
+		$action = $this->createObject_fromArguments( $commandArguments );
+		$action->setVariables( $variables );
 
-		$this->assertEquals( $expectedArguments, $commandAction->getCommandArguments() );
-	}
-
-	public function test_getName()
-	{
-		$actionName = getUniqueString( 'action ' );
-		$action = new CommandAction( $actionName, 'command' );
-
-		$this->assertEquals( $actionName, $action->getName() );
+		$this->assertEquals( $expectedArguments, $action->getCommandArguments() );
 	}
 
 	public function test_getSubtitle()
@@ -157,9 +174,9 @@ class CommandActionTest extends TestCase
 	 */
 	public function test_getSubtitle_withVariableReplacement( string $command, array $variables, string $expectedSubtitle )
 	{
-		$commandAction = new CommandAction( 'My Command', $command );
-		$commandAction->setVariables( $variables );
+		$action = new CommandAction( 'My Command', $command );
+		$action->setVariables( $variables );
 
-		$this->assertEquals( $expectedSubtitle, $commandAction->getSubtitle() );
+		$this->assertEquals( $expectedSubtitle, $action->getSubtitle() );
 	}
 }
