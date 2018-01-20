@@ -34,15 +34,6 @@ class ExtendAction extends AbstractAction
 	}
 
 	/**
-	 * A stub; will not be called during profile deployment
-	 *
-	 * @param	Fig\Engine	$engine
-	 *
-	 * @return	void
-	 */
-	public function deploy( Engine $engine ){}
-
-	/**
 	 * Returns name of profile to be extended
 	 *
 	 * @return	string

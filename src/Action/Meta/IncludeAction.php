@@ -42,15 +42,6 @@ class IncludeAction extends AbstractAction
 	}
 
 	/**
-	 * A stub; will not be called during profile deployment
-	 *
-	 * @param	Fig\Engine	$engine
-	 *
-	 * @return	void
-	 */
-	public function deploy( Engine $engine ){}
-
-	/**
 	 * Returns arguments array
 	 *
 	 * @return	array
