@@ -13,6 +13,8 @@ use Fig\Filesystem;
 
 abstract class TestCase extends \FigTest\Action\TestCase
 {
+	use \FigTest\Action\DeployTrait;
+
 	/* Helpers */
 
 	abstract public function createObject_fromTargetPath( string $targetPath ) : AbstractFileAction;

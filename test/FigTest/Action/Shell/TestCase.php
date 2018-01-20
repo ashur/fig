@@ -11,6 +11,10 @@ use Fig\Shell;
 
 abstract class TestCase extends \FigTest\Action\TestCase
 {
+	use \FigTest\Action\DeployTrait;
+
+	/* Tests */
+
 	/**
 	 * @dataProvider	provider_ActionObject
 	 */
