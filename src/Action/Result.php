@@ -7,6 +7,7 @@ namespace Fig\Action;
 
 class Result
 {
+	const STRING_STATUS_ERROR = 'ERROR';
 	const STRING_STATUS_SUCCESS = 'OK';
 
 	/**
@@ -61,6 +62,11 @@ class Result
 	{
 		if( $this->ignoreOutput )
 		{
+			if( $this->didError() )
+			{
+				return self::STRING_STATUS_ERROR;
+			}
+
 			return self::STRING_STATUS_SUCCESS;
 		}
 

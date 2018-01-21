@@ -62,11 +62,19 @@ class ResultTest extends TestCase
 		$this->assertEquals( $didError, $result->didError() );
 	}
 
-	public function test_getOutput_returnsStringOK_whenIgnoringOutput()
+	public function test_getOutput_returnsStringERROR_whenDidErrorAndIgnoringOutput()
 	{
 		$output = getUniqueString( "line 1\nline 2\n" );
-		$result = $this->createObject_fromOutput( $output );
+		$result = $this->createObject_fromDidError( true );
 
+		$result->ignoreOutput( true );
+
+		$this->assertEquals( Result::STRING_STATUS_ERROR, $result->getOutput() );
+	}
+
+	public function test_getOutput_returnsStringOK_whenIgnoringOutput()
+	{
+		$result = $this->createObject_fromDidError( false );
 		$result->ignoreOutput( true );
 
 		$this->assertEquals( Result::STRING_STATUS_SUCCESS, $result->getOutput() );

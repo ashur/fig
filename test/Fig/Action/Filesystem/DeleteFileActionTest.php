@@ -179,7 +179,11 @@ class DeleteFileActionTest extends TestCase
 		$result = $action->deploy( $filesystemMock );
 
 		$this->assertTrue( $result->didError() );
-		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
+
+		/* Note: Because `DeleteFileAction` outputs 'OK' on success, this test
+		   differs from other instances of `test_deploy_ignoringOutput` by
+		   testing the error state instead. */
+		$this->assertEquals( Action\Result::STRING_STATUS_ERROR, $result->getOutput() );
 	}
 
 	/**
