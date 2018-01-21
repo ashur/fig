@@ -52,16 +52,6 @@ class ExtendActionTest extends TestCase
 		$this->assertEquals( $extendedProfileName, $action->getExtendedProfileName() );
 	}
 
-	public function test_getName()
-	{
-		$name = getUniqueString( 'action ' );
-		$extendedProfileName = getUniqueString( 'profile-' );
-
-		$action = new ExtendAction( $name, $extendedProfileName );
-
-		$this->assertEquals( $name, $action->getName() );
-	}
-
 	public function test_getSubtitle()
 	{
 		$name = getUniqueString( 'action ' );
