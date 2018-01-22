@@ -119,6 +119,16 @@ abstract class AbstractAction extends Variablizable
 	}
 
 	/**
+	 * Returns whether the action is deployable
+	 *
+	 * @return	bool
+	 */
+	public function isDeployable() : bool
+	{
+		return method_exists( $this, 'deploy' );
+	}
+
+	/**
 	 * Returns whether action is deprecated
 	 *
 	 * @return	bool

@@ -50,4 +50,12 @@ abstract class TestCase extends \FigTest\TestCase
 		$this->assertTrue( is_string( $actionType ) );
 		$this->assertTrue( strlen( $actionType ) > 0 );
 	}
+
+	public function test_isDeployable()
+	{
+		$name = getUniqueString( 'my action ' );
+		$action = $this->createObject_fromName( $name );
+
+		$this->assertFalse( $action->isDeployable() );
+	}
 }
