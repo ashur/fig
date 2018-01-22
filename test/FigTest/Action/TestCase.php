@@ -10,12 +10,16 @@ use Fig\Action\AbstractAction;
 abstract class TestCase extends \FigTest\TestCase
 {
 	/* Helpers */
+
 	abstract public function createObject_fromName( string $name ) : AbstractAction;
 
+
 	/* Providers */
+
 	abstract public function provider_ActionObject() : array;
 
 	/* Tests */
+
 	abstract public function test_getSubtitle();
 
 	public function test_getName()
@@ -40,6 +44,25 @@ abstract class TestCase extends \FigTest\TestCase
 		$this->assertEquals( $expectedName, $action->getName() );
 	}
 
+	public function test_getProfileName()
+	{
+		$action = $this->createObject_fromName( 'my action object' );
+
+		$profileName = getUniqueString( 'profile-' );
+		$action->setProfileName( $profileName );
+
+		$this->assertEquals( $profileName, $action->getProfileName() );
+	}
+
+	/**
+	 * @expectedException	LogicException
+	 */
+	public function test_getProfileName_throwsException_whenUndefined()
+	{
+		$action = $this->createObject_fromName( 'my action object' );
+		$action->getProfileName();
+	}
+
 	/**
 	 * @dataProvider	provider_ActionObject
 	 */
@@ -49,6 +72,17 @@ abstract class TestCase extends \FigTest\TestCase
 
 		$this->assertTrue( is_string( $actionType ) );
 		$this->assertTrue( strlen( $actionType ) > 0 );
+	}
+
+	public function test_hasProfileName()
+	{
+		$action = $this->createObject_fromName( 'my action object' );
+
+		$this->assertFalse( $action->hasProfileName() );
+
+		$action->setProfileName( 'profile-name' );
+
+		$this->assertTrue( $action->hasProfileName() );
 	}
 
 	public function test_isDeployable()

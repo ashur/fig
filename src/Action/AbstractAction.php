@@ -52,12 +52,17 @@ abstract class AbstractAction extends Variablizable
 	/**
 	 * Returns profile name
 	 *
-	 * Will return NULL if profile name not set.
+	 * @throws	LogicException	If profile name not set
 	 *
-	 * @return	null|string
+	 * @return	string
 	 */
-	public function getProfileName()
+	public function getProfileName() : string
 	{
+		if( $this->profileName == null )
+		{
+			throw new \LogicException( 'Profile name undefined' );
+		}
+
 		return $this->profileName;
 	}
 
@@ -76,6 +81,16 @@ abstract class AbstractAction extends Variablizable
 	public function getType() : string
 	{
 		return $this->type;
+	}
+
+	/**
+	 * Returns whether profile name is set
+	 *
+	 * @return	bool
+	 */
+	public function hasProfileName() : bool
+	{
+		return $this->profileName != null;
 	}
 
 	/**
