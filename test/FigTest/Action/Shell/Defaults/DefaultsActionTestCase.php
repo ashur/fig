@@ -7,7 +7,10 @@ namespace FigTest\Action\Shell\Defaults;
 
 use Fig\Action\AbstractAction;
 
-abstract class TestCase extends \FigTest\Action\Shell\TestCase
+/**
+ * Base test class for all Action\Shell\Defaults classes
+ */
+abstract class DefaultsActionTestCase extends \FigTest\Action\Shell\ShellActionTestCase
 {
 	/* Helpers */
 	abstract public function createObject_fromDomain( string $domain ) : AbstractAction;

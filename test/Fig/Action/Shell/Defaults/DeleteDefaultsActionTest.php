@@ -8,7 +8,7 @@ namespace Fig\Action\Shell\Defaults;
 use Fig\Action;
 use Fig\Action\AbstractAction;
 use Fig\Shell;
-use FigTest\Action\Shell\Defaults\TestCase;
+use FigTest\Action\Shell\Defaults\DefaultsActionTestCase as TestCase;
 
 class DeleteDefaultsActionTest extends TestCase
 {

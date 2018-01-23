@@ -11,10 +11,11 @@ use Fig\Action\AbstractAction;
 use Fig\Action\Filesystem\AbstractFileAction;
 use Fig\Filesystem;
 
-abstract class TestCase extends \FigTest\Action\TestCase
+/**
+ * Base test class for all Action\Filesystem classes
+ */
+abstract class FilesystemActionTestCase extends \FigTest\Action\DeployableActionTestCase
 {
-	use \FigTest\Action\DeployTrait;
-
 	/* Helpers */
 
 	abstract public function createObject_fromTargetPath( string $targetPath ) : AbstractFileAction;

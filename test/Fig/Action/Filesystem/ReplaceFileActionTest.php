@@ -10,7 +10,7 @@ use Fig\Action;
 use Fig\Action\AbstractAction;
 use Fig\Exception;
 use Fig\Filesystem;
-use FigTest\Action\Filesystem\TestCase;
+use FigTest\Action\Filesystem\FilesystemActionTestCase as TestCase;
 
 class ReplaceFileActionTest extends TestCase
 {

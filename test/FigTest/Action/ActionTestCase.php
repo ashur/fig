@@ -7,7 +7,10 @@ namespace FigTest\Action;
 
 use Fig\Action\AbstractAction;
 
-abstract class TestCase extends \FigTest\TestCase
+/**
+ * Base test class for all Action classes
+ */
+abstract class ActionTestCase extends \FigTest\TestCase
 {
 	/* Helpers */
 
@@ -18,31 +21,8 @@ abstract class TestCase extends \FigTest\TestCase
 
 	abstract public function provider_ActionObject() : array;
 
+
 	/* Tests */
-
-	abstract public function test_getSubtitle();
-
-	public function test_getName()
-	{
-		$name = getUniqueString( 'my action ' );
-		$action = $this->createObject_fromName( $name );
-
-		$this->assertEquals( $name, $action->getName() );
-	}
-
-	public function test_getName_withVariableReplacement()
-	{
-		$time = time();
-
-		$pattern = 'my action %s';
-		$nameString = sprintf( $pattern, '{{ time }}' );
-		$expectedName = sprintf( $pattern, $time );
-
-		$action = $this->createObject_fromName( $nameString );
-		$action->setVariables( ['time' => $time] );
-
-		$this->assertEquals( $expectedName, $action->getName() );
-	}
 
 	public function test_getProfileName()
 	{

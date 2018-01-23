@@ -8,7 +8,7 @@ namespace Fig\Action\Shell;
 use Fig\Action;
 use Fig\Action\AbstractAction;
 use Fig\Shell;
-use FigTest\Action\Shell\TestCase;
+use FigTest\Action\Shell\ShellActionTestCase as TestCase;
 
 class CommandActionTest extends TestCase
 {

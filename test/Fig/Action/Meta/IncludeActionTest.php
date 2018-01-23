@@ -6,7 +6,7 @@
 namespace Fig\Action\Meta;
 
 use Fig\Action\AbstractAction;
-use FigTest\Action\TestCase;
+use FigTest\Action\ActionTestCase as TestCase;
 
 class IncludeActionTest extends TestCase
 {

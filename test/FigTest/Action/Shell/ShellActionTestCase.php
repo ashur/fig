@@ -8,11 +8,13 @@ namespace FigTest\Action\Shell;
 use Fig\Action;
 use Fig\Action\AbstractAction;
 use Fig\Shell;
+use FigTest\Action\DeployableActionTestCase;
 
-abstract class TestCase extends \FigTest\Action\TestCase
+/**
+ * Base test class for all Action\Shell classes
+ */
+abstract class ShellActionTestCase extends DeployableActionTestCase
 {
-	use \FigTest\Action\DeployTrait;
-
 	/* Tests */
 
 	/**
