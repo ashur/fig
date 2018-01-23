@@ -14,33 +14,32 @@ class IncludeActionTest extends TestCase
 
 	public function createObject() : AbstractAction
 	{
-		$name = getUniqueString( 'my include action ' );
 		$includedProfileName = getUniqueString( 'profile-' );
 
-		$result = new IncludeAction( $name, $includedProfileName );
+		$result = new IncludeAction( $includedProfileName );
 		return $result;
 	}
 
-	public function createObject_fromName( string $name ) : AbstractAction
+	public function createObject_fromIncludedProfileName( string $includedProfileName ) : AbstractAction
+	{
+		$result = new IncludeAction( $includedProfileName );
+		return $result;
+	}
+
+	public function createObject_fromArguments( array $arguments ) : AbstractAction
 	{
 		$includedProfileName = getUniqueString( 'profile-' );
 
-		$result = new IncludeAction( $name, $includedProfileName );
+		$result = new IncludeAction( $includedProfileName, $arguments );
 		return $result;
 	}
-
 
 	/* Providers */
 
 	public function provider_ActionObject() : array
 	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
-
-		$action = new IncludeAction( $actionName, $profileName );
-
 		return [
-			[$action]
+			[$this->createObject()]
 		];
 	}
 
@@ -49,32 +48,19 @@ class IncludeActionTest extends TestCase
 
 	public function test_getArguments()
 	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
 		$arguments = [ 'foo' => getUniqueString( 'foo-' ), 'bar' => getUniqueString( 'bar-' ) ];
 
-		$action = new IncludeAction( $actionName, $profileName, $arguments );
+		$action = $this->createObject_fromArguments( $arguments );
 
 		$this->assertEquals( $arguments, $action->getArguments() );
 	}
 
 	public function test_getIncludedProfileName()
 	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
+		$includedProfileName = getUniqueString( 'profile-' );
 
-		$action = new IncludeAction( $actionName, $profileName );
+		$action = $this->createObject_fromIncludedProfileName( $includedProfileName );
 
-		$this->assertEquals( $profileName, $action->getIncludedProfileName() );
-	}
-
-	public function test_getSubtitle()
-	{
-		$actionName = getUniqueString( 'action ' );
-		$profileName = getUniqueString( 'profile-' );
-
-		$action = new IncludeAction( $actionName, $profileName );
-
-		$this->assertEquals( $profileName, $action->getSubtitle() );
+		$this->assertEquals( $includedProfileName, $action->getIncludedProfileName() );
 	}
 }

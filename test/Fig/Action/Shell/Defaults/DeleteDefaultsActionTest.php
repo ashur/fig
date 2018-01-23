@@ -14,6 +14,15 @@ class DeleteDefaultsActionTest extends TestCase
 {
 	/* Helpers */
 
+	public function createObject() : AbstractAction
+	{
+		$name = getUniqueString( 'my defaults action ' );
+		$domain = getUniqueString( 'com.example.Newton' );
+
+		$action = new DeleteDefaultsAction( $name, $domain );
+		return $action;
+	}
+
 	public function createObject_fromDomain( string $domain ) : AbstractAction
 	{
 		$name = getUniqueString( 'my defaults action ' );

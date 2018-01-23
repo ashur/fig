@@ -20,7 +20,7 @@ class DeleteFileActionTest extends TestCase
 	 *
 	 * @return	Fig\Action\Filesystem\DeleteFileAction
 	 */
-	public function createObject() : AbstractFileAction
+	public function createObject() : AbstractAction
 	{
 		$name = getUniqueString( 'my action ' );
 		$targetPath = getUniqueString( '/usr/local/foo/' );

@@ -14,18 +14,15 @@ class ExtendActionTest extends TestCase
 
 	public function createObject() : AbstractAction
 	{
-		$name = getUniqueString( 'my extend action ' );
 		$extendedProfileName = getUniqueString( 'profile-' );
 
-		$result = new ExtendAction( $name, $extendedProfileName );
+		$result = new ExtendAction( $extendedProfileName );
 		return $result;
 	}
 
-	public function createObject_fromName( string $name ) : AbstractAction
+	public function createObject_fromExtendedProfileName( string $extendedProfileName ) : AbstractAction
 	{
-		$extendedProfileName = getUniqueString( 'profile-' );
-
-		$result = new ExtendAction( $name, $extendedProfileName );
+		$result = new ExtendAction( $extendedProfileName );
 		return $result;
 	}
 
@@ -47,18 +44,8 @@ class ExtendActionTest extends TestCase
 		$name = getUniqueString( 'action ' );
 		$extendedProfileName = getUniqueString( 'profile-' );
 
-		$action = new ExtendAction( $name, $extendedProfileName );
+		$action = $this->createObject_fromExtendedProfileName( $extendedProfileName );
 
 		$this->assertEquals( $extendedProfileName, $action->getExtendedProfileName() );
-	}
-
-	public function test_getSubtitle()
-	{
-		$name = getUniqueString( 'action ' );
-		$extendedProfileName = getUniqueString( 'profile-' );
-
-		$action = new ExtendAction( $name, $extendedProfileName );
-
-		$this->assertEquals( $extendedProfileName, $action->getSubtitle() );
 	}
 }

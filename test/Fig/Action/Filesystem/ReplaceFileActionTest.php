@@ -21,7 +21,7 @@ class ReplaceFileActionTest extends TestCase
 	 *
 	 * @return	Fig\Action\Filesystem\ReplaceFileAction
 	 */
-	public function createObject() : AbstractFileAction
+	public function createObject() : AbstractAction
 	{
 		$actionName = getUniqueString( 'my action ' );
 		$sourcePath = getUniqueString( 'file-' );

@@ -5,9 +5,9 @@
  */
 namespace Fig\Action\Filesystem;
 
-use Fig\Action\AbstractAction;
+use Fig\Action\AbstractDeployableAction;
 
-abstract class AbstractFileAction extends AbstractAction
+abstract class AbstractFileAction extends AbstractDeployableAction
 {
 	use \Fig\Action\Filesystem\DeployTrait;
 

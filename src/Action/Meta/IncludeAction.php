@@ -20,23 +20,14 @@ class IncludeAction extends AbstractAction
 	protected $includedProfileName;
 
 	/**
-	 * @var	string
-	 */
-	protected $type = 'Include';
-
-	/**
-	 * @param	string	$name
-	 *
 	 * @param	string	$includedProfileName
 	 *
 	 * @param	array	$arguments
 	 *
 	 * @return	void
 	 */
-	public function __construct( string $name, string $includedProfileName, array $arguments=[] )
+	public function __construct( string $includedProfileName, array $arguments=[] )
 	{
-		$this->name = $name;
-
 		$this->arguments = $arguments;
 		$this->includedProfileName = $includedProfileName;
 	}
@@ -59,15 +50,5 @@ class IncludeAction extends AbstractAction
 	public function getIncludedProfileName() : string
 	{
 		return $this->includedProfileName;
-	}
-
-	/**
-	 * Returns included profile name as subtitle
-	 *
-	 * @return	string
-	 */
-	public function getSubtitle() : string
-	{
-		return $this->getIncludedProfileName();
 	}
 }

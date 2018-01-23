@@ -6,11 +6,11 @@
 namespace Fig\Action\Shell;
 
 use Fig\Action;
-use Fig\Action\AbstractAction;
+use Fig\Action\AbstractDeployableAction;
 use Fig\Exception;
 use Fig\Shell;
 
-class CommandAction extends AbstractAction
+class CommandAction extends AbstractDeployableAction
 {
 	use \Fig\Action\Shell\DeployTrait;
 

@@ -13,6 +13,17 @@ class WriteDefaultsActionTest extends TestCase
 {
 	/* Helpers */
 
+	public function createObject() : AbstractAction
+	{
+		$name = getUniqueString( 'my defaults action ' );
+		$domain = getUniqueString( 'com.example.Newton' );
+		$key = getUniqueString( 'SerialNumber-' );
+		$value = getUniqueString( 'value-' );
+
+		$action = new WriteDefaultsAction( $name, $domain, $key, $value );
+		return $action;
+	}
+
 	public function createObject_fromDomain( string $domain ) : AbstractAction
 	{
 		$name = getUniqueString( 'my defaults action ' );

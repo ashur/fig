@@ -5,11 +5,11 @@
  */
 namespace Fig\Action\Shell\Defaults;
 
-use Fig\Action\AbstractAction;
+use Fig\Action\AbstractDeployableAction;
 use Fig\Exception;
 use Fig\Shell\Shell;
 
-abstract class AbstractDefaultsAction extends AbstractAction
+abstract class AbstractDefaultsAction extends AbstractDeployableAction
 {
 	use \Fig\Action\Shell\DeployTrait;
 

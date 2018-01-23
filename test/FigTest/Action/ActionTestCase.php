@@ -14,7 +14,7 @@ abstract class ActionTestCase extends \FigTest\TestCase
 {
 	/* Helpers */
 
-	abstract public function createObject_fromName( string $name ) : AbstractAction;
+	abstract public function createObject() : AbstractAction;
 
 
 	/* Providers */
@@ -26,7 +26,7 @@ abstract class ActionTestCase extends \FigTest\TestCase
 
 	public function test_getProfileName()
 	{
-		$action = $this->createObject_fromName( 'my action object' );
+		$action = $this->createObject();
 
 		$profileName = getUniqueString( 'profile-' );
 		$action->setProfileName( $profileName );
@@ -39,24 +39,13 @@ abstract class ActionTestCase extends \FigTest\TestCase
 	 */
 	public function test_getProfileName_throwsException_whenUndefined()
 	{
-		$action = $this->createObject_fromName( 'my action object' );
+		$action = $this->createObject();
 		$action->getProfileName();
-	}
-
-	/**
-	 * @dataProvider	provider_ActionObject
-	 */
-	public function test_getType( AbstractAction $action )
-	{
-		$actionType = $action->getType();
-
-		$this->assertTrue( is_string( $actionType ) );
-		$this->assertTrue( strlen( $actionType ) > 0 );
 	}
 
 	public function test_hasProfileName()
 	{
-		$action = $this->createObject_fromName( 'my action object' );
+		$action = $this->createObject();
 
 		$this->assertFalse( $action->hasProfileName() );
 
@@ -68,7 +57,7 @@ abstract class ActionTestCase extends \FigTest\TestCase
 	public function test_isDeployable()
 	{
 		$name = getUniqueString( 'my action ' );
-		$action = $this->createObject_fromName( $name );
+		$action = $this->createObject();
 
 		$this->assertFalse( $action->isDeployable() );
 	}

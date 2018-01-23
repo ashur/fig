@@ -15,21 +15,12 @@ class ExtendAction extends AbstractAction
 	protected $extendedProfileName;
 
 	/**
-	 * @var	string
-	 */
-	protected $type = 'Extend';
-
-	/**
-	 * @param	string	$name
-	 *
 	 * @param	string	$extendedProfileName
 	 *
 	 * @return	void
 	 */
-	public function __construct( string $name, string $extendedProfileName )
+	public function __construct( string $extendedProfileName )
 	{
-		$this->name = $name;
-
 		$this->extendedProfileName = $extendedProfileName;
 	}
 
@@ -41,15 +32,5 @@ class ExtendAction extends AbstractAction
 	public function getExtendedProfileName() : string
 	{
 		return $this->extendedProfileName;
-	}
-
-	/**
-	 * Returns extended profile name as subtitle
-	 *
-	 * @return	string
-	 */
-	public function getSubtitle() : string
-	{
-		return $this->getExtendedProfileName();
 	}
 }
