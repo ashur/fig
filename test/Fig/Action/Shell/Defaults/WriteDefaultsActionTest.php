@@ -128,7 +128,7 @@ class WriteDefaultsActionTest extends TestCase
 		$expectedValue = sprintf( $pattern, $time );
 
 		$action = $this->createObject_fromValue( $valueString );
-		$action->setVariables( ['time' => $time] );
+		$action->setVars( ['time' => $time] );
 
 		$this->assertEquals( $expectedValue, $action->getValue() );
 	}

@@ -5,10 +5,10 @@
  */
 namespace Fig\Action;
 
-use Fig\Variablizable;
-
-abstract class AbstractAction extends Variablizable
+abstract class AbstractAction
 {
+	use \Fig\VarsTrait;
+
 	/**
 	 * @var	bool
 	 */

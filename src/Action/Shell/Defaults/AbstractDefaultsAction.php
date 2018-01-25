@@ -6,6 +6,7 @@
 namespace Fig\Action\Shell\Defaults;
 
 use Fig\Action\AbstractDeployableAction;
+use Fig\Engine;
 use Fig\Exception;
 use Fig\Shell\Shell;
 
@@ -40,7 +41,7 @@ abstract class AbstractDefaultsAction extends AbstractDeployableAction
 	 */
 	public function getDomain() : string
 	{
-		return $this->replaceVariablesInString( $this->domain );
+		return Engine::renderTemplate( $this->domain, $this->vars );
 	}
 
 	/**
@@ -57,7 +58,7 @@ abstract class AbstractDefaultsAction extends AbstractDeployableAction
 			throw new \OutOfBoundsException( 'Key is undefined' );
 		}
 
-		return $this->replaceVariablesInString( $this->key );
+		return Engine::renderTemplate( $this->key, $this->vars );
 	}
 
 	/**

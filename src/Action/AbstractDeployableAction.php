@@ -5,6 +5,8 @@
  */
 namespace Fig\Action;
 
+use Fig\Engine;
+
 abstract class AbstractDeployableAction extends AbstractAction
 {
 	/**
@@ -34,7 +36,7 @@ abstract class AbstractDeployableAction extends AbstractAction
 	 */
 	public function getName() : string
 	{
-		return $this->replaceVariablesInString( $this->name );
+		return Engine::renderTemplate( $this->name, $this->vars );
 	}
 
 	/**

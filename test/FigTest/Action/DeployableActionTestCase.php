@@ -37,7 +37,7 @@ abstract class DeployableActionTestCase extends \FigTest\Action\ActionTestCase
 		$expectedName = sprintf( $pattern, $time );
 
 		$action = $this->createObject_fromName( $nameString );
-		$action->setVariables( ['time' => $time] );
+		$action->setVars( ['time' => $time] );
 
 		$this->assertEquals( $expectedName, $action->getName() );
 	}

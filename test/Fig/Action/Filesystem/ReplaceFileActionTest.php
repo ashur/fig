@@ -470,7 +470,7 @@ class ReplaceFileActionTest extends TestCase
 		$expectedPath = sprintf( $pattern, $filename );
 
 		$action = $this->createObject_fromSourcePath( $sourcePath );
-		$action->setVariables( ['filename' => $filename ] );
+		$action->setVars( ['filename' => $filename ] );
 
 		$this->assertEquals( $expectedPath, $action->getSourcePath() );
 	}

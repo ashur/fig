@@ -135,7 +135,7 @@ class CommandActionTest extends TestCase
 		$expectedCommand = sprintf( $pattern, $time );
 
 		$action = $this->createObject_fromCommand( $commandString );
-		$action->setVariables( $variables );
+		$action->setVars( $variables );
 
 		$this->assertEquals( $expectedCommand, $action->getCommand() );
 	}
@@ -156,7 +156,7 @@ class CommandActionTest extends TestCase
 		$expectedArguments[] = sprintf( $pattern, 'arg2', $time );
 
 		$action = $this->createObject_fromArguments( $commandArguments );
-		$action->setVariables( $variables );
+		$action->setVars( $variables );
 
 		$this->assertEquals( $expectedArguments, $action->getCommandArguments() );
 	}
@@ -175,7 +175,7 @@ class CommandActionTest extends TestCase
 	public function test_getSubtitle_withVariableReplacement( string $command, array $variables, string $expectedSubtitle )
 	{
 		$action = new CommandAction( 'My Command', $command );
-		$action->setVariables( $variables );
+		$action->setVars( $variables );
 
 		$this->assertEquals( $expectedSubtitle, $action->getSubtitle() );
 	}

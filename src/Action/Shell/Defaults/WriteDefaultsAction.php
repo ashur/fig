@@ -7,6 +7,7 @@ namespace Fig\Action\Shell\Defaults;
 
 use Fig\Action;
 use Fig\Exception;
+use Fig\Engine;
 use Fig\Shell;
 
 class WriteDefaultsAction extends AbstractDefaultsAction
@@ -93,6 +94,6 @@ class WriteDefaultsAction extends AbstractDefaultsAction
 	 */
 	public function getValue() : string
 	{
-		return $this->replaceVariablesInString( $this->value );
+		return Engine::renderTemplate( $this->value, $this->vars );
 	}
 }

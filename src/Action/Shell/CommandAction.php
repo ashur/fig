@@ -7,6 +7,7 @@ namespace Fig\Action\Shell;
 
 use Fig\Action;
 use Fig\Action\AbstractDeployableAction;
+use Fig\Engine;
 use Fig\Exception;
 use Fig\Shell;
 
@@ -94,7 +95,7 @@ class CommandAction extends AbstractDeployableAction
 	 */
 	public function getCommand() : string
 	{
-		return $this->replaceVariablesInString( $this->command );
+		return Engine::renderTemplate( $this->command, $this->vars );
 	}
 
 	/**
@@ -107,7 +108,7 @@ class CommandAction extends AbstractDeployableAction
 		$commandArguments = [];
 		foreach( $this->commandArguments as $commandArgument )
 		{
-			$commandArguments[] = $this->replaceVariablesInString( $commandArgument );
+			$commandArguments[] = Engine::renderTemplate( $commandArgument, $this->vars );
 		}
 
 		return $commandArguments;

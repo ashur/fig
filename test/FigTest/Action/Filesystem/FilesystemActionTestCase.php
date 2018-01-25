@@ -62,7 +62,7 @@ abstract class FilesystemActionTestCase extends \FigTest\Action\DeployableAction
 		$expectedPath = sprintf( $pattern, $filename );
 
 		$action = $this->createObject_fromTargetPath( $targetPath );
-		$action->setVariables( ['filename' => $filename ] );
+		$action->setVars( ['filename' => $filename ] );
 
 		$this->assertEquals( $expectedPath, $action->getTargetPath() );
 	}

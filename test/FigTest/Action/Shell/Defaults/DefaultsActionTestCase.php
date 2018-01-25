@@ -26,7 +26,7 @@ abstract class DefaultsActionTestCase extends \FigTest\Action\Shell\ShellActionT
 		$expectedDomain = sprintf( $pattern, $time );
 
 		$action = $this->createObject_fromDomain( $domainString );
-		$action->setVariables( ['app' => $time] );
+		$action->setVars( ['app' => $time] );
 
 		$this->assertEquals( $expectedDomain, $action->getDomain() );
 	}
@@ -40,7 +40,7 @@ abstract class DefaultsActionTestCase extends \FigTest\Action\Shell\ShellActionT
 		$expectedKey = sprintf( $pattern, $time );
 
 		$action = $this->createObject_fromKey( $keyString );
-		$action->setVariables( ['time' => $time] );
+		$action->setVars( ['time' => $time] );
 
 		$this->assertEquals( $expectedKey, $action->getKey() );
 	}
