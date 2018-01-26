@@ -25,25 +25,26 @@ class EngineTest extends TestCase
 
 	/* Tests */
 
-	public function test_renderTemplate_replacesUndefinedVariables()
+	public function test_renderTemplate_supportsVarsComposedOfVars()
 	{
-		$time = time();
+		$vars = [
+			'greeting' => '{{ salutation}}, {{ addressee }}.',
+			'addressee' => 'world',
+			'salutation' => 'Hello',
+		];
 
-		$basePattern = 'name-%s-%s';
-		$template = sprintf( $basePattern, '{{ time }}', '{{ undefined_variable }}' );
-		$expectedString = sprintf( $basePattern, $time, '' );
+		$template = 'And then I said, "{{ greeting }}"';
+		$expectedString = 'And then I said, "Hello, world."';
 
-		$vars = [ 'time' => $time ];
+		$renderedString = Engine::renderTemplate( $template, $vars );
 
-		$actualString = Engine::renderTemplate( $template, $vars );
-
-		$this->assertEquals( $expectedString, $actualString );
+		$this->assertEquals( $expectedString, $renderedString );
 	}
 
 	/**
 	 * @dataProvider	provider_varNames
 	 */
-	public function test_renderTemplate_supportsVaryingWhitespace( string $varName )
+	public function test_renderTemplate_tokensSupportVariableWhitespace( string $varName )
 	{
 		$time = time();
 
@@ -53,8 +54,39 @@ class EngineTest extends TestCase
 
 		$vars = [ 'time' => $time ];
 
-		$actualString = Engine::renderTemplate( $template, $vars );
+		$renderedString = Engine::renderTemplate( $template, $vars );
 
-		$this->assertEquals( $expectedString, $actualString );
+		$this->assertEquals( $expectedString, $renderedString );
+	}
+
+	public function test_renderTemplate_usingTemplateWithoutVars_returnsOriginalString()
+	{
+		$vars = [
+			'salutation' => 'Hello',
+			'addressee' => 'world',
+			'greeting' => '{{ salutation}}, {{ addressee }}.',
+		];
+
+		$originalString = getUniqueString( 'Hello, world ' );
+		$renderedString = Engine::renderTemplate( $originalString, $vars );
+
+		$this->assertEquals( $originalString, $renderedString );
+	}
+
+	/**
+	 * @expectedException	Fig\Exception\ProfileSyntaxException
+	 * @expectedExceptionCode	Fig\Exception\ProfileSyntaxException::RECURSION
+	 */
+	public function test_renderTemplate_withSelfReferencingVar_throwsException()
+	{
+		$this->markTestIncomplete();
+
+		$vars = [
+			'addressee' => 'world',
+			'greeting' => '{{ greeting }}, {{ addressee }}.',
+		];
+
+		$template = 'And then I said, "{{ greeting }}"';
+		$renderedString = Engine::renderTemplate( $template, $vars );
 	}
 }

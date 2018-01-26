@@ -16,23 +16,59 @@ class Engine
 	 *
 	 * @param	array	$vars		Array of keys with scalar values — ex., ['who' => 'world']
 	 *
+	 * @param	int		$round		Current	round of recursion
+	 *
+	 * @throws	Fig\Exception\ProfileSyntaxException	If var value references itself
+	 *
 	 * @return	string
 	 */
-	static public function renderTemplate( string $template, array $vars ) : string
+	static public function renderTemplate( string $template, array $vars, $round=0 ) : string
 	{
-		$format = '/\{\{\s*%s\s*\}\}/';
 		$string = $template;
 
-		/* Replace all defined variables with their corresponding value */
-		foreach( $vars as $key => $value )
+		/* Parse $template for tokens (i.e., `{{ var_name }}`). */
+		$tokenPattern = sprintf( '/\{\{\s*(%s+)\s*\}\}/', '[a-zA-Z0-9_\-]' );
+		preg_match_all( $tokenPattern, $string, $matches );
+
+		$tokenCount = count( $matches[0] );
+		if( $tokenCount == 0 )
 		{
-			$pattern = sprintf( $format, $key );
-			$string = preg_replace( $pattern, $value, $string );
+			return $template;
 		}
 
-		/* Replace any remaining undefined variables with '' */
-		$pattern = sprintf( $format, '[^\s\}]+' );	// \{\{\s*[^\s\}]+\s*\}\}
-		$string = preg_replace( $pattern, '', $string );
+		/* Parse $vars values for var tokens. */
+		$maxRounds = count( $vars ) - 1;
+		if( $round <= $maxRounds )
+		{
+			$round++;
+
+			$renderedVars = [];
+			foreach( $vars as $key => $value )
+			{
+				$renderedVars[$key] = self::renderTemplate( $value, $vars, $round );
+			}
+		}
+		else
+		{
+			$renderedVars = $vars;
+		}
+
+		/* Replace var tokens with values */
+		for( $t = 0; $t < $tokenCount; $t++ )
+		{
+			$token = $matches[0][$t];
+			$key   = $matches[1][$t];
+
+			/* Replace $token in $template with matching $renderedVars value */
+			if( isset( $vars[$key] ) )
+			{
+				$string = str_replace( $token, $renderedVars[$key], $string );
+			}
+			else
+			{
+				/* var is undefined */
+			}
+		}
 
 		return $string;
 	}
