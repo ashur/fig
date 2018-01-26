@@ -6,63 +6,108 @@
 namespace Fig;
 
 use Cranberry\Filesystem;
+use Fig\Exception;
 
 class Engine
 {
 	/**
-	 * description
+	 * Parses template string string for tokens
+	 *
+	 * Returns associative array of matches
+	 *
+	 * @param	string	$template	Template to be parsed — ex., 'hello, {{who}}'
+	 *
+	 * @return	array
+	 */
+	static public function getTokensFromTemplate( string $template ) : array
+	{
+		$results = [];
+
+		$tokenPattern = sprintf( '/\{\{\s*(%s+)\s*\}\}/', '[a-zA-Z0-9_\-]' );
+		preg_match_all( $tokenPattern, $template, $matches );
+
+		$tokenCount = count( $matches[0] );
+
+		/* Build an associative array of matches ["{{ var_1 }}" => "var_1", ...] */
+		for( $t = 0; $t < $tokenCount; $t++ )
+		{
+			$key = $matches[1][$t];
+			$token = $matches[0][$t];
+
+			$results[$token] = $key;
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Renders template string, replacing var tokens with their values
 	 *
 	 * @param	string	$template	Template to be rendered — ex., 'hello, {{who}}'
 	 *
 	 * @param	array	$vars		Array of keys with scalar values — ex., ['who' => 'world']
 	 *
-	 * @param	int		$round		Current	round of recursion
-	 *
 	 * @throws	Fig\Exception\ProfileSyntaxException	If var value references itself
 	 *
 	 * @return	string
 	 */
-	static public function renderTemplate( string $template, array $vars, $round=0 ) : string
+	static public function renderTemplate( string $template, array $vars ) : string
 	{
 		$string = $template;
 
-		/* Parse $template for tokens (i.e., `{{ var_name }}`). */
-		$tokenPattern = sprintf( '/\{\{\s*(%s+)\s*\}\}/', '[a-zA-Z0-9_\-]' );
-		preg_match_all( $tokenPattern, $string, $matches );
+		$templateTokenMatches = self::getTokensFromTemplate( $template );
+		$tokenCount = count( $templateTokenMatches );
 
-		$tokenCount = count( $matches[0] );
 		if( $tokenCount == 0 )
 		{
 			return $template;
 		}
 
-		/* Parse $vars values for var tokens. */
-		$maxRounds = count( $vars ) - 1;
-		if( $round <= $maxRounds )
-		{
-			$round++;
+		/* Parse $vars values for tokens (ex., ["who" => "{{first}} {{last}}"]) */
+		$maxRounds = ceil( log( count( $vars ), 2 ) );
 
-			$renderedVars = [];
-			foreach( $vars as $key => $value )
+		for( $round = 0; $round < $maxRounds; $round++ )
+		{
+			foreach( $vars as $varName => $varValue )
 			{
-				$renderedVars[$key] = self::renderTemplate( $value, $vars, $round );
+				$varTokenMatches = self::getTokensFromTemplate( $varValue );
+
+				if( in_array( $varName, $varTokenMatches ) )
+				{
+					$exceptionMessage = sprintf( 'Recursive definition of variable \'%s\': "%s"', $varName, $varValue );
+					throw new Exception\ProfileSyntaxException( $exceptionMessage, Exception\ProfileSyntaxException::RECURSION );
+				}
+
+				if( count( $varTokenMatches ) > 0 )
+				{
+					$vars[$varName] = self::replaceTokensInTemplate( $varValue, $varTokenMatches, $vars );
+				}
 			}
 		}
-		else
-		{
-			$renderedVars = $vars;
-		}
 
-		/* Replace var tokens with values */
-		for( $t = 0; $t < $tokenCount; $t++ )
-		{
-			$token = $matches[0][$t];
-			$key   = $matches[1][$t];
+		$string = self::replaceTokensInTemplate( $string, $templateTokenMatches, $vars );
 
-			/* Replace $token in $template with matching $renderedVars value */
-			if( isset( $vars[$key] ) )
+		return $string;
+	}
+
+	/**
+	 * Replaces instances of tokens with value of corresponding var
+	 *
+	 * @param	string	$template	Template string containing tokens to be replaced — ex., 'hello, {{who}}'
+	 *
+	 * @param	array	$tokens	Associative array of tokens and var names — ex., ['{{who}}' => 'who']
+	 *
+	 * @param	array	$vars	Array of keys with scalar values — ex., ['who' => 'world']
+	 *
+	 * @return	string
+	 */
+	static public function replaceTokensInTemplate( string $template, array $tokens, array $vars ) : string
+	{
+		foreach( $tokens as $token => $varName )
+		{
+			if( isset( $vars[$varName] ) )
 			{
-				$string = str_replace( $token, $renderedVars[$key], $string );
+				$template = str_replace( $token, $vars[$varName], $template );
 			}
 			else
 			{
@@ -70,6 +115,6 @@ class Engine
 			}
 		}
 
-		return $string;
+		return $template;
 	}
 }

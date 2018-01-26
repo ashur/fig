@@ -25,6 +25,20 @@ class EngineTest extends TestCase
 
 	/* Tests */
 
+	public function test_getTokensFromTemplate()
+	{
+		$template = '{{ salutation}}, {{ addressee }}. ({{salutation }})';
+		$expectedTokens = [
+			'{{ salutation}}' => 'salutation',
+			'{{ addressee }}' => 'addressee',
+			'{{salutation }}' => 'salutation',
+		];
+
+		$actualTokens = Engine::getTokensFromTemplate( $template );
+
+		$this->assertEquals( $expectedTokens, $actualTokens );
+	}
+
 	public function test_renderTemplate_supportsVarsComposedOfVars()
 	{
 		$vars = [
@@ -73,20 +87,53 @@ class EngineTest extends TestCase
 		$this->assertEquals( $originalString, $renderedString );
 	}
 
+	public function test_renderTemplate_withCrossReferencingVars()
+	{
+		$vars = [
+			'eight' => '({{four}} + {{four}})',
+			'four' => '({{two}} + {{two}})',
+			'two' => '({{one}} + {{one}})',
+			'one' => '1',
+		];
+
+		$template = '{{ eight }} = 8';
+
+		$expectedString = '(((1 + 1) + (1 + 1)) + ((1 + 1) + (1 + 1))) = 8';
+		$renderedString = Engine::renderTemplate( $template, $vars );
+
+		$this->assertEquals( $expectedString, $renderedString );
+	}
+
 	/**
 	 * @expectedException	Fig\Exception\ProfileSyntaxException
 	 * @expectedExceptionCode	Fig\Exception\ProfileSyntaxException::RECURSION
 	 */
 	public function test_renderTemplate_withSelfReferencingVar_throwsException()
 	{
-		$this->markTestIncomplete();
-
 		$vars = [
-			'addressee' => 'world',
-			'greeting' => '{{ greeting }}, {{ addressee }}.',
+			'salutation' => 'howdy',
+			'greeting' => '{{ greeting }}, neighbor.',
 		];
 
 		$template = 'And then I said, "{{ greeting }}"';
 		$renderedString = Engine::renderTemplate( $template, $vars );
+	}
+
+	public function test_replaceTokensInTemplate()
+	{
+		$template = '{{ salutation}}, {{ addressee }}.';
+		$tokens = [
+			'{{ salutation}}' => 'salutation',
+			'{{ addressee }}' => 'addressee',
+		];
+		$vars = [
+			'addressee' => 'neighbor',
+			'salutation' => 'howdy',
+		];
+
+		$expectedString = 'howdy, neighbor.';
+		$renderedString = Engine::replaceTokensInTemplate( $template, $tokens, $vars );
+
+		$this->assertEquals( $expectedString, $renderedString );
 	}
 }
