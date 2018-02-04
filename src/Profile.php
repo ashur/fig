@@ -24,7 +24,7 @@ class Profile
 	 *
 	 * @return	void
 	 */
-	public function __construct( string $name  )
+	public function __construct( string $name )
 	{
 		$this->name = $name;
 	}
@@ -38,6 +38,7 @@ class Profile
 	 */
 	public function addAction( Action\AbstractAction $action )
 	{
+		$action->setProfileName( $this->getName() );
 		$this->actions[] = $action;
 	}
 

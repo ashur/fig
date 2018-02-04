@@ -42,6 +42,23 @@ class ProfileTest extends TestCase
 		$this->assertEquals( [$action], $profile->getActions() );
 	}
 
+	public function test_addAction_setsProfileName()
+	{
+		$profileName = getUniqueString( 'profile-' );
+		$profile = $this->createObject_fromName( $profileName );
+
+		$action = new Action\Shell\CommandAction( 'say hello', 'echo', ['hello'] );
+		$profile->addAction( $action );
+
+		$profileActions = $profile->getActions();
+
+		foreach( $profileActions as $profileAction )
+		{
+			$this->assertTrue( $profileAction->hasProfileName() );
+			$this->assertEquals( $profileName, $profileAction->getProfileName() );
+		}
+	}
+
 	public function test_getActions_returnsArray()
 	{
 		$profile = $this->createObject();
