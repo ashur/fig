@@ -15,9 +15,21 @@ abstract class AbstractAction
 	protected $isDeprecated=false;
 
 	/**
-	 * @var	string
+	 * An array of parent profile names, in reverse chronological order
+	 *
+	 * @var	array
 	 */
-	protected $profileName;
+	protected $profileAncestry=[];
+
+	/**
+	 * Returns array of full profile ancestry
+	 *
+	 * @return	array
+	 */
+	public function getProfileAncestry() : array
+	{
+		return $this->profileAncestry;
+	}
 
 	/**
 	 * Returns name of parent profile
@@ -28,12 +40,12 @@ abstract class AbstractAction
 	 */
 	public function getProfileName() : string
 	{
-		if( $this->profileName == null )
+		if( !$this->hasProfileName() )
 		{
 			throw new \LogicException( 'Profile name undefined' );
 		}
 
-		return $this->profileName;
+		return $this->profileAncestry[0];
 	}
 
 	/**
@@ -43,7 +55,7 @@ abstract class AbstractAction
 	 */
 	public function hasProfileName() : bool
 	{
-		return $this->profileName != null;
+		return count( $this->profileAncestry ) > 0;
 	}
 
 	/**
@@ -116,6 +128,6 @@ abstract class AbstractAction
 	 */
 	public function setProfileName( string $profileName )
 	{
-		$this->profileName = $profileName;
+		array_unshift( $this->profileAncestry, $profileName );
 	}
 }
