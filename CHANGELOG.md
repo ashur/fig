@@ -5,10 +5,12 @@ All notable changes to Fig will be documented in this file.
 ## Unreleased
 
 ### Changed
-
 - Refactored `fig` executable for use with Cranberry\Shell
 - Refactored `command` action
 - Refactored `defaults` action
+
+### Fixed
+- [#21](https://github.com/ashur/fig/issues/21) — Variable replacement now performed on `defaults.write` output
 
 ## [0.4.2] - 2017-06-21
 ### Fixed
