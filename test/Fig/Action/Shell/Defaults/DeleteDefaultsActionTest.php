@@ -54,9 +54,17 @@ class DeleteDefaultsActionTest extends TestCase
 	/* Consumed by tests in parent TestCase definitions */
 	public function provider_ActionObject() : array
 	{
+		$actionFromDomain = $this->createObject_fromDomain( 'com.example.Newton' );
+		$actionFromDomain->ignoreErrors( false );
+		$actionFromDomain->ignoreOutput( false );
+
+		$actionFromKey = $this->createObject_fromKey( 'SerialNumber' );
+		$actionFromKey->ignoreErrors( false );
+		$actionFromKey->ignoreOutput( false );
+
 		return [
-			[$this->createObject_fromDomain( 'com.example.Newton' )],
-			[$this->createObject_fromKey( 'SerialNumber' )],
+			[$actionFromDomain],
+			[$actionFromKey],
 		];
 	}
 
@@ -97,5 +105,17 @@ class DeleteDefaultsActionTest extends TestCase
 	{
 		$action = $this->createObject_fromName( 'action' );
 		$this->assertEquals( 'delete', $action->getSubtitle() );
+	}
+
+	public function test_willIgnoreErrorsByDefault()
+	{
+		$action = $this->createObject();
+		$this->assertTrue( $action->willIgnoreErrors() );
+	}
+
+	public function test_willIgnoreOutputByDefault()
+	{
+		$action = $this->createObject();
+		$this->assertTrue( $action->willIgnoreOutput() );
 	}
 }

@@ -12,10 +12,15 @@ class AbstractDeployableActionTest extends TestCase
 {
 	/* Helpers */
 
-	public function createObject_fromName( string $name ) : AbstractAction
+	public function createObject() : AbstractAction
 	{
 		$actionMock = $this->getMockForAbstractClass( AbstractDeployableAction::class );
 		return $actionMock;
+	}
+
+	public function createObject_fromName( string $name ) : AbstractAction
+	{
+		return $this->createObject();
 	}
 
 
@@ -46,7 +51,7 @@ class AbstractDeployableActionTest extends TestCase
 	 */
 	public function test_ignoreErrors_supportsBooleanishValues( $booleanish, bool $shouldIgnoreErrors )
 	{
-		$action = $this->createObject_fromName( 'my abstract action ' );
+		$action = $this->createObject();
 		$action->ignoreErrors( $booleanish );
 
 		$this->assertEquals( $shouldIgnoreErrors, $action->willIgnoreErrors() );
@@ -57,7 +62,7 @@ class AbstractDeployableActionTest extends TestCase
 	 */
 	public function test_ignoreErrors_throwsException_givenNonBooleanishValue()
 	{
-		$action = $this->createObject_fromName( 'my abstract action ' );
+		$action = $this->createObject();
 		$action->ignoreErrors( 'hello' );
 	}
 
@@ -66,7 +71,7 @@ class AbstractDeployableActionTest extends TestCase
 	 */
 	public function test_ignoreOutput_supportsBooleanishValues( $booleanish, $shouldIgnoreOutput )
 	{
-		$action = $this->createObject_fromName( 'my abstract action ' );
+		$action = $this->createObject();
 		$action->ignoreOutput( $booleanish );
 
 		$this->assertEquals( $shouldIgnoreOutput, $action->willIgnoreOutput() );
@@ -77,7 +82,19 @@ class AbstractDeployableActionTest extends TestCase
 	 */
 	public function test_ignoreOutput_throwsException_givenNonBooleanishValue()
 	{
-		$action = $this->createObject_fromName( 'my abstract action ' );
+		$action = $this->createObject();
 		$action->ignoreOutput( 'hello' );
+	}
+
+	public function test_willNotIgnoreErrorsByDefault()
+	{
+		$action = $this->createObject();
+		$this->assertFalse( $action->willIgnoreErrors() );
+	}
+
+	public function test_willNotIgnoreOutputByDefault()
+	{
+		$action = $this->createObject();
+		$this->assertFalse( $action->willIgnoreOutput() );
 	}
 }

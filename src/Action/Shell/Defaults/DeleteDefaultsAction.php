@@ -12,6 +12,20 @@ use Fig\Shell;
 class DeleteDefaultsAction extends AbstractDefaultsAction
 {
 	/**
+	 * Ignore errors by default, overriding inherited value
+	 *
+	 * @var	bool
+	 */
+	protected $ignoreErrors=true;
+
+	/**
+	 * Ignore output by default, overriding inherited value
+	 *
+	 * @var	bool
+	 */
+	protected $ignoreOutput=true;
+
+	/**
 	 * @var	string
 	 */
 	protected $methodName='delete';
