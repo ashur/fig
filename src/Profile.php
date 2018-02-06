@@ -34,10 +34,30 @@ class Profile
 	 *
 	 * @param	Fig\Action\AbstractAction	$action
 	 *
+	 * @throws	Fig\Exception\ProfileSyntaxException	If action includes or extends the current profile
+	 *
 	 * @return
 	 */
 	public function addAction( Action\AbstractAction $action )
 	{
+		if( method_exists( $action, 'getIncludedProfileName' ) )
+		{
+			if( $action->getIncludedProfileName() == $this->getName() )
+			{
+				$exceptionMessage = sprintf( 'Recursive inclusion of profile \'%s\'', $this->getName() );
+				throw new Exception\ProfileSyntaxException( $exceptionMessage, Exception\ProfileSyntaxException::RECURSION );
+			}
+		}
+
+		if( method_exists( $action, 'getExtendedProfileName' ) )
+		{
+			if( $action->getExtendedProfileName() == $this->getName() )
+			{
+				$exceptionMessage = sprintf( 'Recursive extension of profile \'%s\'', $this->getName() );
+				throw new Exception\ProfileSyntaxException( $exceptionMessage, Exception\ProfileSyntaxException::RECURSION );
+			}
+		}
+
 		$action->setProfileName( $this->getName() );
 		$this->actions[] = $action;
 	}

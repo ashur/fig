@@ -59,6 +59,34 @@ class ProfileTest extends TestCase
 		}
 	}
 
+	/**
+	 * @expectedException	Fig\Exception\ProfileSyntaxException
+	 * @expectedExceptionCode	Fig\Exception\ProfileSyntaxException::RECURSION
+	 */
+	public function test_addAction_whichExtendsSelf_throwsException()
+	{
+		$profileName = getUniqueString( 'profile-' );
+		$profile = $this->createObject_fromName( $profileName );
+
+		$action = new Action\Meta\ExtendAction( $profileName );
+
+		$profile->addAction( $action );
+	}
+
+	/**
+	 * @expectedException	Fig\Exception\ProfileSyntaxException
+	 * @expectedExceptionCode	Fig\Exception\ProfileSyntaxException::RECURSION
+	 */
+	public function test_addAction_whichIncludesSelf_throwsException()
+	{
+		$profileName = getUniqueString( 'profile-' );
+		$profile = $this->createObject_fromName( $profileName );
+
+		$action = new Action\Meta\IncludeAction( $profileName );
+
+		$profile->addAction( $action );
+	}
+
 	public function test_getActions_returnsArray()
 	{
 		$profile = $this->createObject();
