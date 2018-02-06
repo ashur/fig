@@ -53,10 +53,6 @@ class Repository
 	/**
 	 * Returns a profile object for the given profile name
 	 *
-	 * If the requested profile extends or includes other profiles from this
-	 * repository, actions and vars from those additional profiles will be
-	 * automatically integrated into the profile object returned.
-	 *
 	 * @param	string	$profileName
 	 *
 	 * @throws	Fig\Exception\RuntimeException	If profile is undefined
