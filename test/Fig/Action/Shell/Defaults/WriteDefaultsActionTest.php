@@ -132,4 +132,25 @@ class WriteDefaultsActionTest extends TestCase
 
 		$this->assertEquals( $expectedValue, $action->getValue() );
 	}
+
+	public function test_writeBool()
+	{
+		$shell = new Shell\Shell();
+
+		$domain = getUniqueString( 'com.example.Newton.' );
+		$key = getUniqueString( 'PrefWithBooleanValue' );
+
+		$preDeploymentResult = $shell->executeCommand( 'defaults', ['read', $domain, $key] );
+		$this->assertEquals( 1, $preDeploymentResult->getExitCode() );
+
+		$action = new WriteDefaultsAction( 'test_writeBool', $domain, $key, '-bool TRUE' );
+		$action->deploy( $shell );
+
+		$postDeploymentResult = $shell->executeCommand( 'defaults', ['read', $domain, $key] );
+		$this->assertEquals( 0, $postDeploymentResult->getExitCode() );
+		$this->assertEquals( 1, $postDeploymentResult->getOutput()[0] );
+
+		/* Cleanup */
+		unlink( sprintf( '%s/Library/Preferences/%s.plist', getenv( 'HOME' ), $domain ) );
+	}
 }

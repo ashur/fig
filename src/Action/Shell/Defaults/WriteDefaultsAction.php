@@ -63,7 +63,11 @@ class WriteDefaultsAction extends AbstractDefaultsAction
 		$commandArguments[] = $this->methodName;
 		$commandArguments[] = $this->getDomain();
 		$commandArguments[] = $this->getKey();
-		$commandArguments[] = $this->getValue();
+
+		/* Explode value into discrete elements to prevent escaping multipart
+		   values like `-bool TRUE` into a single string `'bool -TRUE'`. */
+		$value = explode( ' ', $this->getValue() );
+		$commandArguments = array_merge( $commandArguments, $value );
 
 		/* Execute command */
 		$shellResult = $shell->executeCommand( 'defaults', $commandArguments );
