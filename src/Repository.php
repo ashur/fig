@@ -81,6 +81,8 @@ class Repository
 	 *
 	 * @param	string	$profileName
 	 *
+	 * @throws	Fig\Exception\RuntimeException	If profile is undefined
+	 *
 	 * @return	array
 	 */
 	public function getProfileActions( string $profileName ) : array
@@ -123,6 +125,51 @@ class Repository
 		}
 
 		return $actions;
+	}
+
+	/**
+	 * Returns array of vars for the given profile name.
+	 *
+	 * If the requested profile extends or includes other profiles from this
+	 * repository, vars from those additional profiles will be automatically
+	 * integrated into the array, prioritizing in order of most recent
+	 * ancestry.
+	 *
+	 * @param	string	$profileName
+	 *
+	 * @throws	Fig\Exception\RuntimeException	If profile is undefined
+	 *
+	 * @return	array
+	 */
+	public function getProfileVars( string $profileName ) : array
+	{
+		$profile = $this->getProfile( $profileName );
+		$vars = $profile->getVars();
+
+		$actions = $profile->getActions();
+
+		foreach( $actions as $action )
+		{
+			/* Merge vars from `include`-d profiles */
+			if( method_exists( $action, 'getIncludedProfileName' ) )
+			{
+				$includedProfileName = $action->getIncludedProfileName();
+				$includedVars = $this->getProfileVars( $includedProfileName );
+
+				$vars = array_merge( $includedVars, $vars );
+			}
+
+			/* Merge vars from `extend`-ed profiles */
+			elseif( method_exists( $action, 'getExtendedProfileName' ) )
+			{
+				$extendedProfileName = $action->getExtendedProfileName();
+				$extendedVars = $this->getProfileVars( $extendedProfileName );
+
+				$vars = array_merge( $extendedVars, $vars );
+			}
+		}
+
+		return $vars;
 	}
 
 	/**
