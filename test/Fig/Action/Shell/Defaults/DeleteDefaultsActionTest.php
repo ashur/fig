@@ -86,7 +86,7 @@ class DeleteDefaultsActionTest extends TestCase
 			->willReturn( new Shell\Result( [], 0 ) );
 
 		$action = $this->createObject_fromKey( 'SerialNumber' );
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertFalse( $result->didError() );
 		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );

@@ -18,6 +18,11 @@ abstract class AbstractDeployableAction extends AbstractAction
 	 * @var	bool
 	 */
 	protected $ignoreOutput=false;
+	
+	/**
+	 * @var	bool
+	 */
+	protected $isDeployable=true;
 
 	/**
 	 * @var	string

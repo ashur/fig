@@ -101,7 +101,7 @@ class WriteDefaultsActionTest extends TestCase
 			->willReturn( new Shell\Result( [], 0 ) );
 
 		$action = $this->createObject_fromValue( $value );
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertFalse( $result->didError() );
 		$this->assertEquals( $value, $result->getOutput() );
@@ -144,7 +144,7 @@ class WriteDefaultsActionTest extends TestCase
 		$this->assertEquals( 1, $preDeploymentResult->getExitCode() );
 
 		$action = new WriteDefaultsAction( 'test_writeBool', $domain, $key, '-bool TRUE' );
-		$action->deploy( $shell );
+		$action->deployWithShell( $shell );
 
 		$postDeploymentResult = $shell->executeCommand( 'defaults', ['read', $domain, $key] );
 		$this->assertEquals( 0, $postDeploymentResult->getExitCode() );

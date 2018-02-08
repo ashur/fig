@@ -39,7 +39,7 @@ class ReadDefaultsAction extends AbstractDefaultsAction
 	 *
 	 * @return	Fig\Action\Result
 	 */
-	public function deploy( Shell\Shell $shell ) : Action\Result
+	public function deployWithShell( Shell\Shell $shell ) : Action\Result
 	{
 		/* Make sure the command exists before trying to execute it */
 		if( !$shell->commandExists( 'defaults' ) )

@@ -65,7 +65,12 @@ abstract class AbstractAction
 	 */
 	public function isDeployable() : bool
 	{
-		return method_exists( $this, 'deploy' );
+		if( !isset( $this->isDeployable ) )
+		{
+			return false;
+		}
+		
+		return $this->isDeployable == true;
 	}
 
 	/**

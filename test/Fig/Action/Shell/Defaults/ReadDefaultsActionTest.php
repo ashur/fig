@@ -84,7 +84,7 @@ class ReadDefaultsActionTest extends TestCase
 			->willReturn( new Shell\Result( $defaultsOutput, 0 ) );
 
 		$action = $this->createObject_fromKey( 'SerialNumber' );
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertFalse( $result->didError() );
 		$this->assertEquals( implode( PHP_EOL, $defaultsOutput ), $result->getOutput() );

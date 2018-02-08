@@ -17,6 +17,13 @@ abstract class ShellActionTestCase extends DeployableActionTestCase
 {
 	/* Tests */
 
+	public function test_deployWithShell()
+	{
+		$action = $this->createObject();
+		
+		$this->assertTrue( method_exists( $action, 'deployWithShell' ) );
+	}	
+
 	/**
 	 * @dataProvider	provider_ActionObject
 	 */
@@ -37,7 +44,7 @@ abstract class ShellActionTestCase extends DeployableActionTestCase
 			->willReturn( new Shell\Result( [$commandOutput], 1 ) );
 
 		$action->ignoreErrors( true );
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertFalse( $result->didError() );
 	}
@@ -62,7 +69,7 @@ abstract class ShellActionTestCase extends DeployableActionTestCase
 			->willReturn( new Shell\Result( [$commandOutput], 0 ) );
 
 		$action->ignoreOutput( true );
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
@@ -86,7 +93,7 @@ abstract class ShellActionTestCase extends DeployableActionTestCase
 			->method( 'executeCommand' )
 			->willReturn( new Shell\Result( [$commandOutput], 1 ) );
 
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertTrue( $result->didError() );
 	}
@@ -108,7 +115,7 @@ abstract class ShellActionTestCase extends DeployableActionTestCase
 			->expects( $this->never() )
 			->method( 'executeCommand' );
 
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertTrue( $result->didError() );
 
@@ -134,7 +141,7 @@ abstract class ShellActionTestCase extends DeployableActionTestCase
 			->method( 'executeCommand' );
 
 		$action->ignoreErrors( true );
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertTrue( $result->didError() );
 	}
@@ -157,7 +164,7 @@ abstract class ShellActionTestCase extends DeployableActionTestCase
 			->method( 'executeCommand' );
 
 		$action->ignoreOutput( true );
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$expectedOutputPrefix = sprintf( Shell\Shell::STRING_ERROR_COMMANDNOTFOUND, '' );
 		$this->assertStringStartsWith( $expectedOutputPrefix, $result->getOutput() );

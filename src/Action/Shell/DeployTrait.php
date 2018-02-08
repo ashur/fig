@@ -17,5 +17,5 @@ trait DeployTrait
 	 *
 	 * @return	Fig\Action\Result
 	 */
-	abstract public function deploy( Shell\Shell $shell ) : Action\Result;
+	abstract public function deployWithShell( Shell\Shell $shell ) : Action\Result;
 }

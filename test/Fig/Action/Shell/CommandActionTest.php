@@ -92,7 +92,7 @@ class CommandActionTest extends TestCase
 			->willReturn( new Shell\Result( [], 0 ) );
 
 		$action = $this->createObject();
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}
@@ -118,7 +118,7 @@ class CommandActionTest extends TestCase
 			->willReturn( new Shell\Result( $output, 0 ) );
 
 		$action = $this->createObject();
-		$result = $action->deploy( $shellMock );
+		$result = $action->deployWithShell( $shellMock );
 
 		$expectedOutput = implode( PHP_EOL, $output );
 
