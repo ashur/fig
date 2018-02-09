@@ -12,7 +12,7 @@ use Fig\Shell\Shell;
 
 abstract class AbstractDefaultsAction extends AbstractDeployableAction
 {
-	use \Fig\Action\Shell\DeployTrait;
+	use \Fig\Action\Shell\AbstractDeployWithShellTrait;
 
 	/**
 	 * @var	string

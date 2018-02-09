@@ -8,7 +8,7 @@ namespace Fig\Action\Shell;
 use Fig\Action;
 use Fig\Shell;
 
-trait DeployTrait
+trait AbstractDeployWithShellTrait
 {
 	/**
 	 * Executes action and returns Result object
