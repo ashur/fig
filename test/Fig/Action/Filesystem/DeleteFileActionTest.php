@@ -91,7 +91,7 @@ class DeleteFileActionTest extends TestCase
 			->method( 'getFilesystemNodeFromPath' )
 			->with( $targetPath );
 
-		$action->deploy( $filesystemMock );
+		$action->deployWithFilesystem( $filesystemMock );
 	}
 
 	/**
@@ -115,7 +115,7 @@ class DeleteFileActionTest extends TestCase
 			->method( 'getFilesystemNodeFromPath' )
 			->willReturn( $nodeMock );
 
-		$action->deploy( $filesystemMock );
+		$action->deployWithFilesystem( $filesystemMock );
 	}
 
 	/**
@@ -144,7 +144,7 @@ class DeleteFileActionTest extends TestCase
 			->willReturn( $nodeMock );
 
 		$action->ignoreErrors( true );
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertFalse( $result->didError() );
 		$this->assertEquals( $exceptionMessage, $result->getOutput() );
@@ -176,7 +176,7 @@ class DeleteFileActionTest extends TestCase
 			->willReturn( $nodeMock );
 
 		$action->ignoreOutput( true );
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertTrue( $result->didError() );
 
@@ -212,7 +212,7 @@ class DeleteFileActionTest extends TestCase
 			->method( 'getFilesystemNodeFromPath' )
 			->willReturn( $nodeMock );
 
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertTrue( $result->didError() );
 		$this->assertEquals( $exceptionMessage, $result->getOutput() );
@@ -225,7 +225,7 @@ class DeleteFileActionTest extends TestCase
 		$figDirectoryMock = $this->getNodeMock( CranberryFilesystem\Directory::class );
 		$filesystem = new Filesystem\Filesystem( $figDirectoryMock );
 
-		$result = $action->deploy( $filesystem );
+		$result = $action->deployWithFilesystem( $filesystem );
 
 		$this->assertFalse( $result->didError() );
 	}
@@ -237,7 +237,7 @@ class DeleteFileActionTest extends TestCase
 		$figDirectoryMock = $this->getNodeMock( CranberryFilesystem\Directory::class );
 		$filesystem = new Filesystem\Filesystem( $figDirectoryMock );
 
-		$result = $action->deploy( $filesystem );
+		$result = $action->deployWithFilesystem( $filesystem );
 
 		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
 	}

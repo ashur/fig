@@ -10,7 +10,7 @@ use Fig\Engine;
 
 abstract class AbstractFileAction extends AbstractDeployableAction
 {
-	use \Fig\Action\Filesystem\DeployTrait;
+	use \Fig\Action\Filesystem\AbstractDeployWithFilesystemTrait;
 
 	const ERROR_STRING_INVALIDTARGET = 'Invalid target %s: %s.';
 	const ERROR_STRING_UNDELETABLE_NODE = 'Cannot delete %s: %s.';

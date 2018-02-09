@@ -160,7 +160,7 @@ class ReplaceFileActionTest extends TestCase
 		$action = $this->createObject_fromTargetPath( $targetPath );
 		$action->setProfileName( 'profile_name' );
 
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertFalse( $result->didError() );
 		$this->assertEquals( Action\Result::STRING_STATUS_SUCCESS, $result->getOutput() );
@@ -201,7 +201,7 @@ class ReplaceFileActionTest extends TestCase
 
 		try
 		{
-			$action->deploy( $filesystemMock );
+			$action->deployWithFilesystem( $filesystemMock );
 		}
 		catch( \Exception $e )
 		{
@@ -258,7 +258,7 @@ class ReplaceFileActionTest extends TestCase
 		$action->setProfileName( 'profile_name' );
 		$action->ignoreErrors( true );
 
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertFalse( $result->didError() );
 
@@ -313,7 +313,7 @@ class ReplaceFileActionTest extends TestCase
 		$action->setProfileName( 'profile_name' );
 		$action->ignoreOutput( true );
 
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertTrue( $result->didError() );
 
@@ -339,7 +339,7 @@ class ReplaceFileActionTest extends TestCase
 		$action = $this->createObject();
 		$action->setProfileName( $profileName );
 
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertTrue( $result->didError() );
 	}
@@ -356,7 +356,7 @@ class ReplaceFileActionTest extends TestCase
 			->getMock();
 
 		$action = $this->createObject();
-		$action->deploy( $filesystemMock );
+		$action->deployWithFilesystem( $filesystemMock );
 	}
 
 	public function test_deploy_withUndeletableExistingTargetNode_causesError()
@@ -402,7 +402,7 @@ class ReplaceFileActionTest extends TestCase
 		$action = $this->createObject_fromTargetPath( $targetPath );
 		$action->setProfileName( 'profile_name' );
 
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertTrue( $result->didError() );
 
@@ -453,7 +453,7 @@ class ReplaceFileActionTest extends TestCase
 		$action = $this->createObject_fromTargetPath( $targetPath );
 		$action->setProfileName( 'profile_name' );
 
-		$result = $action->deploy( $filesystemMock );
+		$result = $action->deployWithFilesystem( $filesystemMock );
 
 		$this->assertTrue( $result->didError() );
 

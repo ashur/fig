@@ -53,6 +53,13 @@ abstract class FilesystemActionTestCase extends \FigTest\Action\DeployableAction
 
 	/* Tests */
 
+	public function test_deployWithFilesystem()
+	{
+		$action = $this->createObject();
+
+		$this->assertTrue( method_exists( $action, 'deployWithFilesystem' ) );
+	}
+
 	public function test_getTargetPath_withVariableReplacement()
 	{
 		$filename = getUniqueString( 'file-' );

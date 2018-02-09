@@ -8,7 +8,7 @@ namespace Fig\Action\Filesystem;
 use Fig\Action;
 use Fig\Filesystem;
 
-trait DeployTrait
+trait AbstractDeployWithFilesystemTrait
 {
 	/**
 	 * Executes action, setting output and error status
@@ -17,5 +17,5 @@ trait DeployTrait
 	 *
 	 * @return	void
 	 */
-	abstract public function deploy( Filesystem\Filesystem $filesystem ) : Action\Result;
+	abstract public function deployWithFilesystem( Filesystem\Filesystem $filesystem ) : Action\Result;
 }

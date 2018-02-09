@@ -36,7 +36,7 @@ class DeleteFileAction extends AbstractFileAction
 	 *
 	 * @return	Fig\Action\Result
 	 */
-	public function deploy( Filesystem\Filesystem $filesystem ) : Action\Result
+	public function deployWithFilesystem( Filesystem\Filesystem $filesystem ) : Action\Result
 	{
 		$didError = false;
 		$actionOutput = Action\Result::STRING_STATUS_SUCCESS;
