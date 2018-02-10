@@ -7,7 +7,7 @@ namespace Fig\Action\Filesystem;
 
 use Cranberry\Filesystem as CranberryFilesystem;
 use Fig\Action;
-use Fig\Engine;
+use Fig\Template;
 use Fig\Exception;
 use Fig\Filesystem;
 
@@ -134,6 +134,6 @@ class ReplaceFileAction extends AbstractFileAction
 	 */
 	public function getSourcePath() : string
 	{
-		return Engine::renderTemplate( $this->sourcePath, $this->vars );
+		return Template::render( $this->sourcePath, $this->vars );
 	}
 }

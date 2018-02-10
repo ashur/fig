@@ -5,7 +5,7 @@
  */
 namespace Fig\Action;
 
-use Fig\Engine;
+use Fig\Template;
 
 abstract class AbstractDeployableAction extends AbstractAction
 {
@@ -18,7 +18,7 @@ abstract class AbstractDeployableAction extends AbstractAction
 	 * @var	bool
 	 */
 	protected $ignoreOutput=false;
-	
+
 	/**
 	 * @var	bool
 	 */
@@ -41,7 +41,7 @@ abstract class AbstractDeployableAction extends AbstractAction
 	 */
 	public function getName() : string
 	{
-		return Engine::renderTemplate( $this->name, $this->vars );
+		return Template::render( $this->name, $this->vars );
 	}
 
 	/**

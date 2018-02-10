@@ -7,7 +7,7 @@ namespace Fig;
 
 use FigTest\TestCase;
 
-class EngineTest extends TestCase
+class TemplateTest extends TestCase
 {
 	/* Providers */
 
@@ -25,7 +25,7 @@ class EngineTest extends TestCase
 
 	/* Tests */
 
-	public function test_getTokensFromTemplate()
+	public function test_getTokens()
 	{
 		$template = '{{ salutation}}, {{ addressee }}. ({{salutation }})';
 		$expectedTokens = [
@@ -34,12 +34,12 @@ class EngineTest extends TestCase
 			'{{salutation }}' => 'salutation',
 		];
 
-		$actualTokens = Engine::getTokensFromTemplate( $template );
+		$actualTokens = Template::getTokens( $template );
 
 		$this->assertEquals( $expectedTokens, $actualTokens );
 	}
 
-	public function test_renderTemplate_supportsVarsComposedOfVars()
+	public function test_render_supportsVarsComposedOfVars()
 	{
 		$vars = [
 			'greeting' => '{{ salutation}}, {{ addressee }}.',
@@ -50,7 +50,7 @@ class EngineTest extends TestCase
 		$template = 'And then I said, "{{ greeting }}"';
 		$expectedString = 'And then I said, "Hello, world."';
 
-		$renderedString = Engine::renderTemplate( $template, $vars );
+		$renderedString = Template::render( $template, $vars );
 
 		$this->assertEquals( $expectedString, $renderedString );
 	}
@@ -58,7 +58,7 @@ class EngineTest extends TestCase
 	/**
 	 * @dataProvider	provider_varNames
 	 */
-	public function test_renderTemplate_tokensSupportVariableWhitespace( string $varName )
+	public function test_render_tokensSupportVariableWhitespace( string $varName )
 	{
 		$time = time();
 
@@ -68,12 +68,12 @@ class EngineTest extends TestCase
 
 		$vars = [ 'time' => $time ];
 
-		$renderedString = Engine::renderTemplate( $template, $vars );
+		$renderedString = Template::render( $template, $vars );
 
 		$this->assertEquals( $expectedString, $renderedString );
 	}
 
-	public function test_renderTemplate_usingTemplateWithoutVars_returnsOriginalString()
+	public function test_render_usingTemplateWithoutVars_returnsOriginalString()
 	{
 		$vars = [
 			'salutation' => 'Hello',
@@ -82,12 +82,12 @@ class EngineTest extends TestCase
 		];
 
 		$originalString = getUniqueString( 'Hello, world ' );
-		$renderedString = Engine::renderTemplate( $originalString, $vars );
+		$renderedString = Template::render( $originalString, $vars );
 
 		$this->assertEquals( $originalString, $renderedString );
 	}
 
-	public function test_renderTemplate_withCrossReferencingVars()
+	public function test_render_withCrossReferencingVars()
 	{
 		$vars = [
 			'eight' => '({{four}} + {{four}})',
@@ -99,7 +99,7 @@ class EngineTest extends TestCase
 		$template = '{{ eight }} = 8';
 
 		$expectedString = '(((1 + 1) + (1 + 1)) + ((1 + 1) + (1 + 1))) = 8';
-		$renderedString = Engine::renderTemplate( $template, $vars );
+		$renderedString = Template::render( $template, $vars );
 
 		$this->assertEquals( $expectedString, $renderedString );
 	}
@@ -108,7 +108,7 @@ class EngineTest extends TestCase
 	 * @expectedException	Fig\Exception\ProfileSyntaxException
 	 * @expectedExceptionCode	Fig\Exception\ProfileSyntaxException::RECURSION
 	 */
-	public function test_renderTemplate_withSelfReferencingVar_throwsException()
+	public function test_render_withSelfReferencingVar_throwsException()
 	{
 		$vars = [
 			'salutation' => 'howdy',
@@ -116,10 +116,10 @@ class EngineTest extends TestCase
 		];
 
 		$template = 'And then I said, "{{ greeting }}"';
-		$renderedString = Engine::renderTemplate( $template, $vars );
+		$renderedString = Template::render( $template, $vars );
 	}
 
-	public function test_replaceTokensInTemplate()
+	public function test_replaceTokens()
 	{
 		$template = '{{ salutation}}, {{ addressee }}.';
 		$tokens = [
@@ -132,7 +132,7 @@ class EngineTest extends TestCase
 		];
 
 		$expectedString = 'howdy, neighbor.';
-		$renderedString = Engine::replaceTokensInTemplate( $template, $tokens, $vars );
+		$renderedString = Template::replaceTokens( $template, $tokens, $vars );
 
 		$this->assertEquals( $expectedString, $renderedString );
 	}

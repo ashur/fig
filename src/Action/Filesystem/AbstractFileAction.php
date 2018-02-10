@@ -6,7 +6,7 @@
 namespace Fig\Action\Filesystem;
 
 use Fig\Action\AbstractDeployableAction;
-use Fig\Engine;
+use Fig\Template;
 
 abstract class AbstractFileAction extends AbstractDeployableAction
 {
@@ -38,7 +38,7 @@ abstract class AbstractFileAction extends AbstractDeployableAction
 	 */
 	public function getTargetPath() : string
 	{
-		return Engine::renderTemplate( $this->targetPath, $this->vars );
+		return Template::render( $this->targetPath, $this->vars );
 	}
 
 	/**

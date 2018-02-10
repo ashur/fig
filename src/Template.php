@@ -5,10 +5,9 @@
  */
 namespace Fig;
 
-use Cranberry\Filesystem;
 use Fig\Exception;
 
-class Engine
+class Template
 {
 	/**
 	 * Parses template string string for tokens
@@ -19,7 +18,7 @@ class Engine
 	 *
 	 * @return	array
 	 */
-	static public function getTokensFromTemplate( string $template ) : array
+	static public function getTokens( string $template ) : array
 	{
 		$results = [];
 
@@ -51,11 +50,11 @@ class Engine
 	 *
 	 * @return	string
 	 */
-	static public function renderTemplate( string $template, array $vars ) : string
+	static public function render( string $template, array $vars ) : string
 	{
 		$string = $template;
 
-		$templateTokenMatches = self::getTokensFromTemplate( $template );
+		$templateTokenMatches = self::getTokens( $template );
 		$tokenCount = count( $templateTokenMatches );
 
 		if( $tokenCount == 0 )
@@ -70,7 +69,7 @@ class Engine
 		{
 			foreach( $vars as $varName => $varValue )
 			{
-				$varTokenMatches = self::getTokensFromTemplate( $varValue );
+				$varTokenMatches = self::getTokens( $varValue );
 
 				if( in_array( $varName, $varTokenMatches ) )
 				{
@@ -80,12 +79,12 @@ class Engine
 
 				if( count( $varTokenMatches ) > 0 )
 				{
-					$vars[$varName] = self::replaceTokensInTemplate( $varValue, $varTokenMatches, $vars );
+					$vars[$varName] = self::replaceTokens( $varValue, $varTokenMatches, $vars );
 				}
 			}
 		}
 
-		$string = self::replaceTokensInTemplate( $string, $templateTokenMatches, $vars );
+		$string = self::replaceTokens( $string, $templateTokenMatches, $vars );
 
 		return $string;
 	}
@@ -101,7 +100,7 @@ class Engine
 	 *
 	 * @return	string
 	 */
-	static public function replaceTokensInTemplate( string $template, array $tokens, array $vars ) : string
+	static public function replaceTokens( string $template, array $tokens, array $vars ) : string
 	{
 		foreach( $tokens as $token => $varName )
 		{
