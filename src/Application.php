@@ -128,10 +128,9 @@ class Application
 		}
 
 		$repository = $this->repositories[$repositoryName];
-		$profile = $repository->getProfile( $profileName );
 
-		$actions = $profile->getActions();
-		$vars = $profile->getVars();
+		$actions = $repository->getProfileActions( $profileName );
+		$vars = $repository->getProfileVars( $profileName );
 
 		$this->deployActions( $actions, $vars );
 	}

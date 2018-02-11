@@ -282,6 +282,54 @@ class ApplicationTest extends TestCase
 		$this->assertFalse( $file->exists() );
 	}
 
+	public function test_deployProfile_whichIncludesProfile()
+{
+		/* Profile: Included */
+		$includedProfileName = getUniqueString( 'included-' );
+		$includedProfile = new Profile( $includedProfileName );
+
+		$commandOutput = getUniqueString( 'hello' );
+		$commandAction = new Action\Shell\CommandAction( 'example', 'echo', [$commandOutput] );
+		$includedProfile->addAction( $commandAction );
+
+		/* Profile: Deployed */
+		$deployedProfileName = getUniqueString( 'deployed-' );
+		$deployedProfile = new Profile( $deployedProfileName );
+
+		$includeAction = new Action\Meta\IncludeAction( $includedProfileName );
+		$deployedProfile->addAction( $includeAction );
+
+		/* Repository */
+		$repoName = getUniqueString( 'repo-' );
+		$repository = new Repository( $repoName );
+
+		$repository->addProfile( $includedProfile );
+		$repository->addProfile( $deployedProfile );
+
+		/* Expectations */
+		$expectedCommandResult = new Action\Result( $commandOutput, false );
+
+		$outputMock = $this->createOutputMock();
+		$outputMock
+			->expects( $this->once() )
+			->method( 'writeActionHeader' )
+			->with(
+				$commandAction->getType(),
+				$commandAction->getSubtitle(),
+				$commandAction->getName()
+			);
+		$outputMock
+			->expects( $this->once() )
+			->method( 'writeActionResult' )
+			->with( $expectedCommandResult );
+
+		/* Deployment */
+		$application = $this->createObject_withOutput( $outputMock );
+		$application->addRepository( $repository );
+
+		$application->deployProfile( $repoName, $deployedProfileName );
+	}
+
 	/**
 	 * @expectedException	Fig\Exception\RuntimeException
 	 * @expectedExceptionCode	Fig\Exception\RuntimeException::REPOSITORY_NOT_FOUND
