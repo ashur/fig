@@ -47,51 +47,6 @@ class Output
 	}
 
 	/**
-	 * Writes action header to output
-	 *
-	 * @param	string	$type	Action type (ex., 'Command')
-	 *
-	 * @param	string	$subtitle	Action subtitle
-	 *
-	 * @param	string	$name	Action name
-	 *
-	 * @return	void
-	 */
-	public function actionHeader( string $type, string $subtitle, string $name )
-	{
-		$title = sprintf( '%s: %s | %s ', strtoupper( $type ), $subtitle, $name );
-
-		$padChar = self::CHAR_HEADER;
-		$header = sprintf( "%'-{$padChar}{$this->cols}s", $title );
-
-		$this->output->write( $header . PHP_EOL );
-	}
-
-	/**
-	 * Writes action output contents to output.
-	 *
-	 * If using color, output string in green for success or red for failure
-	 *
-	 * @param	Fig\Action\Result	$result
-	 *
-	 * @return	void
-	 */
-	public function actionResult( Action\Result $result )
-	{
-		if( $this->useColor )
-		{
-			$color = $result->didError() ? self::RED : self::GREEN;
-			$output = self::getColorizedString( $result->getOutput(), $color );
-		}
-		else
-		{
-			$output = $result->getOutput();
-		}
-
-		$this->output->write( $output . PHP_EOL );
-	}
-
-	/**
 	 * Returns string formatted with ANSI color
 	 *
 	 * @param	string	$string
@@ -114,5 +69,50 @@ class Output
 	public function getCols() : int
 	{
 		return $this->cols;
+	}
+
+	/**
+	 * Writes action header to output
+	 *
+	 * @param	string	$type	Action type (ex., 'Command')
+	 *
+	 * @param	string	$subtitle	Action subtitle
+	 *
+	 * @param	string	$name	Action name
+	 *
+	 * @return	void
+	 */
+	public function writeActionHeader( string $type, string $subtitle, string $name )
+	{
+		$title = sprintf( '%s: %s | %s ', strtoupper( $type ), $subtitle, $name );
+
+		$padChar = self::CHAR_HEADER;
+		$header = sprintf( "%'-{$padChar}{$this->cols}s", $title );
+
+		$this->output->write( $header . PHP_EOL );
+	}
+
+	/**
+	 * Writes action output contents to output.
+	 *
+	 * If using color, output string in green for success or red for failure
+	 *
+	 * @param	Fig\Action\Result	$result
+	 *
+	 * @return	void
+	 */
+	public function writeActionResult( Action\Result $result )
+	{
+		if( $this->useColor )
+		{
+			$color = $result->didError() ? self::RED : self::GREEN;
+			$output = self::getColorizedString( $result->getOutput(), $color );
+		}
+		else
+		{
+			$output = $result->getOutput();
+		}
+
+		$this->output->write( $output . PHP_EOL );
 	}
 }

@@ -43,18 +43,18 @@ class OutputTest extends TestCase
 
 	/* Tests */
 
-	public function test_actionHeader()
+	public function test_writeActionHeader()
 	{
 		$shellOutput = new ShellOutput();
 		$output = $this->createObject_fromCols( $shellOutput, 32 );
 
 		$expectedHeader = 'TYPE: subtitle | My Action -----' . PHP_EOL;	// 32 chars
-		$output->actionHeader( 'type', 'subtitle', 'My Action' );
+		$output->writeActionHeader( 'type', 'subtitle', 'My Action' );
 
 		$this->assertEquals( $expectedHeader, $shellOutput->getBuffer() );
 	}
 
-	public function test_actionResult_didError_withColor()
+	public function test_writeActionResult_didError_withColor()
 	{
 		$shellOutput = new ShellOutput();
 		$output = $this->createObject_fromUseColor( $shellOutput, true );
@@ -62,14 +62,14 @@ class OutputTest extends TestCase
 		$outputString = getUniqueString( 'ERROR ' );
 		$actionResult = new Action\Result( $outputString, true );
 
-		$output->actionResult( $actionResult );
+		$output->writeActionResult( $actionResult );
 
 		$expectedOutput = Output::getColorizedString( $outputString, Output::RED ) . PHP_EOL;
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
 
-	public function test_actionResult_didNotError_withColor()
+	public function test_writeActionResult_didNotError_withColor()
 	{
 		$shellOutput = new ShellOutput();
 		$output = $this->createObject_fromUseColor( $shellOutput, true );
@@ -77,14 +77,14 @@ class OutputTest extends TestCase
 		$outputString = getUniqueString( 'OK ' );
 		$actionResult = new Action\Result( $outputString, false );
 
-		$output->actionResult( $actionResult );
+		$output->writeActionResult( $actionResult );
 
 		$expectedOutput = Output::getColorizedString( $outputString, Output::GREEN ) . PHP_EOL;
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
 
-	public function test_actionResult_withoutColor()
+	public function test_writeActionResult_withoutColor()
 	{
 		$shellOutput = new ShellOutput();
 		$output = $this->createObject_fromUseColor( $shellOutput, false );
@@ -92,7 +92,7 @@ class OutputTest extends TestCase
 		$outputString = getUniqueString( 'OK ' );
 		$actionResult = new Action\Result( $outputString, false );
 
-		$output->actionResult( $actionResult );
+		$output->writeActionResult( $actionResult );
 
 		$expectedOutput = $outputString . PHP_EOL;
 
