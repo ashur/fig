@@ -113,6 +113,6 @@ class Output
 			$output = $result->getOutput();
 		}
 
-		$this->output->write( $output . PHP_EOL );
+		$this->output->write( $output . PHP_EOL . PHP_EOL );
 	}
 }

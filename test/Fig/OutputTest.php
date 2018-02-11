@@ -64,7 +64,7 @@ class OutputTest extends TestCase
 
 		$output->writeActionResult( $actionResult );
 
-		$expectedOutput = Output::getColorizedString( $outputString, Output::RED ) . PHP_EOL;
+		$expectedOutput = Output::getColorizedString( $outputString, Output::RED ) . PHP_EOL . PHP_EOL;
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
@@ -79,7 +79,7 @@ class OutputTest extends TestCase
 
 		$output->writeActionResult( $actionResult );
 
-		$expectedOutput = Output::getColorizedString( $outputString, Output::GREEN ) . PHP_EOL;
+		$expectedOutput = Output::getColorizedString( $outputString, Output::GREEN ) . PHP_EOL . PHP_EOL;
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
@@ -94,7 +94,7 @@ class OutputTest extends TestCase
 
 		$output->writeActionResult( $actionResult );
 
-		$expectedOutput = $outputString . PHP_EOL;
+		$expectedOutput = $outputString . PHP_EOL . PHP_EOL;
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
