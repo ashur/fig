@@ -48,7 +48,7 @@ class OutputTest extends TestCase
 		$shellOutput = new ShellOutput();
 		$output = $this->createObject_fromCols( $shellOutput, 32 );
 
-		$expectedHeader = 'TYPE: subtitle | My Action -----' . PHP_EOL;	// 32 chars
+		$expectedHeader = PHP_EOL . 'TYPE: subtitle | My Action -----' . PHP_EOL;	// 32 chars
 		$output->writeActionHeader( 'type', 'subtitle', 'My Action' );
 
 		$this->assertEquals( $expectedHeader, $shellOutput->getBuffer() );
@@ -64,7 +64,7 @@ class OutputTest extends TestCase
 
 		$output->writeActionResult( $actionResult );
 
-		$expectedOutput = Output::getColorizedString( $outputString, Output::RED ) . PHP_EOL . PHP_EOL;
+		$expectedOutput = Output::getColorizedString( $outputString, Output::RED ) . PHP_EOL;
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
@@ -79,7 +79,7 @@ class OutputTest extends TestCase
 
 		$output->writeActionResult( $actionResult );
 
-		$expectedOutput = Output::getColorizedString( $outputString, Output::GREEN ) . PHP_EOL . PHP_EOL;
+		$expectedOutput = Output::getColorizedString( $outputString, Output::GREEN ) . PHP_EOL;
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
@@ -94,7 +94,7 @@ class OutputTest extends TestCase
 
 		$output->writeActionResult( $actionResult );
 
-		$expectedOutput = $outputString . PHP_EOL . PHP_EOL;
+		$expectedOutput = $outputString . PHP_EOL;
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
@@ -105,7 +105,7 @@ class OutputTest extends TestCase
 		$output = new Output( $shellOutput, 32, true );
 
 		$outputString = '************* HALTING DEPLOYMENT';	// 32 chars
-		$expectedOutput = Output::getColorizedString( $outputString, Output::RED ) . PHP_EOL . PHP_EOL;
+		$expectedOutput = PHP_EOL . Output::getColorizedString( $outputString, Output::RED ) . PHP_EOL . PHP_EOL;
 
 		$output->writeHaltingDeployment();
 
@@ -117,7 +117,7 @@ class OutputTest extends TestCase
 		$shellOutput = new ShellOutput();
 		$output = $this->createObject_fromCols( $shellOutput, 32 );
 
-		$expectedOutput = '************* HALTING DEPLOYMENT' . PHP_EOL . PHP_EOL;	// 32 chars
+		$expectedOutput = PHP_EOL . '************* HALTING DEPLOYMENT' . PHP_EOL . PHP_EOL;	// 32 chars
 		$output->writeHaltingDeployment();
 
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );

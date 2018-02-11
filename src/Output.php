@@ -90,7 +90,7 @@ class Output
 		$padChar = self::CHAR_HEADER;
 		$header = sprintf( "%'{$padChar}-{$this->cols}s", $title );
 
-		$this->output->write( $header . PHP_EOL );
+		$this->output->write( PHP_EOL . $header . PHP_EOL );
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Output
 			$output = $result->getOutput();
 		}
 
-		$this->output->write( $output . PHP_EOL . PHP_EOL );
+		$this->output->write( $output . PHP_EOL );
 	}
 
 	/**
@@ -134,6 +134,6 @@ class Output
 			$output = self::getColorizedString( $output, self::RED );
 		}
 
-		$this->output->write( $output . PHP_EOL . PHP_EOL );
+		$this->output->write( PHP_EOL . $output . PHP_EOL . PHP_EOL );
 	}
 }
