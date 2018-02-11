@@ -137,6 +137,11 @@ class WriteDefaultsActionTest extends TestCase
 	{
 		$shell = new Shell\Shell();
 
+		if( !$shell->commandExists( 'defaults' ) )
+		{
+			$this->markTestSkipped( 'The \'defaults\' command is not available.' );
+		}
+
 		$domain = getUniqueString( 'com.example.Newton.' );
 		$key = getUniqueString( 'PrefWithBooleanValue' );
 
