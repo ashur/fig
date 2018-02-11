@@ -17,6 +17,27 @@ class Application
 	protected $repositories=[];
 
 	/**
+	 * @var	Fig\Filesystem\Filesystem
+	 */
+	protected $filesystem;
+
+	/**
+	 * @var	Fig\Shell\Shell
+	 */
+	protected $shell;
+
+	/**
+	 * @param	Fig\Shell\Shell	$shell
+	 *
+	 * @return	void
+	 */
+	public function __construct( Filesystem\Filesystem $filesystem, Shell\Shell $shell )
+	{
+		$this->filesystem = $filesystem;
+		$this->shell = $shell;
+	}
+
+	/**
 	 * Adds a Repository object
 	 *
 	 * @param	Fig\Repository	$repository
@@ -27,6 +48,43 @@ class Application
 	{
 		$repositoryName = $repository->getName();
 		$this->repositories[$repositoryName] = $repository;
+	}
+
+	/**
+	 * Applies `$vars` to action objects and then deploys each action
+	 *
+	 * @param	array	$actions	An array of deployable Fig\Action objects
+	 *
+	 * @param	array	$vars	An array of keys with scalar values
+	 *
+	 * @throws	\LogicException	If a non-deployable object is encountered
+	 *
+	 * @return	array 	An array of Fig\Action\Result objects
+	 */
+	public function deployActions( array $actions, array $vars ) : array
+	{
+		$results = [];
+
+		foreach( $actions as $action )
+		{
+			if( !$action->isDeployable() )
+			{
+				throw new \LogicException( 'Non-deployable action encountered' );
+			}
+
+			$action->setVars( $vars );
+
+			if( method_exists( $action, 'deployWithFilesystem' ) )
+			{
+				$results[] = $action->deployWithFilesystem( $this->filesystem );
+			}
+			elseif( method_exists( $action, 'deployWithShell' ) )
+			{
+				$results[] = $action->deployWithShell( $this->shell );
+			}
+		}
+
+		return $results;
 	}
 
 	/**
