@@ -13,11 +13,6 @@ use Cranberry\Shell;
 class Output extends Shell\Output\Output
 {
 	/**
-	 * @var	string
-	 */
-	protected $streamURI='file:///dev/null';
-
-	/**
 	 * Returns buffer string
 	 *
 	 * @return	string
@@ -25,5 +20,17 @@ class Output extends Shell\Output\Output
 	public function getBuffer() : string
 	{
 		return $this->buffer;
+	}
+
+	/**
+	 * Redirect to buffer for testing
+	 *
+	 * @param	string	$string
+	 *
+	 * @return	void
+	 */
+	public function write( string $string )
+	{
+		$this->buffer( $string );
 	}
 }
