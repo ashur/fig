@@ -120,6 +120,66 @@ class ApplicationTest extends TestCase
 		$this->assertEquals( $expectedResult, $results[0] );
 	}
 
+	public function test_deployProfile()
+	{
+		/* Profile */
+		$profileName = getUniqueString( 'profile-' );
+		$profile = new Profile( $profileName );
+
+		/* Actions: Command */
+		$profile->addAction( new Action\Shell\CommandAction( 'example', 'echo', ['{{greeting}}, {{who}}.'] ) );
+
+		/* Actions: Delete File */
+		$tempDirectory = getTemporaryDirectory();
+
+		$filename = getUniqueString( 'file-' );
+		$file = $tempDirectory->getChild( $filename, \Cranberry\Filesystem\Node::FILE );
+		$file->create();
+
+		$this->assertTrue( $file->exists() );
+
+		$profile->addAction( new Action\Filesystem\DeleteFileAction( 'delete temp file', $file->getPathname() ) );
+
+		/* Vars */
+		$greeting = getUniqueString( 'hello-' );
+		$who = getUniqueString( 'world-' );
+
+		$vars = ['greeting' => $greeting, 'who' => $who];
+		$profile->setVars( $vars );
+
+		/* Repository */
+		$repoName = getUniqueString( 'repo-' );
+		$repository = new Repository( $repoName );
+
+		$repository->addProfile( $profile );
+
+		$application = $this->createObject();
+		$application->addRepository( $repository );
+
+		/* Deployment */
+		$results = $application->deployProfile( $repoName, $profileName );
+
+		/* Tests */
+		$expectedResults[] = new Action\Result( "{$greeting}, {$who}.", false );
+		$expectedResults[] = new Action\Result( Action\Result::STRING_STATUS_SUCCESS, false );
+
+		$this->assertCount( 2, $results );
+		$this->assertEquals( $expectedResults, $results );
+	}
+
+	/**
+	 * @expectedException	Fig\Exception\RuntimeException
+	 * @expectedExceptionCode	Fig\Exception\RuntimeException::REPOSITORY_NOT_FOUND
+	 */
+	public function test_deployProfile_withNonExistentRepository_throwsException()
+	{
+		$application = $this->createObject();
+
+		$repoName = getUniqueString( 'repo-' );
+
+		$application->deployProfile( $repoName, 'profile' );
+	}
+
 	public function test_hasRepository()
 	{
 		$application = $this->createObject();

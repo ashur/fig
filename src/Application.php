@@ -88,6 +88,36 @@ class Application
 	}
 
 	/**
+	 * Gets actions and vars from specified profile and then deploys them
+	 *
+	 * @param	string	$repositoryName
+	 *
+	 * @param	string	$profileName
+	 *
+	 * @throws	Fig\Exception\RuntimeException	If repository is undefined
+	 *
+	 * @return	array
+	 */
+	public function deployProfile( string $repositoryName, string $profileName ) : array
+	{
+		if( !$this->hasRepository( $repositoryName ) )
+		{
+			$exceptionMessage = sprintf( 'No such repository: "%s"', $repositoryName );
+			throw new Exception\RuntimeException( $exceptionMessage, Exception\RuntimeException::REPOSITORY_NOT_FOUND );
+		}
+
+		$repository = $this->repositories[$repositoryName];
+		$profile = $repository->getProfile( $profileName );
+
+		$actions = $profile->getActions();
+		$vars = $profile->getVars();
+
+		$results = $this->deployActions( $actions, $vars );
+
+		return $results;
+	}
+
+	/**
 	 * Returns whether repository is defined
 	 *
 	 * @param	string	$repositoryName

@@ -12,5 +12,6 @@ class RuntimeException extends Exception
 
 	const COMMAND_NOT_FOUND = 1024;
 
+	const REPOSITORY_NOT_FOUND = 2048;
 	const PROFILE_NOT_FOUND = 4096;
 }
