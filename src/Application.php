@@ -99,6 +99,12 @@ class Application
 			}
 
 			$this->output->writeActionResult( $result );
+
+			if( $result->didError() )
+			{
+				$this->output->writeHaltingDeployment();
+				break;
+			}
 		}
 	}
 

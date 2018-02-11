@@ -41,7 +41,7 @@ class ApplicationTest extends TestCase
 	{
 		$mock = $this->getMockBuilder( Output::class )
 			->disableOriginalConstructor()
-			->setMethods( ['writeActionHeader','writeActionResult'] )
+			->setMethods( ['writeActionHeader','writeActionResult','writeHaltingDeployment'] )
 			->getMock();
 
 		return $mock;
@@ -91,6 +91,48 @@ class ApplicationTest extends TestCase
 	{
 		$this->assertTrue( is_string( Application::PHP_MIN ) );
 		$this->assertTrue( version_compare( Application::PHP_MIN, '0.0', '>=' ) );
+	}
+
+	public function test_deployActions_withActionError_haltsDeployment()
+	{
+		$actions = [];
+
+		/* Action 1: Does Fail */
+		$failedActionMock = $this->getMockBuilder( Action\Shell\CommandAction::class )
+			->setConstructorArgs( [ 'failed action', 'invalidcommand', [] ] )
+			->setMethods( ['deployWithShell'] )
+			->getMock();
+
+		$failedActionResult = new Action\Result( Action\Result::STRING_STATUS_ERROR, true );
+
+		$failedActionMock
+			->method( 'deployWithShell' )
+			->willReturn( $failedActionResult );
+
+		$actions[] = $failedActionMock;
+
+		/* Action 2: Does Succeed */
+		$successfulAction = new Action\Shell\CommandAction( 'example', 'echo', ['hello, world.'] );
+
+		$actions[] = $successfulAction;
+
+		/* Expectations */
+		$outputMock = $this->createOutputMock();
+		$outputMock
+			->expects( $this->once() )
+			->method( 'writeActionHeader' )
+			->with(
+				$failedActionMock->getType(),
+				$failedActionMock->getSubtitle(),
+				$failedActionMock->getName()
+			);
+		$outputMock
+			->expects( $this->once() )
+			->method( 'writeHaltingDeployment' );
+
+		/* Deploy */
+		$application = $this->createObject_withOutput( $outputMock );
+		$application->deployActions( $actions, [] );
 	}
 
 	public function test_deployActions_withFilesystemAction()
