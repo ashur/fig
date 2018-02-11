@@ -12,14 +12,14 @@ class Application
 	const PHP_MIN = '7.0';
 
 	/**
-	 * @var	array
-	 */
-	protected $repositories=[];
-
-	/**
 	 * @var	Fig\Filesystem\Filesystem
 	 */
 	protected $filesystem;
+
+	/**
+	 * @var	array
+	 */
+	protected $repositories=[];
 
 	/**
 	 * @var	Fig\Shell\Shell
@@ -27,14 +27,24 @@ class Application
 	protected $shell;
 
 	/**
+	 * @var	Fig\Output
+	 */
+	protected $output;
+
+	/**
+	 * @param	Fig\Filesystem\Filesystem	$filesystem
+	 *
 	 * @param	Fig\Shell\Shell	$shell
+	 *
+	 * @param	Fig\Output	$output
 	 *
 	 * @return	void
 	 */
-	public function __construct( Filesystem\Filesystem $filesystem, Shell\Shell $shell )
+	public function __construct( Filesystem\Filesystem $filesystem, Shell\Shell $shell, Output $output )
 	{
 		$this->filesystem = $filesystem;
 		$this->shell = $shell;
+		$this->output = $output;
 	}
 
 	/**
@@ -51,7 +61,8 @@ class Application
 	}
 
 	/**
-	 * Applies `$vars` to action objects and then deploys each action
+	 * Applies `$vars` to action objects and then deploys each action, writing
+	 * results to output.
 	 *
 	 * @param	array	$actions	An array of deployable Fig\Action objects
 	 *
@@ -59,12 +70,10 @@ class Application
 	 *
 	 * @throws	\LogicException	If a non-deployable object is encountered
 	 *
-	 * @return	array 	An array of Fig\Action\Result objects
+	 * @return	void
 	 */
-	public function deployActions( array $actions, array $vars ) : array
+	public function deployActions( array $actions, array $vars )
 	{
-		$results = [];
-
 		foreach( $actions as $action )
 		{
 			if( !$action->isDeployable() )
@@ -74,17 +83,23 @@ class Application
 
 			$action->setVars( $vars );
 
+			$this->output->writeActionHeader(
+				$action->getType(),
+				$action->getSubtitle(),
+				$action->getName()
+			);
+
 			if( method_exists( $action, 'deployWithFilesystem' ) )
 			{
-				$results[] = $action->deployWithFilesystem( $this->filesystem );
+				$result = $action->deployWithFilesystem( $this->filesystem );
 			}
 			elseif( method_exists( $action, 'deployWithShell' ) )
 			{
-				$results[] = $action->deployWithShell( $this->shell );
+				$result = $action->deployWithShell( $this->shell );
 			}
-		}
 
-		return $results;
+			$this->output->writeActionResult( $result );
+		}
 	}
 
 	/**
@@ -96,9 +111,9 @@ class Application
 	 *
 	 * @throws	Fig\Exception\RuntimeException	If repository is undefined
 	 *
-	 * @return	array
+	 * @return	void
 	 */
-	public function deployProfile( string $repositoryName, string $profileName ) : array
+	public function deployProfile( string $repositoryName, string $profileName )
 	{
 		if( !$this->hasRepository( $repositoryName ) )
 		{
@@ -112,9 +127,7 @@ class Application
 		$actions = $profile->getActions();
 		$vars = $profile->getVars();
 
-		$results = $this->deployActions( $actions, $vars );
-
-		return $results;
+		$this->deployActions( $actions, $vars );
 	}
 
 	/**

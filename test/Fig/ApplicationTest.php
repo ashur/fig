@@ -15,12 +15,36 @@ class ApplicationTest extends TestCase
 	{
 		$figDirectory = getTemporaryDirectory()
 			->getChild( '.fig', \Cranberry\Filesystem\Node::DIRECTORY );
-
 		$filesystem = new Filesystem\Filesystem( $figDirectory );
+
 		$shell = new Shell\Shell();
 
-		$application = new Application( $filesystem, $shell );
+		$outputMock = $this->createOutputMock();
+
+		$application = new Application( $filesystem, $shell, $outputMock );
 		return $application;
+	}
+
+	public function createObject_withOutput( Output $output )
+	{
+		$figDirectory = getTemporaryDirectory()
+			->getChild( '.fig', \Cranberry\Filesystem\Node::DIRECTORY );
+		$filesystem = new Filesystem\Filesystem( $figDirectory );
+
+		$shell = new Shell\Shell();
+
+		$application = new Application( $filesystem, $shell, $output );
+		return $application;
+	}
+
+	public function createOutputMock() : Output
+	{
+		$mock = $this->getMockBuilder( Output::class )
+			->disableOriginalConstructor()
+			->setMethods( ['writeActionHeader','writeActionResult'] )
+			->getMock();
+
+		return $mock;
 	}
 
 	static public function tearDownAfterClass()
@@ -71,6 +95,7 @@ class ApplicationTest extends TestCase
 
 	public function test_deployActions_withFilesystemAction()
 	{
+		/* File */
 		$tempDirectory = getTemporaryDirectory();
 
 		$filename = getUniqueString( 'file-' );
@@ -79,15 +104,31 @@ class ApplicationTest extends TestCase
 
 		$this->assertTrue( $file->exists() );
 
-		$actions[] = new Action\Filesystem\DeleteFileAction( 'delete temp file', $file->getPathname() );
+		/* Action */
+		$action = new Action\Filesystem\DeleteFileAction( 'delete temp file', $file->getPathname() );
 
-		$application = $this->createObject();
-		$results = $application->deployActions( $actions, [] );
-
+		/* Expectations */
 		$expectedResult = new Action\Result( Action\Result::STRING_STATUS_SUCCESS, false );
 
-		$this->assertCount( 1, $results );
-		$this->assertEquals( $expectedResult, $results[0] );
+		$outputMock = $this->createOutputMock();
+		$outputMock
+			->expects( $this->once() )
+			->method( 'writeActionHeader' )
+			->with(
+				$action->getType(),
+				$action->getSubtitle(),
+				$action->getName()
+			);
+		$outputMock
+			->expects( $this->once() )
+			->method( 'writeActionResult' )
+			->with( $expectedResult );
+
+		/* Deploy */
+		$application = $this->createObject_withOutput( $outputMock );
+		$application->deployActions( [$action], [] );
+
+		$this->assertFalse( $file->exists() );
 	}
 
 	/**
@@ -104,20 +145,34 @@ class ApplicationTest extends TestCase
 
 	public function test_deployActions_withShellAction()
 	{
-		$actions[] = new Action\Shell\CommandAction( 'example', 'echo', ['{{greeting}}, {{who}}.'] );
+		/* Action */
+		$action = new Action\Shell\CommandAction( 'example', 'echo', ['{{greeting}}, {{who}}.'] );
 
 		$greeting = getUniqueString( 'hello-' );
 		$who = getUniqueString( 'world-' );
 
 		$vars = ['greeting' => $greeting, 'who' => $who];
 
-		$application = $this->createObject();
-		$results = $application->deployActions( $actions, $vars );
-
+		/* Expectations */
 		$expectedResult = new Action\Result( "{$greeting}, {$who}.", false );
 
-		$this->assertCount( 1, $results );
-		$this->assertEquals( $expectedResult, $results[0] );
+		$outputMock = $this->createOutputMock();
+		$outputMock
+			->expects( $this->once() )
+			->method( 'writeActionHeader' )
+			->with(
+				$action->getType(),
+				$action->getSubtitle(),
+				$action->getName()
+			);
+		$outputMock
+			->expects( $this->once() )
+			->method( 'writeActionResult' )
+			->with( $expectedResult );
+
+		/* Deploy */
+		$application = $this->createObject_withOutput( $outputMock );
+		$application->deployActions( [$action], $vars );
 	}
 
 	public function test_deployProfile()
@@ -127,7 +182,8 @@ class ApplicationTest extends TestCase
 		$profile = new Profile( $profileName );
 
 		/* Actions: Command */
-		$profile->addAction( new Action\Shell\CommandAction( 'example', 'echo', ['{{greeting}}, {{who}}.'] ) );
+		$commandAction = new Action\Shell\CommandAction( 'example', 'echo', ['{{greeting}}, {{who}}.'] );
+		$profile->addAction( $commandAction );
 
 		/* Actions: Delete File */
 		$tempDirectory = getTemporaryDirectory();
@@ -138,7 +194,8 @@ class ApplicationTest extends TestCase
 
 		$this->assertTrue( $file->exists() );
 
-		$profile->addAction( new Action\Filesystem\DeleteFileAction( 'delete temp file', $file->getPathname() ) );
+		$filesystemAction = new Action\Filesystem\DeleteFileAction( 'delete temp file', $file->getPathname() );
+		$profile->addAction( $filesystemAction );
 
 		/* Vars */
 		$greeting = getUniqueString( 'hello-' );
@@ -153,18 +210,34 @@ class ApplicationTest extends TestCase
 
 		$repository->addProfile( $profile );
 
-		$application = $this->createObject();
-		$application->addRepository( $repository );
+		/* Expectations */
+		$expectedCommandResult = new Action\Result( "{$greeting}, {$who}.", false );
+		$expectedFilesystemResult = new Action\Result( Action\Result::STRING_STATUS_SUCCESS, false );
+
+		$outputMock = $this->createOutputMock();
+		$outputMock
+			->expects( $this->exactly(2) )
+			->method( 'writeActionHeader' )
+			->withConsecutive(
+				[ $commandAction->getType(), $commandAction->getSubtitle(), $commandAction->getName() ],
+				[ $filesystemAction->getType(), $filesystemAction->getSubtitle(), $filesystemAction->getName() ]
+			);
+		$outputMock
+			->expects( $this->atLeastOnce() )
+			->method( 'writeActionResult' )
+			->withConsecutive(
+				[$expectedCommandResult],
+				[$expectedFilesystemResult]
+			);
 
 		/* Deployment */
-		$results = $application->deployProfile( $repoName, $profileName );
+		$application = $this->createObject_withOutput( $outputMock );
+		$application->addRepository( $repository );
+
+		$application->deployProfile( $repoName, $profileName );
 
 		/* Tests */
-		$expectedResults[] = new Action\Result( "{$greeting}, {$who}.", false );
-		$expectedResults[] = new Action\Result( Action\Result::STRING_STATUS_SUCCESS, false );
-
-		$this->assertCount( 2, $results );
-		$this->assertEquals( $expectedResults, $results );
+		$this->assertFalse( $file->exists() );
 	}
 
 	/**
