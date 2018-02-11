@@ -87,7 +87,7 @@ class Output
 		$title = sprintf( '%s: %s | %s ', strtoupper( $type ), $subtitle, $name );
 
 		$padChar = self::CHAR_HEADER;
-		$header = sprintf( "%'-{$padChar}{$this->cols}s", $title );
+		$header = sprintf( "%'{$padChar}-{$this->cols}s", $title );
 
 		$this->output->write( $header . PHP_EOL );
 	}
