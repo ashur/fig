@@ -9,6 +9,7 @@ use Cranberry\Shell\Output as ShellOutput;
 
 class Output
 {
+	const CHAR_ERROR = '*';
 	const CHAR_HEADER = '-';
 	const STRING_ACTION_TITLE = '%s: %s | %s ';
 
@@ -111,6 +112,26 @@ class Output
 		else
 		{
 			$output = $result->getOutput();
+		}
+
+		$this->output->write( $output . PHP_EOL . PHP_EOL );
+	}
+
+	/**
+	 * Writes halting deployment error to output.
+	 *
+	 * If using color, output string in red
+	 *
+	 * @return	void
+	 */
+	public function writeHaltingDeployment()
+	{
+		$padChar = self::CHAR_ERROR;
+		$output = sprintf( "%'{$padChar}{$this->cols}s", ' HALTING DEPLOYMENT' );
+
+		if( $this->useColor )
+		{
+			$output = self::getColorizedString( $output, self::RED );
 		}
 
 		$this->output->write( $output . PHP_EOL . PHP_EOL );

@@ -99,6 +99,30 @@ class OutputTest extends TestCase
 		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
 	}
 
+	public function test_writeHaltingDeployment_withColor()
+	{
+		$shellOutput = new ShellOutput();
+		$output = new Output( $shellOutput, 32, true );
+
+		$outputString = '************* HALTING DEPLOYMENT';	// 32 chars
+		$expectedOutput = Output::getColorizedString( $outputString, Output::RED ) . PHP_EOL . PHP_EOL;
+
+		$output->writeHaltingDeployment();
+
+		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
+	}
+
+	public function test_writeHaltingDeployment_withoutColor()
+	{
+		$shellOutput = new ShellOutput();
+		$output = $this->createObject_fromCols( $shellOutput, 32 );
+
+		$expectedOutput = '************* HALTING DEPLOYMENT' . PHP_EOL . PHP_EOL;	// 32 chars
+		$output->writeHaltingDeployment();
+
+		$this->assertEquals( $expectedOutput, $shellOutput->getBuffer() );
+	}
+
 	public function test_getCols()
 	{
 		$shellOutput = new ShellOutput();
