@@ -163,7 +163,7 @@ class Defaults extends Action
 		}
 		if( $this->action == self::WRITE )
 		{
-			$result['output'] = $this->value;
+			$result['output'] = Fig\Fig::replaceVariables( $this->value, $this->variables );
 		}
 
 		return $result;

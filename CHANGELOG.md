@@ -3,6 +3,8 @@
 All notable changes to Fig will be documented in this file.
 
 ## Unreleased
+### Fixed
+- [#21](https://github.com/ashur/fig/issues/21) – Variable replacement not performed on ‘defaults:write’ result output
 
 ## [0.4.2] - 2017-06-21
 ### Fixed
