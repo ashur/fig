@@ -7,6 +7,7 @@ All notable changes to Fig will be documented in this file.
 - [#21](https://github.com/ashur/fig/issues/21) – Variable replacement not performed on ‘defaults:write’ result output
 - [#25](https://github.com/ashur/fig/issues/25) – Trailing slash prevents `show` from displaying profiles belonging to valid app
 - [#26](https://github.com/ashur/fig/issues/26) – defaults.write: `ignore_output` is ignored
+- [#27](https://github.com/ashur/fig/issues/27) – vars defined in `include`-d profile missing from including profile actions
 
 ## [0.4.2] - 2017-06-21
 ### Fixed
