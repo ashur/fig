@@ -5,6 +5,7 @@ All notable changes to Fig will be documented in this file.
 ## Unreleased
 ### Fixed
 - [#21](https://github.com/ashur/fig/issues/21) – Variable replacement not performed on ‘defaults:write’ result output
+- [#25](https://github.com/ashur/fig/issues/25) – Trailing slash prevents `show` from displaying profiles belonging to valid app
 
 ## [0.4.2] - 2017-06-21
 ### Fixed
