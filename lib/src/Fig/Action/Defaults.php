@@ -152,6 +152,10 @@ class Defaults extends Action
 		$result['output'] = $output;
 
 		/* Modify Output */
+		if( $this->action == self::WRITE )
+		{
+			$result['output'] = Fig\Fig::replaceVariables( $this->value, $this->variables );
+		}
 		if( $this->ignoreOutput )
 		{
 			$result['output'] = null;
@@ -160,10 +164,6 @@ class Defaults extends Action
 		{
 			$result['error'] = false;
 			$result['output'] = null;
-		}
-		if( $this->action == self::WRITE )
-		{
-			$result['output'] = Fig\Fig::replaceVariables( $this->value, $this->variables );
 		}
 
 		return $result;
