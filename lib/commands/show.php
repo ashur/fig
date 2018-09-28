@@ -12,7 +12,7 @@ use Cranberry\CLI\Command;
  * @desc		List apps and their profiles
  * @usage		show [-l] <app>
  */
-$command = new Command\Command( 'show', 'List apps and their profiles', function( $app=null )
+$command = new Command\Command( 'show', 'List apps and their profiles', function( $appName=null )
 {
 	$listHiddenItems = $this->getOptionValue( 'a' );
 	$longListing = $this->getOptionValue( 'l' );
@@ -20,7 +20,7 @@ $command = new Command\Command( 'show', 'List apps and their profiles', function
 	try
 	{
 		/* List apps */
-		if( is_null( $app ) )
+		if( is_null( $appName ) )
 		{
 			$apps = $this->fig->getApps();
 			$output = listApps( $apps, $listHiddenItems, $longListing );
@@ -28,7 +28,14 @@ $command = new Command\Command( 'show', 'List apps and their profiles', function
 		/* List a single app's profiles */
 		else
 		{
-			$app = $this->fig->getApp( $app );
+			// Strip trailing slash
+			$lastChar = substr( $appName, strlen( $appName ) - 1 );
+			if( $lastChar == '/' )
+			{
+				$appName = substr( $appName, 0, strlen( $appName ) - 1 );
+			}
+
+			$app = $this->fig->getApp( $appName );
 			$output = listProfiles( $app, $listHiddenItems, $longListing );
 		}
 	}

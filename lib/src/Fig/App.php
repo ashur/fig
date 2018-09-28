@@ -185,11 +185,6 @@ class App extends Model
 					/* Merge variables, preferring the top-level Profile */
 					$profileVariables = array_merge( $includedProfileVariables, $profileVariables );
 
-					foreach( $includedProfileActions as &$includedProfileAction )
-					{
-						$includedProfileAction->setVariables( $profileVariables );
-					}
-
 					array_splice( $profileActions, $paOffset, 1, $includedProfileActions );
 
 					/* The new Actions may 'include' Profiles themselves, so take another pass */
@@ -199,6 +194,12 @@ class App extends Model
 			}
 		}
 		while( $didExpandExternalAction == true );
+
+		/* Apply merged variables to all actions */
+		foreach( $profileActions as $profileAction )
+		{
+			$profileAction->setVariables( $profileVariables );
+		}
 
 		return $profileActions;
 	}
