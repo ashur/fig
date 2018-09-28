@@ -1,4 +1,4 @@
-# ![Quickly build and deploy configuration profiles.](http://pug.sh.s3.amazonaws.com/fig.png)
+![Quickly build and deploy configuration profiles.](https://ashur.cab/fig/banner.png)
 
 ## The Pitch
 
