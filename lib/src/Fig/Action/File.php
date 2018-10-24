@@ -411,9 +411,14 @@ class File extends Action
 			$sourceFile->delete();
 		}
 
-		if( $this->target->exists() )
+		/* Replace variables */
+		$targetPathname = $this->target->getPathname();
+		$targetPathname = Fig\Fig::replaceVariables( $targetPathname, $this->variables );
+		$target = CoreFile\File::getTypedInstance( $targetPathname );
+
+		if( $target->exists() )
 		{
-			$this->target->copyTo( $sourceFile );
+			$target->copyTo( $sourceFile );
 		}
 
 		return true;

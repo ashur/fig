@@ -258,6 +258,7 @@ class Profile extends Model
 		{
 			if( get_class( $action ) == 'Fig\Action\File' )
 			{
+				$action->setVariables( $this->variables );
 				$action->setFigDirectory( $figDirectory );
 				$action->updateAssetsFromTarget( $figDirectory );
 			}

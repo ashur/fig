@@ -3,6 +3,8 @@
 All notable changes to Fig will be documented in this file.
 
 ## Unreleased
+### Fixed
+- [#29](https://github.com/ashur/fig/issues/29) – Perform variable replacement on file paths during snapshotting
 
 ## [0.4.3] - 2018-09-28
 ### Fixed
